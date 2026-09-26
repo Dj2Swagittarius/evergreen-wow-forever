@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Loa's Path</title>
+<meta name="description" content="Troll 1–60 leveling route for Classic WoW with class quests for Warrior, Hunter, Rogue, Priest, Shaman and Mage, the Forever-only Troll Warlock, and WoW Forever callouts.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#EAE4D6; --surface:#F3EEE3; --sunk:#DED6C5; --ink:#221C17; --muted:#615A50; --line:#C9BFAD;
+  --accent:#1F6F63; --accent-ink:#164F47; --accent-soft:#D3E8E1;
+  --violet:#5A4478; --violet-soft:#E2DAEE; --gold:#8A6B1F; --danger:#9A3B2E; --danger-soft:#F0D9D4;
+  --shadow:0 1px 0 rgba(34,28,23,.06), 0 8px 24px -16px rgba(34,28,23,.35);
+  --display:"Grenze Gotisch","Cinzel",Georgia,serif;
+  --body:"Source Serif 4","Iowan Old Style",Georgia,serif;
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15120F; --surface:#1E1A16; --sunk:#100E0B; --ink:#DCD5C8; --muted:#948B7D; --line:#342C25;
+    --accent:#4FB8A5; --accent-ink:#8FD9C9; --accent-soft:#16302B;
+    --violet:#A98FD6; --violet-soft:#2A2238; --gold:#D2AE4C; --danger:#E08A7A; --danger-soft:#3A2220;
+    --shadow:0 1px 0 rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15120F; --surface:#1E1A16; --sunk:#100E0B; --ink:#DCD5C8; --muted:#948B7D; --line:#342C25;
+  --accent:#4FB8A5; --accent-ink:#8FD9C9; --accent-soft:#16302B;
+  --violet:#A98FD6; --violet-soft:#2A2238; --gold:#D2AE4C; --danger:#E08A7A; --danger-soft:#3A2220;
+  --shadow:0 1px 0 rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{height:auto}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+h1,h2,h3,h4{font-family:var(--display);font-weight:500;line-height:1.05;margin:0;text-wrap:balance;letter-spacing:.005em}
+h2{font-size:2.1rem}
+h3{font-size:1.45rem}
+h4{font-size:1.15rem;font-family:var(--body);font-weight:600}
+p{margin:0 0 1em}
+code,.mono{font-family:var(--mono);font-size:.86em}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:clamp(16px,4vw,40px);padding-block:0 96px}
+
+/* masthead */
+.mast{border-bottom:1px solid var(--line);padding-block:40px 28px}
+.mast .grid{display:grid;grid-template-columns:1fr auto;gap:24px 40px;align-items:end}
+.mast h1{font-size:clamp(3rem,7.5vw,5.6rem);font-weight:700;line-height:.92;color:var(--ink)}
+.mast h1 span{color:var(--accent)}
+.mast .lede{max-width:62ch;font-size:1.1rem;margin-top:18px}
+.stamp{font-family:var(--mono);font-size:.78rem;line-height:1.5;color:var(--muted);border-left:2px solid var(--gold);padding-left:14px;min-width:220px}
+.stamp b{color:var(--ink);font-weight:500}
+.sister{font-family:var(--mono);font-size:.74rem;margin-top:10px}
+@media (max-width:760px){.mast .grid{grid-template-columns:1fr}.stamp{border-left:0;border-top:1px solid var(--line);padding:12px 0 0}}
+
+/* two column */
+.cols{display:grid;grid-template-columns:230px minmax(0,1fr);gap:48px;margin-top:32px}
+@media (max-width:900px){.cols{grid-template-columns:1fr;gap:24px}}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;max-height:calc(100vh - 32px);overflow:auto;font-size:.9rem;padding-right:8px}
+nav.toc .eyebrow{margin-bottom:10px}
+nav.toc ol{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:2px}
+nav.toc a{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:baseline;padding:5px 8px;border-radius:4px;text-decoration:none;color:var(--ink);border-left:2px solid transparent}
+nav.toc a .lv{font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+nav.toc a:hover{background:var(--surface)}
+nav.toc a.on{border-left-color:var(--accent);background:var(--surface);color:var(--accent-ink)}
+nav.toc .prog{margin-top:6px;font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+nav.toc ol.flat a{grid-template-columns:1fr}
+@media (max-width:900px){nav.toc{position:static;max-height:none;border:1px solid var(--line);background:var(--surface);padding:14px 14px 4px;border-radius:6px}
+  nav.toc ol{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}
+
+main{min-width:0}
+main > section{padding-block:40px;border-bottom:1px solid var(--line);scroll-margin-top:16px}
+main > section:first-child{padding-top:8px}
+.sec-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px;margin-bottom:18px}
+.sec-head .eyebrow{margin:0}
+.prose{max-width:72ch}
+.prose ul,.prose ol{padding-left:1.3em;margin:0 0 1em}
+.prose li{margin-bottom:.35em}
+.prose li::marker{color:var(--muted)}
+strong{font-weight:600}
+.q{font-weight:600}
+.c{font-family:var(--mono);font-size:.8em;color:var(--gold);white-space:nowrap}
+.lvl{font-family:var(--mono);font-size:.78em;color:var(--muted)}
+.tag{display:inline-block;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px;vertical-align:middle;line-height:1.4}
+.tag.forever{background:var(--violet-soft);color:var(--violet)}
+.tag.era{background:var(--accent-soft);color:var(--accent-ink)}
+.tag.verify{background:var(--danger-soft);color:var(--danger)}
+.tag.cls{background:var(--sunk);color:var(--ink);margin-right:6px}
+
+/* class picker */
+.picker{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 18px;padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+.picker .eyebrow{margin-right:6px}
+.picker button{font:inherit;font-size:.9rem;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.picker button:hover{border-color:var(--accent)}
+.picker button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.picker .hint{flex-basis:100%;font-size:.84rem;color:var(--muted);margin:2px 0 0}
+body[data-class="warrior"] [data-class]:not([data-class~="warrior"]),
+body[data-class="hunter"]  [data-class]:not([data-class~="hunter"]),
+body[data-class="rogue"]   [data-class]:not([data-class~="rogue"]),
+body[data-class="priest"]  [data-class]:not([data-class~="priest"]),
+body[data-class="shaman"]  [data-class]:not([data-class~="shaman"]),
+body[data-class="mage"]    [data-class]:not([data-class~="mage"]),
+body[data-class="warlock"] [data-class]:not([data-class~="warlock"]){display:none}
+body[data-class] .classes article[data-class]{outline:2px solid var(--accent);outline-offset:-2px}
+
+/* bracket */
+.bracket .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:0 0 22px;font-size:.92rem}
+.bracket .meta div{background:var(--surface);padding:10px 12px}
+.bracket .meta .k{display:block;font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.steps{list-style:none;padding:0;margin:0 0 20px;counter-reset:step;max-width:80ch}
+.steps > li{counter-increment:step;display:grid;grid-template-columns:26px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line);align-items:start}
+.steps > li:first-child{border-top:0}
+.steps > li::before{content:counter(step);font-family:var(--mono);font-size:.78rem;color:var(--muted);padding-top:4px;text-align:right}
+.steps > li[data-class]{background:linear-gradient(90deg,var(--accent-soft),transparent 60%);margin-inline:-10px;padding-inline:10px;border-radius:4px}
+.steps label{display:block;cursor:pointer}
+.steps input{margin:0 8px 0 0;vertical-align:-1px;accent-color:var(--accent)}
+.steps li.done .body{color:var(--muted)}
+.steps .body{display:inline}
+.steps .sub{margin:.35em 0 0;padding-left:1.1em;color:var(--muted);font-size:.94rem}
+.steps .sub li{margin:.2em 0}
+.note{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:12px 14px;border-radius:4px;margin:0 0 18px;max-width:80ch;font-size:.95rem;background:var(--surface);border:1px solid var(--line)}
+.note .who{font-family:var(--display);font-size:1.15rem;color:var(--accent);white-space:nowrap;padding-top:1px}
+.note.forever{border-color:var(--violet);background:var(--violet-soft)}
+.note.forever .who{color:var(--violet)}
+.note.warn{border-color:var(--danger)}
+.note.warn .who{color:var(--danger)}
+.note p:last-child{margin:0}
+.leave{font-family:var(--mono);font-size:.82rem;color:var(--muted);margin:0 0 6px}
+.leave b{color:var(--ink);font-weight:500}
+
+/* tables */
+.tbl{overflow-x:auto;margin:0 0 20px;border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:520px}
+th,td{padding:9px 12px;text-align:left;vertical-align:top;border-top:1px solid var(--line)}
+thead th{border-top:0;background:var(--surface);font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td.mono,th.mono{font-family:var(--mono);font-size:.8rem;white-space:nowrap}
+tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surface) 55%,transparent)}
+
+/* class grid */
+.classes{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:0 0 20px}
+.classes article{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 16px;font-size:.94rem}
+.classes h4{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px}
+.classes .speed{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;color:var(--accent-ink);font-weight:500}
+.classes p{margin:0}
+
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px 32px;max-width:90ch}
+.foot{padding-top:32px;font-size:.88rem;color:var(--muted)}
+.foot ul{padding-left:1.2em}
+@media print{nav.toc{display:none}.cols{grid-template-columns:1fr}body{font-size:11pt}.steps input{display:none}.picker{display:none}}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast">
+  <div class="grid">
+    <div>
+      <div class="eyebrow">Classic WoW · Horde · Troll · 1–60</div>
+      <h1>The <span>Loa's</span> Path</h1>
+      <p class="lede">A hub-by-hub Troll leveling route from the Valley of Trials to level 60, with the class quests for Warrior, Hunter, Rogue, Priest, Shaman and Mage folded into the steps, and the Forever-only Troll Warlock alongside them. Pick your class once and the page shows only yours. Built on Classic Era rules; everything WoW Forever is known to change is flagged in violet.</p>
+      <p class="sister"><a href="index.html">All guides</a> · Playing Undead or Tauren instead? <a href="undead.html">The Forsaken Road</a> and <a href="tauren.html">The Long Walk</a> are the sister guides.</p>
+    </div>
+    <div class="stamp">
+      <b>Baseline</b> Classic Era / Anniversary (1.15)<br>
+      <b>WoW Forever</b> beta Sep 17 → Oct 21, 2026<br>
+      <b>Forever launch</b> Nov 4, 2026 · cap stays 60<br>
+      <b>Page revised</b> Sep 19, 2026
+    </div>
+  </div>
+</header>
+
+<div class="cols">
+<nav class="toc" aria-label="Sections">
+  <div class="eyebrow">Route</div>
+  <ol id="toc-route">
+    <li><a href="#b1"><span class="lv">1–6</span>Valley of Trials</a></li>
+    <li><a href="#b2"><span class="lv">6–12</span>Sen'jin, Razor Hill &amp; Durotar</a></li>
+    <li><a href="#b3"><span class="lv">12–20</span>The Barrens</a></li>
+    <li><a href="#b4"><span class="lv">20–25</span>Stonetalon → Ashenvale</a></li>
+    <li><a href="#b5"><span class="lv">25–30</span>Thousand Needles</a></li>
+    <li><a href="#b6"><span class="lv">30–35</span>Stranglethorn &amp; Desolace</a></li>
+    <li><a href="#b7"><span class="lv">35–40</span>Arathi &amp; Dustwallow</a></li>
+    <li><a href="#b8"><span class="lv">40–45</span>Badlands &amp; Swamp</a></li>
+    <li><a href="#b9"><span class="lv">45–50</span>Tanaris · Feralas · Hinterlands</a></li>
+    <li><a href="#b10"><span class="lv">50–55</span>Un'Goro · Felwood · Steppes</a></li>
+    <li><a href="#b11"><span class="lv">55–60</span>Plaguelands · Winterspring</a></li>
+  </ol>
+  <div class="eyebrow">Reference</div>
+  <ol class="flat">
+    <li><a href="#start">Start here</a></li>
+    <li><a href="#racials">Racials</a></li>
+    <li><a href="#classes">Class pick &amp; filter</a></li>
+    <li><a href="#rules">Rules of the road</a></li>
+    <li><a href="#dungeons">Dungeons</a></li>
+    <li><a href="#logistics">Orgrimmar logistics</a></li>
+    <li><a href="#mount">Mount &amp; gold</a></li>
+    <li><a href="#forever">WoW Forever watchlist</a></li>
+    <li><a href="#sources">Sources</a></li>
+  </ol>
+  <div class="prog" id="prog"></div>
+</nav>
+
+<main>
+
+<section id="start">
+  <div class="sec-head"><h2>Start here</h2></div>
+  <div class="prose">
+    <p>This is a route, not an encyclopedia. Each bracket tells you where to bind your hearthstone, which flight point to grab, and a numbered order of quests to run. Tick the boxes as you go; the page remembers them in this browser only.</p>
+    <p>Steps shaded in teal are <b>class quests</b>. Choose your class in <a href="#classes">Pick your class</a> and the other classes' steps disappear; the choice is remembered, and <code>?class=priest</code> in the address bar does the same thing. With no class chosen every class step shows, each with a tag. Warlock steps carry a violet tag as well: Troll warlocks exist only in WoW Forever, and their steps are the Orc chain until the beta says otherwise.</p>
+    <p>Two kinds of callouts appear throughout. <span class="tag era">Era</span> is the verified Classic Era baseline. <span class="tag forever">Forever</span> marks what WoW Forever has publicly changed or added, and what to re-check once the beta is playable. Where a coordinate or count comes from memory rather than a checked source it is tagged <span class="tag verify">verify</span>; treat those as "the right area", not gospel.</p>
+    <p><span class="c">47,60</span> style numbers are map coordinates for the zone named in that step. Quest names are in <span class="q">bold</span>. Coordinates were checked for Durotar, the Barrens and the class chains; elsewhere they are close enough to find the NPC with the map open.</p>
+    <p>The route stays on Kalimdor as long as the quests hold out, because a Troll's hearth, trainers and flight net all sit between Orgrimmar and the Crossroads. Eastern Kingdoms legs start at 30 (Stranglethorn) and are reached through the zeppelin tower outside Orgrimmar's main gate, a two-minute walk from the Valley of Strength inn; Undercity is only ever a transfer.</p>
+  </div>
+</section>
+
+<section id="racials">
+  <div class="sec-head"><h2>Why Troll</h2><span class="eyebrow">Racials</span></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Racial</th><th>Classic Era <span class="tag era">Era</span></th><th>WoW Forever <span class="tag forever">Forever</span></th><th>Leveling use</th></tr></thead>
+    <tbody>
+      <tr><td><b>Berserking</b></td><td>3 min cooldown. Attack and casting speed +10% to +30% for 10 s, scaling with missing health (10% at full, 30% at 40% health or less).</td><td>+10% attack and casting speed for 10 s, flat; no longer scales with missing health.</td><td>Pop it on every named mob and every elite, and on the second pull when a third mob joins. In Era it is at its best when you are half dead, which is a bad thing to plan around; treat it as a 10% haste button that occasionally does more. Priests and mages get the casting-speed half.</td></tr>
+      <tr><td><b>Regeneration</b></td><td>+10% health regeneration, and 10% of normal regeneration continues in combat.</td><td>Unchanged.</td><td>Less sitting between pulls at every level. It stacks with Spirit, so a warrior or rogue in green Spirit gear sits noticeably less than an Orc in the same gear. Do not overrate it: it is one bandage in three, not a heal.</td></tr>
+      <tr><td><b>Beast Slaying</b></td><td>+5% damage against Beasts.</td><td>Unchanged.</td><td>Durotar, the Barrens, Stranglethorn and Un'Goro are beast zones and every Nesingwary tier at 30–45 is beasts. Five percent more damage on half the mobs you kill before 45. A hunter's pet does not get it.</td></tr>
+      <tr><td><b>Bow Specialization, Throwing Specialization</b></td><td>+5 weapon skill with bows and with thrown weapons.</td><td>Removed. Replaced by <b>Rapid Regeneration</b>: 3 min cooldown, channel to restore 50% of maximum health over 6 s; moving, acting or taking damage cancels it.</td><td>In Era, hunters use a bow and rogues carry a thrown weapon: +5 skill means fewer glancing blows and misses at the level you are fighting. In Forever, Rapid Regeneration is a free half-health bandage every three minutes, which is the best leveling racial a warrior or rogue could ask for.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note forever"><div class="who">Forever</div><div><p>Every race gets two active and two passive racials in Forever. Troll's are Berserking and Rapid Regeneration (active), Regeneration and Beast Slaying (passive). Cooldowns come from Icy Veins and Wowhead's Forever summary (Sep 16, 2026); the Warcraft Tavern and Method demo notes do not list them, so confirm in the beta client. Icy Veins' Forever troll page still lists the priest racial spells Hex of Weakness and Shadowguard with Classic wording; whether the level-10 and level-20 priest quests survive is unconfirmed <span class="tag verify">verify</span>.</p></div></div>
+</section>
+
+<section id="classes">
+  <div class="sec-head"><h2>Pick your class</h2><span class="eyebrow">Solo leveling speed, 1–60</span></div>
+  <div class="picker" role="group" aria-label="Show class quests for">
+    <span class="eyebrow">Show quests for</span>
+    <button type="button" data-pick="">All classes</button>
+    <button type="button" data-pick="warrior">Warrior</button>
+    <button type="button" data-pick="hunter">Hunter</button>
+    <button type="button" data-pick="rogue">Rogue</button>
+    <button type="button" data-pick="priest">Priest</button>
+    <button type="button" data-pick="shaman">Shaman</button>
+    <button type="button" data-pick="mage">Mage</button>
+    <button type="button" data-pick="warlock">Warlock <span class="tag forever">Forever</span></button>
+    <p class="hint" id="pick-hint">Showing every class quest. Pick one and the other classes' steps are hidden everywhere on the page; the Evergreen addon does the same in-game from your character's class.</p>
+  </div>
+  <div class="classes">
+    <article data-class="hunter"><h4>Hunter <span class="speed">Fastest</span></h4><p>A pet from level 10 and nothing ever touches you again. Thotar in Razor Hill sends you at a Dire Mottled Boar, a Surf Crawler and an Armored Scorpid, then to Ormak Grimshot in Orgrimmar for Beast Training. Bow Specialization makes the bow the obvious Era weapon; Beast Slaying covers the zones you level in. Keep the pet fed, keep arrows stocked.</p></article>
+    <article data-class="mage"><h4>Mage <span class="speed">Fast</span></h4><p>Frostbolt and Frost Nova kill everything before it reaches you, and you never buy food or water. Ju-Ju Heaps at 10 on the Echo Isles is the only early class quest; the Nether-lace robe at 26 and Tabetha's wand chain at 30–40 are worth the detours. Berserking is a 10-second casting-speed cooldown for your hardest pull.</p></article>
+    <article data-class="rogue"><h4>Rogue <span class="speed">Fast, gear-dependent</span></h4><p>Two daggers, Sinister Strike, and no downtime once poisons arrive at 20 (Shenthul's chain in the Cleft of Shadow and the Sludge Fen). Regeneration and Throwing Specialization are both rogue racials in Era; Rapid Regeneration in Forever is a bandage that costs no cloth. Run Wailing Caverns and Razorfen Kraul for daggers.</p></article>
+    <article data-class="shaman"><h4>Shaman <span class="speed">Fast / safest</span></h4><p>Totems arrive by quest, not by trainer: Earth at 4 (Canaga Earthcaller in the valley), Fire at 10 (Searn Firewarder in Grommash Hold or Swart in Sen'jin), Water at 20, Air at 30. Ghost Wolf at 20 is a mount you already own, Windfury at 30 turns a two-hander into the best leveling weapon in the game, and Healing Wave means you never sit to eat. Berserking speeds the melee swings too.</p></article>
+    <article data-class="priest"><h4>Priest <span class="speed">Medium</span></h4><p>Slow at 1–10, then Mind Blast, Shadow Word: Pain and a wand carry you. Trolls have the best priest racials in the game: Hex of Weakness at 10 (Ur'kyo in the Valley of Spirits) and Shadowguard at 20, both quests, not purchases. Shadowguard on a warrior friend in a dungeon pays your repair bill. The Sunken Temple chain at 50 hands you Blessed Prayer Beads.</p></article>
+    <article data-class="warrior"><h4>Warrior <span class="speed">Slowest</span></h4><p>Gear-dependent and downtime-heavy; Regeneration and Berserking are the two racials that soften it, and Rapid Regeneration in Forever fixes it outright. Stances come by quest: Defensive at 10 (Veteran Uzzek at Far Watch Post), Berserker at 30 (Fray Island) alongside the Whirlwind weapon chain. Run Wailing Caverns and Razorfen Kraul for weapons, buy Heavy Linen Bandages by the stack.</p></article>
+    <article data-class="warlock"><h4>Warlock <span class="tag forever">Forever</span> <span class="speed">Fast, unpublished</span></h4><p>New in WoW Forever. No Troll warlock quest text has been published: the steps on this page use the Orc chain from Durotar (Ruzan's imp at 4, Gan'rul Bloodeye's Voidwalker at 10, the Cazul and Dogran succubus chain at 20, Strahad Farsan's felhunter at 30, Felsteed at 40) on the assumption that a Troll starts in the same valley and uses the same Cleft of Shadow trainers. Verify each in the beta before trusting it.</p></article>
+  </div>
+  <div class="note forever"><div class="who">Forever</div><div><p>Trolls keep their six Era classes and gain Warlock in Forever (the other new combinations are Undead paladin, Dwarf shaman, Orc mage, Human hunter, Gnome priest). Every talent tree is reworked, so the speed ranking above is Era's and may reshuffle.</p></div></div>
+</section>
+
+<section id="rules">
+  <div class="sec-head"><h2>Rules of the road</h2></div>
+  <div class="two prose">
+    <div>
+      <h4>Hearthstone policy</h4>
+      <ul>
+        <li>Bind it where the page tells you, and nowhere else. Every bracket has one hearth and one flight point to collect.</li>
+        <li>Orgrimmar is the Horde's zeppelin hub, which is the one advantage a Troll has over a Tauren: every Eastern Kingdoms leg from 30 on is a hearth to the questing hub and a flight to Orgrimmar away. Bind at Razor Hill 7–12, the Crossroads and Camp Taurajo 12–20, then the hub you are questing from.</li>
+        <li>Log out in an inn or a capital. Rested XP doubles kill experience; a night's log-off is worth a bar and a half early on.</li>
+      </ul>
+      <h4>Kill order</h4>
+      <ul>
+        <li>Kill everything green or yellow on the way to an objective. Red is downtime, grey is nothing.</li>
+        <li>Turn in quests in batches. Walk the hub once per loop, not once per quest.</li>
+        <li>Skip escorts that fail on a bad pull, group quests you cannot solo two levels late, and anything that sends you across an ocean for a single turn-in.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Troll-specific habits</h4>
+      <ul>
+        <li>Bind a key to Berserking on day one and use it on cooldown against anything named. In Forever bind Rapid Regeneration next to it and channel it after every fight that left you under half.</li>
+        <li>Learn First Aid from Rawrk in Razor Hill. Linen from the Kul Tiras humans at Tiragarde pays for it; bandages are your only emergency button until 20.</li>
+        <li>Skinning plus a second gathering skill (Herbalism for a shaman or priest, Mining for a warrior or rogue) from Razor Hill onward. Trolls have no profession racial, so pick for gold, not skill points.</li>
+        <li>Class quests are in the steps, shaded and tagged. Do them when they appear: each one is a spell, pet or stance you cannot buy, and the level-10 ones (stance, pet, Fire totem, Hex of Weakness, Voidwalker) are the single biggest speed jump in the route.</li>
+      </ul>
+      <h4>Gold</h4>
+      <ul>
+        <li>Sell everything grey. Vendor whites that are not your weapon upgrade.</li>
+        <li>Mount money at 40 is 100 gold: 20 for Apprentice Riding from Xar'Ti and 80 for an Emerald, Turquoise or Violet Raptor from Zjolnir, both in Sen'jin Village. Shamans have Ghost Wolf at 20 and can push the raptor to 45 if gold is short; warlocks in Forever get the Felsteed free.</li>
+        <li>Buy weapons, not armor. A green weapon two levels above yours is the one purchase that pays back.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<section id="b1" class="bracket" data-bracket="b1">
+  <div class="sec-head"><span class="eyebrow">1–6</span><h2>Valley of Trials</h2></div>
+  <div class="meta">
+    <div><span class="k">Hub</span>The Den <span class="c">42,68</span> (Valley of Trials, south-west Durotar)</div>
+    <div><span class="k">Hearth</span>Already bound to the Valley of Trials. No inn; nothing to do.</div>
+    <div><span class="k">Flight point</span>None. Durotar's only flight master in Era is Doras in Orgrimmar <span class="tag verify">verify</span>.</div>
+    <div><span class="k">Trainers</span>All seven stand in or beside the Den: Frang (warrior), Jen'shan (hunter), Rawg (rogue) <span class="tag verify">verify</span>, Ken'jai (priest), Shikrik (shaman), Mai'ah (mage), Nartok (warlock)</div>
+  </div>
+  <div class="note"><div class="who">Before you move</div><div><p>Turn on Auto Loot in the Interface options. Bind a key to Berserking. Read the class scroll you spawn with: it is a free turn-in at your trainer. The valley is one loop: the Den, the boar farms north, the scorpid field and Hana'zua to the north-west, the cactus apples on the way, the peon camp east, the Burning Blade cave in the north, back to the Den.</p></div></div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body">Kaltunk, facing you when you spawn <span class="c">43,68</span>, gives <span class="q">Your Place In The World</span>: walk into the Den to Gornek <span class="c">42,68</span>. He gives <span class="q">Cutting Teeth</span> (10 Mottled Boars, the farms north and north-east of the Den, a few south). Turn in the class scroll at your trainer. Level 2 on the boars.</span></label></li>
+    <li data-class="warlock"><label><input type="checkbox"><span class="body"><span class="tag cls">Warlock</span><span class="tag forever">Forever</span> <b>Level 1–2: your Imp.</b> Ruzan, west of the Den entrance beside Canaga Earthcaller, gives the warlock <span class="q">Vile Familiars</span>: 6 Vile Familiar Heads from the imps outside the Burning Blade cave <span class="c">45,56</span>. Reward: Summon Imp. Do it before anything else; the imp doubles your damage in the valley. This is the Orc chain; verify a Troll gets the same one <span class="tag verify">verify</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Hana'zua lies dying under a tree in the scorpid field north-west of the Den <span class="c">41,63</span>: <span class="q">Sarkoth</span>. Sarkoth (level 4) is on the plateau just south of him, up the ramp; loot the Mangled Claw. Back to Hana'zua, who sends you with the second <span class="q">Sarkoth</span> to Gornek. Gornek then hands out <span class="q">Sting of the Scorpid</span> (10 Scorpid Worker Tails, the scorpids around Hana'zua) and points you at Zureetha Fargaze for <span class="q">Vile Familiars</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Pick up <span class="q">Galgar's Cactus Apple Surprise</span> from Galgar, the cook north of the Den <span class="c">43,63</span> (10 Cactus Apples, ground spawns beside cacti all over the valley; the reward food is worth it), <span class="q">Lazy Peons</span> from Foreman Thazz'ril east of the Den <span class="c">45,69</span> (use the Blackjack on 5 sleeping peons in the logging area south and east; hit them only while they are asleep) and <span class="q">Vile Familiars</span> from Zureetha Fargaze by the wagon outside the Den <span class="c">46,64</span> <span class="tag verify">verify</span> (12 Vile Familiars, the imps at the cave). Clear scorpids, apples and peons in one lap; Thazz'ril gives <span class="q">Thazz'ril's Pick</span> when you turn in the peons.</span></label></li>
+    <li data-class="shaman"><label><input type="checkbox"><span class="body"><span class="tag cls">Shaman</span><b>Level 4: Call of Earth.</b> Canaga Earthcaller, west of the Den entrance <span class="c">42,69</span>, wants 2 Felstalker Hooves from the Felstalkers around and inside the Burning Blade cave. He then hands you an Earth Sapta: take the Hidden Path, entrance south of the Den <span class="c">41,73</span>, to Spirit Rock <span class="c">44,76</span>, drink it, talk to the Minor Manifestation of Earth, carry its Rough Quartz back. Reward: Earth Totem and Stoneskin Totem, your first totem.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>The Burning Blade cave</b> <span class="c">45,56</span>: imps outside and in the first chamber for Vile Familiars; Thazz'ril's Pick glows at the back <span class="c">43,53</span>, west from the big chamber in front of a rock pillar by the waterfalls (it respawns in seconds). Hand in to Zureetha for <span class="q">Burning Blade Medallion</span>: Yarrog Baneshadow (level 5) at <span class="c">42,52</span>, deep in the cave, keep right from the entrance and follow the path to the end; loot the medallion. No Felstalker count in Era. Zureetha then gives <span class="q">Report to Sen'jin Village</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Turn everything in. Ukor the peon stands on the east exit path <span class="c">52,68</span> with <span class="q">A Peon's Burden</span>, a delivery to Innkeeper Grosk in Razor Hill. Level 6 by now; grind boars and scorpids north of the Den if you are short.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 6 with Report to Sen'jin Village and A Peon's Burden in the log. East out of the valley onto the Durotar road, then south along the coast; Sen'jin Village is the troll huts on the shore.</p>
+  <div class="note forever"><div class="who">Forever</div><div><p>Nothing announced touches the Valley of Trials. Troll warlocks are new in Forever; the Orc starter chain (Ruzan's imp, Gan'rul's Voidwalker) is the assumption on this page until the beta shows otherwise. Rapid Regeneration should be usable from level 1 <span class="tag verify">verify</span>; channel it after the Sarkoth fight and you will see why it matters.</p></div></div>
+</section>
+
+<!-- ================================================================ -->
+<section id="b2" class="bracket" data-bracket="b2">
+  <div class="sec-head"><span class="eyebrow">6–12</span><h2>Sen'jin Village, Razor Hill &amp; Durotar</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Sen'jin Village <span class="c">56,75</span> · Razor Hill <span class="c">52,43</span></div>
+    <div><span class="k">Hearth</span>Innkeeper Grosk, Razor Hill <span class="c">51,41</span>. Sen'jin has no inn in Era; bind at Razor Hill at 7 and keep it until the Barrens.</div>
+    <div><span class="k">Flight point</span>None in Durotar outside Orgrimmar <span class="tag verify">verify</span>. Doras in the Valley of Strength; grab it on the level-10 trip.</div>
+    <div><span class="k">Trainers</span>Sen'jin: Swart (shaman), Un'thuwa (mage). Razor Hill: Thotar (hunter), Tarshaw Jaggedscar (warrior) and Tai'jin (priest) in the barracks, Kaplak (rogue) <span class="tag verify">verify</span>. Orgrimmar at 10 for everyone else</div>
+  </div>
+  <div class="note"><div class="who">Pickup sweep</div><div><p>Sen'jin is one lap: Master Gadrin <span class="c">56,75</span> takes Report to Sen'jin Village and gives <span class="q">Report to Orgnil</span>, <span class="q">Minshina's Skull</span> and <span class="q">Zalazane</span>; Master Vornal <span class="c">56,74</span> gives <span class="q">A Solvent Spirit</span>; Vel'rin Fang <span class="c">56,74</span> gives <span class="q">Practical Prey</span>; Lar Prowltusk at the south-west edge <span class="c">55,75</span> gives <span class="q">Thwarting Kolkar Aggression</span>. Mages take <span class="q">Ju-Ju Heaps</span> from Un'thuwa here. Razor Hill is a second lap at 7: Orgnil Soulscar <span class="c">52,43</span>, Gar'Thok <span class="c">52,44</span>, Takrin Pathseeker <span class="c">51,44</span>, Cook Torka <span class="c">51,42</span>, Furl Scornbrow at the watchtower north-west of town <span class="c">49,40</span> <span class="tag verify">verify</span>. Learn First Aid from Rawrk and pick up Skinning and a gathering profession while you are in town.</p></div></div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body"><b>Sen'jin and Kolkar Crag (6–7).</b> Turn in at Gadrin, take everything. Kolkar Crag is the canyon just south-west of the village: destroy the three Attack Plans at <span class="c">50,81</span>, <span class="c">48,77</span> and <span class="c">46,79</span> <span class="tag verify">verify</span>. The centaur drop Canvas Scraps; keep them, Furl Scornbrow wants 8 for a free 8-slot bag.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Razor Hill (7).</b> Walk north up the road. Turn in <span class="q">A Peon's Burden</span> at Grosk and bind. Orgnil takes Report to Orgnil and gives <span class="q">Dark Storms</span> (Fizzle Darkstorm at Thunder Ridge; hold it until 10). Gar'Thok: <span class="q">Vanquish the Betrayers</span> and <span class="q">Encroachment</span>. Takrin Pathseeker: <span class="q">Conscript of the Horde</span>, the Barrens letter you carry out at 12. Cook Torka: <span class="q">Break a Few Eggs</span>. Furl Scornbrow: <span class="q">Carry Your Weight</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Tiragarde Keep loop (7–9)</b> <span class="c">57,55</span>: 10 Kul Tiras Sailors and 8 Marines outside and in the courtyard, then Lieutenant Benedict (level 8) on the second floor with three marines <span class="c">59,58</span>. Benedict's Key opens the chest behind him; the Aged Envelope inside starts <span class="q">The Admiral's Orders</span> (to Gar'Thok, then to Nazgrel in Orgrimmar). Canvas Scraps drop here too. Then swim the Scuttle Coast wrecks <span class="c">61,52</span> for 3 Gnomish Tools (<span class="q">From The Wreckage....</span>, Gar'Thok gives it after Vanquish) and kill the makrura and surf crawlers in the same water for A Solvent Spirit (4 Intact Makrura Eyes, 8 Crawler Mucus).</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Echo Isles loop (8–9)</b>, south-east of Sen'jin: Durotar Tigers for 4 furs, Bloodtalon Taillashers for 3 eggs, the skull shrine on the southernmost isle <span class="c">67,88</span> (click any skull; Minshina's Skull pays a Faintly Glowing Skull off-hand), then Zalazane's camp on the big isle <span class="c">67,86</span>: 8 Voodoo Trolls, 8 Hexed Trolls, then Zalazane himself (level 10) and his head. Mages: the 4 Ju-Ju Heaps stand among the huts of the same camp. Do the isles once at 8–9 so Zalazane is a single pull. Turn in at Sen'jin, then Razor Hill.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Razormane loop (9–10).</b> Razormane Grounds south of Razor Hill <span class="c">49,49</span>: 4 Razormane Quilboar, 4 Scouts for the first half of Encroachment. Level 10 here or on the walk north.</span></label></li>
+    <li data-class="hunter"><label><input type="checkbox"><span class="body"><span class="tag cls">Hunter</span><b>Level 10: your pet.</b> Jen'shan in the valley or Thotar himself starts <span class="q">The Hunter's Path</span>: see Thotar in Razor Hill <span class="c">52,43</span>. His three <span class="q">Taming the Beast</span> quests each hand you a rod for one beast: a Dire Mottled Boar (right outside Razor Hill), a Surf Crawler (the beach across from Sen'jin toward the Echo Isles), then an Armored Scorpid, "the final creature" (the yellow scorpids of central Durotar north of Razor Hill <span class="tag verify">verify</span>). The third rewards Tame Beast. <span class="q">Training the Beast</span> is then a walk to Ormak Grimshot in Hunter's Hall, Valley of Honor, Orgrimmar <span class="c">66,18</span> for Beast Training, Feed Pet and Revive Pet. Tame the boar (it charges) or a scorpid to keep; feed it.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Level 10: Orgrimmar.</b> Walk the road north from Razor Hill (fifteen minutes). Flight point from Doras in the Valley of Strength <span class="tag verify">verify</span>, train, learn professions. Hand <span class="q">The Admiral's Orders</span> to Nazgrel in Thrall's chamber, Grommash Hold, Valley of Wisdom; Thrall <span class="c">32,38</span> <span class="tag verify">verify</span> then gives <span class="q">Hidden Enemies</span>, the Ragefire Chasm chain (the Lieutenant's Insignia drops in Skull Rock at 12; the dungeon half waits for a group). Kor'ghan in the Cleft of Shadow <span class="c">47,53</span> has <span class="q">Finding the Antidote</span> (4 Venomtail Poison Sacs from the scorpids south-west of the gate), which pays Rhinag's <span class="q">Need for a Cure</span> at Rocktusk Farm later. Do not bind here; keep Razor Hill. Then the class quests below.</span></label></li>
+    <li data-class="warrior"><label><input type="checkbox"><span class="body"><span class="tag cls">Warrior</span><b>Level 10: Defensive Stance.</b> Tarshaw Jaggedscar in the Razor Hill barracks <span class="c">54,43</span> gives <span class="q">Veteran Uzzek</span>. Uzzek stands under a tree just south-west of Far Watch Post on the Barrens side of the bridge <span class="c">62,31</span> <span class="tag verify">verify</span>; you pass him on the way into the Barrens at 12, so hold it until then and do <span class="q">Path of Defense</span> there (5 Singed Scales from the thunder lizards at Thunder Ridge; you are at the ridge for Dark Storms anyway, so loot the scales now and carry them). Reward: Defensive Stance, Sunder Armor, Taunt <span class="tag verify">verify</span>. He then sends you to Thun'grim Firegaze on Thorn Hill east of the Crossroads for <span class="q">Forged Steel</span> and your first blue-quality weapon.</span></label></li>
+    <li data-class="shaman"><label><input type="checkbox"><span class="body"><span class="tag cls">Shaman</span><b>Level 10: Call of Fire, part one.</b> Searn Firewarder in Grommash Hold, Valley of Wisdom <span class="c">39,37</span> <span class="tag verify">verify</span> (or Swart in Sen'jin Village) gives <span class="q">Call of Fire</span>: find Kranal Fiss at Grol'dom Farm north of the Crossroads. It is a Barrens chain that ends on a Durotar mountain top; pick it up now, do it in the next bracket.</span></label></li>
+    <li data-class="priest"><label><input type="checkbox"><span class="body"><span class="tag cls">Priest</span><b>Level 10: Hex of Weakness.</b> Tai'jin in the Razor Hill barracks (or Ken'jai in the valley) gives <span class="q">Hex of Weakness</span>: speak with Ur'kyo in the Spirit Lodge, Valley of Spirits, Orgrimmar <span class="c">36,88</span>, and learn it. Rank 1 cuts the target's damage by 2 and its healing received by 20% for 2 minutes; six ranks to 60. Train the rest from Ur'kyo and X'yera Al'tenas in the same lodge. Ken'jai's <span class="q">In Favor of Spirituality</span> and Tai'jin's <span class="q">Garments of Spirituality</span> are worth doing on the way: the robe is good until 15.</span></label></li>
+    <li data-class="rogue"><label><input type="checkbox"><span class="body"><span class="tag cls">Rogue</span><b>Level 10: Blade of Cunning.</b> Kaplak in Razor Hill <span class="tag verify">verify</span> gives <span class="q">Therzok</span>: see Therzok in the Shadowswift Brotherhood, Cleft of Shadow. His <span class="q">The Shattered Hand</span> wants Tazan's satchel: pickpocket the key from Tazan, a troll on the coast south of Ratchet in the Barrens, and open the satchel. Reward: Blade of Cunning. The Durotar research notes say no Horde rogue quest exists at 10 and the class index says this one does <span class="tag verify">verify</span>; take it now, do the pickpocket at 13–14 when you reach Ratchet.</span></label></li>
+    <li data-class="mage"><label><input type="checkbox"><span class="body"><span class="tag cls">Mage</span><b>Level 10: Ju-Ju Heaps.</b> Un'thuwa's <span class="q">Ju-Ju Heaps</span> from Sen'jin is done on the Echo Isles: 4 heaps among the huts of Zalazane's camp. Reward: Ley Orb or Ley Staff, the only Horde mage class quest before the robe errand at 15. Train in Darkbriar Lodge, Valley of Spirits <span class="c">39,86</span> (Uthel'nay, Deino, Enyo; Thuul sells portals later).</span></label></li>
+    <li data-class="warlock"><label><input type="checkbox"><span class="body"><span class="tag cls">Warlock</span><span class="tag forever">Forever</span> <b>Level 10: Voidwalker.</b> Ophek in Razor Hill <span class="c">54,41</span> gives <span class="q">Gan'rul's Summons</span>: Gan'rul Bloodeye in the Darkfire Enclave, Cleft of Shadow <span class="c">47,50</span>. <span class="q">Creature of the Void</span> wants the Tablet of Verga from the Burning Blade Stash, a chest inside Skull Rock <span class="c">55,10</span>, which you enter at 11–12 for Margoz anyway. <span class="q">The Binding</span>: use the Glyphs of Summoning at the circle in Neeru Fireblade's tent in the Cleft, defeat the Voidwalker, return the glyphs. Reward: Summon Voidwalker. Orc chain; verify for Trolls <span class="tag verify">verify</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Drygulch Ravine and Razorwind Canyon (10–11)</b>, north of Razor Hill on the Orgrimmar road. Rezlak, the goblin by the road <span class="c">46,23</span>: <span class="q">Winds in the Desert</span> (5 Sacks of Supplies from the Dustwind harpies in Razorwind Canyon <span class="c">49,22</span>) → <span class="q">Securing the Lines</span> (12 Dustwind Savages, 8 Storm Witches in Drygulch Ravine <span class="c">52,25</span>). The northern Razormane camp by Dustwind Cave <span class="c">55,27</span> has the 4 Dustrunners and 4 Battleguards for the second half of Encroachment.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Thunder Ridge and the Southfury (10–12).</b> Misha Tor'kren at Tor'kren Farm <span class="c">43,30</span> gives <span class="q">Lost But Not Forgotten</span>: Kron's Amulet is a random drop from the Dreadmaw Crocolisks along the Southfury River on the west edge <span class="c">38,38</span> <span class="tag verify">verify</span>. Thunder Ridge, entrance <span class="c">39,31</span>: Fizzle Darkstorm (level 12) at <span class="c">42,27</span> for Dark Storms; the thunder lizards and Lightning Hides are 9–11 and drop the warrior's Singed Scales. Rhinag at Rocktusk Farm <span class="c">41,18</span> <span class="tag verify">verify</span> takes Need for a Cure if you brought the antidote (Charging Buckler or Light Scorpid Armor).</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Skull Rock (11–12).</b> Turn in Dark Storms; Orgnil gives <span class="q">Margoz</span>. Margoz sits in his tent south of Bladefist Bay <span class="c">56,20</span>: <span class="q">Skull Rock</span>, 6 Searing Collars from the Burning Blade cultists in the cave in the north-east cliffs <span class="c">55,10</span>. Gazz'uz (level 14 warlock) at the back drops the Eye of Burning Shadow (<span class="q">Burning Shadows</span>, to Neeru Fireblade). Loot the Lieutenant's Insignia for Hidden Enemies and, warlocks, the Tablet of Verga from the Burning Blade Stash. Margoz then sends you to <span class="q">Neeru Fireblade</span> in the Cleft of Shadow <span class="c">50,51</span> <span class="tag verify">verify</span>, who gives <span class="q">Ak'Zeloth</span> (Far Watch Post) and, through him, <span class="q">The Demon Seed</span>: the Flawed Power Stone goes on the Altar of Fire just below the summit of Dreadmist Peak in the Barrens <span class="c">48,18</span> within 30 minutes; do it at 13–14 for the Banshee Armor.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 12 with Conscript of the Horde, Ak'Zeloth and Hidden Enemies in the log. West out of Razor Hill, over the Southfury bridge; Far Watch Post is the first thing on the far side.</p>
+  <div class="note forever"><div class="who">Forever</div><div><p>Orgrimmar's and Durotar's Forever zone pages show no notes. Ragefire Chasm is unchanged as far as anyone has reported. The Undercity surface zone (15–25) is the Forsaken's answer to a crowded Barrens and sits one zeppelin from Orgrimmar if the Crossroads is a war zone.</p></div></div>
+</section>
+
+<!-- ================================================================ -->
+<section id="b3" class="bracket" data-bracket="b3">
+  <div class="sec-head"><span class="eyebrow">12–20</span><h2>The Barrens, from Far Watch Post</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Far Watch Post <span class="c">62,35</span> <span class="tag verify">verify</span> · The Crossroads <span class="c">52,30</span> · Ratchet <span class="c">63,37</span> · Camp Taurajo <span class="c">44,59</span></div>
+    <div><span class="k">Hearth</span>Crossroads inn, Boorand Plainswind, until 16; then Camp Taurajo, Innkeeper Byula</div>
+    <div><span class="k">Flight points</span>Crossroads (Devrak), Ratchet (Bragok), Camp Taurajo (Omusa Thunderhorn); Orgrimmar is one hop from all three</div>
+    <div><span class="k">Trainers</span>Fly Crossroads → Orgrimmar at 14 and 18; nothing trains in the Barrens</div>
+  </div>
+  <div class="note"><div class="who">First stop</div><div><p>Far Watch Post before anything else: Kargal Battlescar takes <span class="q">Conscript of the Horde</span> and gives <span class="q">Crossroads Conscription</span> (to Sergra Darkthorn, 910 XP for a walk), Ak'Zeloth takes Neeru's letter and gives <span class="q">The Demon Seed</span>, and warriors find Uzzek under his tree just south-west of the post. Then the road west; it bends south into the Crossroads. Kirge Sternhorn's Journey to the Crossroads at Camp Taurajo is the Tauren's entry quest and you never need it. On a PvP realm the Crossroads is the most contested town in the game; quest out of Camp Taurajo whenever it is on fire.</p></div></div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body"><b>Crossroads sweep (12–13).</b> Bind. Turn in Crossroads Conscription. Sergra Darkthorn <span class="c">52,31</span>: <span class="q">Plainstrider Menace</span> (7 beaks) → <span class="q">The Zhevra</span> (4 hooves) → <span class="q">Prowlers of the Barrens</span> → <span class="q">Echeyakee</span>. Thork <span class="c">51,30</span>: <span class="q">Disrupt the Attacks</span> (8 Razormane Water Seekers, 8 Thornweavers, 3 Hunters) and <span class="q">Supplies for the Crossroads</span> (5 crates at the wrecked caravans). Gazrog: <span class="q">Raptor Thieves</span> (12 Raptor Heads). Apothecary Helbrim: <span class="q">Fungal Spores</span>, <span class="q">Wharfmaster Dizzywig</span>; skip his Apothecary Zamah delivery unless you want the Thunder Bluff flight point. Tonga Runetotem: <span class="q">The Forgotten Pools</span>. Mankrik: <span class="q">Lost in Battle</span> (the Beaten Corpse is south of the road, not in the hills <span class="c">51,50</span>) → <span class="q">Consumed by Hatred</span>, 60 quilboar tusks that finish themselves by 20.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Plainstriders and zhevra around town, then west to Regthar Deathgate's bunker <span class="c">45,28</span> for <span class="q">Centaur Bracers</span> (15) and <span class="q">Kolkar Leaders</span>. Kolkar camps around the Forgotten Pools <span class="c">45,30</span>; Barak Kodobane (16, elite) stands west of the pools, pull him alone at 15. Fungal Spores from the beasts at the oasis. Dreadmist Peak <span class="c">48,18</span> is just north: the Altar of Fire for <span class="q">The Demon Seed</span> is in the small cavern in front of the Burning Blade camp below the summit, not the top platform; 30 minutes from taking the stone, Banshee Armor for the trouble. Turn in at the bunker and the Crossroads.</span></label></li>
+    <li data-class="warrior"><label><input type="checkbox"><span class="body"><span class="tag cls">Warrior</span>Far Watch Post <span class="c">62,31</span>: Uzzek under his tree, <span class="q">Path of Defense</span> across the bridge at Thunder Ridge in Durotar (5 Singed Scales, the lizards are 9–11; you may already be carrying them). Back for Defensive Stance, then <span class="q">Thun'grim Firegaze</span>: Thorn Hill <span class="c">57,30</span>, path up from <span class="c">55,32</span>. His <span class="q">Forged Steel</span> is a chest by a broken wagon at <span class="c">55,26</span> guarded by quilboar. Take the axe or sword; it lasts to Wailing Caverns.</span></label></li>
+    <li data-class="shaman"><label><input type="checkbox"><span class="body"><span class="tag cls">Shaman</span><b>Call of Fire.</b> Kranal Fiss at Grol'dom Farm <span class="c">56,20</span> <span class="tag verify">verify</span> sends you to Telf Joolam at the Shrine of the Dormant Flame, top of the tallest mountain north-west of the Valley of Trials in Durotar <span class="c">37,58</span> <span class="tag verify">verify</span>; the path up starts by the Southfury River at the south-west tip of the watershed. He wants a Fire Tar (Razormane Mystics and Geomancers, any central Barrens quilboar camp) and a Reagent Pouch (Burning Blade Cultists; Wowhead says the cave north-east of Razor Hill, Skull Rock, the Tauren notes say the coven cave in the valley <span class="tag verify">verify</span>). Then click the brazier, drink the Fire Sapta, kill the Minor Manifestation of Fire, hand him the Torch. Reward: Fire Totem and Searing Totem. Do it at 12–13 on the way past Far Watch; it is the biggest damage jump a shaman gets before Windfury.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Razormane and Ratchet (13–14).</b> Thorn Hill quilboar for Disrupt the Attacks, the crates on the roads, raptors south-east. Ratchet <span class="c">63,37</span>: flight point, Gazlowe's <span class="q">Southsea Freebooters</span>, Sputtervalve's <span class="q">Samophlange</span>, Captain Thalo'thas' <span class="q">The Guns of Northwatch</span>, Mebok's <span class="q">Raptor Horns</span>. Pirates on the coast south, Savannah Prowlers at <span class="c">60,35</span> for 7 claws. Rogues: Tazan is on the same coast for The Shattered Hand. Turn in at the Crossroads.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>North loop (15–16).</b> Samophlange: the Control Console at the Sludge Fen <span class="c">52,12</span>, turn the three valves, Tinkerer Sniggles in the hut <span class="c">53,11</span>. Blow the horn at Echeyakee's den <span class="c">55,16</span> and kill the white lion. Kreenig Snarlsnout at the Razormane camp <span class="c">58,24</span> for <span class="q">The Disruption Ends</span>. Harpies at the Dry Hills for Darsok's <span class="q">Harpy Raiders</span> and <span class="q">Harpy Lieutenants</span>. Turn in; Sergra now offers <span class="q">The Angry Scytheclaws</span>.</span></label></li>
+    <li data-class="mage"><label><input type="checkbox"><span class="body"><span class="tag cls">Mage</span><b>Level 15–16: Spellfire Robes, optional.</b> The Horde robe errand runs through Undercity: Anastasia Hartwell in the Magic Quarter gives <span class="q">Investigate the Alchemist Shop</span> (capture the invisible Rift Spawn with the containment coffers), then <span class="q">Gathering Materials</span> (10 Linen Cloth and 6 Charged Rift Gems) and <span class="q">Spellfire Robes</span> <span class="tag verify">verify</span>. Worth it only if you are in Orgrimmar to train at 18 anyway: zeppelin over, do it, zeppelin back, one hour for a robe that lasts to 26.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Stagnant Oasis (16).</b> <span class="q">The Stagnant Oasis</span> and <span class="q">Altered Beings</span> (Tonga): the Bubbly Fissure and 6 Altered Snapjaw Shells at <span class="c">55,42</span>. Kolkar at <span class="c">53,41</span> until Verog the Dervish spawns for Regthar. Grind the Kolkar Bloodchargers here to 16; it is the best XP per minute in the zone. Move the hearth to Camp Taurajo on the way past.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Mor'shan and the Warsong reports (16–18).</b> Mor'shan Rampart <span class="c">50,11</span>: Wenikee Boltbucket for the Samophlange follow-up (it ends with Rilli Greasygob in Orgrimmar; hand it in on the 18 trip), the Sludge Fen shredder for Supervisor Lugwizzle. Kadrak at the Ashenvale road <span class="c">48,5</span>: <span class="q">Report to Kadrak</span> → <span class="q">The Warsong Reports</span>, delivered to Splintertree Post, the Satyrnaar patrol and Zoram'gar in Ashenvale. That trip collects three flight points you need at 22; do it now, fly back.</span></label></li>
+    <li data-class="rogue"><label><input type="checkbox"><span class="body"><span class="tag cls">Rogue</span><b>Level 16–18: Thistle Tea.</b> On the Orgrimmar trip your trainer sends you to Zando'zan in the Cleft (<span class="q">Zando'zan</span>) <span class="tag verify">verify</span>, who sends you to <span class="q">Wrenix of Ratchet</span>. Wrenix the Wretched's <span class="q">Plundering the Plunderers</span>: take the E.C.A.C. and Thieves' Tools from his Gizmotronic Apparatus, board the Tide Razor, the pirate ship anchored south of Ratchet <span class="tag verify">verify</span>, practice on the locked boxes on deck two, take the Southsea Treasure back. 1,350 XP and 10 Thistle Tea, and your Lockpicking is on its way to the 75 you need at 20.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">South-west corner (18): Camp Aparaje <span class="c">81,88</span> on the Stonetalon border for <span class="q">Avenge My Village</span> (8 Grimtotem Ruffians, 6 Mercenaries) and <span class="q">Kill Grundig Darkcloud</span>, then Malaka'jin <span class="c">71,95</span>, a Darkspear camp, for <span class="q">Blood Feeders</span> (10 Deepmoss Creepers, 7 Venomspitters in Sishir Canyon). Grab the Sun Rock Retreat flight point while you are in Stonetalon, hearth to Taurajo.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Taurajo loop (18–20).</b> Jorn Skyseer: <span class="q">Enraged Thunder Lizards</span> (3 Thunder Lizard Blood). Mangletooth in the cage: <span class="q">Tribes at War</span> (6 Water Seekers, 12 Thornweavers, 12 Geomancers at the Bristleback camps north of camp <span class="c">45,53</span>, <span class="c">43,51</span>, <span class="c">42,48</span>) and Blood Shards for his buffs; Mankrik's tusks finish here. Tatternack Steelforge's <span class="q">Weapons of Choice</span> for a dagger, wand or shield. Northwatch Hold for <span class="q">The Guns of Northwatch</span> and Gilthares' <span class="q">Free From the Hold</span> escort to Ratchet. Ishamuhale at the dead tree <span class="c">59,30</span>, Lakota'mani at <span class="c">46,50</span>. Ding 20 here.</span></label></li>
+    <li data-class="warrior"><label><input type="checkbox"><span class="body"><span class="tag cls">Warrior</span><b>Level 20: Ruga.</b> Grezz Ragefist in the Hall of the Brave, Orgrimmar <span class="tag verify">verify</span> (any Horde warrior trainer) gives <span class="q">Speak with Ruga</span>; Ruga Ragetotem is at Camp Taurajo. <span class="q">Trial at the Field of Giants</span>: 5 Twitching Antennae from the silithids south of camp toward the Dustwallow road, 30 minutes once the first drops. Ruga's Bulwark is your shield until 40. <span class="q">Speak with Thun'grim</span> then opens <span class="q">Brutal Armor</span> at 30; leave it until the Stonetalon kobolds.</span></label></li>
+    <li data-class="shaman"><label><input type="checkbox"><span class="body"><span class="tag cls">Shaman</span><b>Level 20: Call of Water, part one.</b> Searn Firewarder → Islen Waterseer in her hut on the coast just south of Ratchet <span class="c">66,44</span> <span class="tag verify">verify</span> → Brine on the hill at the north end of Blackthorn Ridge <span class="c">43,77</span>. Fill the Brown skin at the pond below her hut now; the Red (Tarren Mill well) and Blue (Ruins of Stardust, Ashenvale) skins come in the next bracket.</span></label></li>
+    <li data-class="rogue"><label><input type="checkbox"><span class="body"><span class="tag cls">Rogue</span><b>Level 20: Poisons.</b> Shenthul in the Shadowswift Brotherhood, Cleft of Shadow <span class="c">43,54</span>. The wiki lists <span class="q">Rogues of the Shattered Hand</span> (level 24) before the rest; whether it gates the chain in 1.15 is unconfirmed <span class="tag verify">verify</span>. <span class="q">The Shattered Salute</span>: watch his salute, /salute him back (75 Lockpicking). <span class="q">Deep Cover</span>: at the Venture Co. tower above the Sludge Fen, fire the Flare Gun twice and /salute Taskmaster Fizzule so he turns friendly. <span class="q">Mission: Possible But Not Probable</span>: 2 each Mutated Venture Co. Drone, Lookout and Patroller, pickpocket Silixiz's Tower Key from Foreman Silixiz, kill Grand Foreman Puzik Gallywix (23 elite, top of the tower; bring a friend) for his head, lockpick Gallywix's Lockbox for the Cache of Zanzil's Altered Mixture. Back to Shenthul: Poisons and Recipe: Thistle Tea (sources disagree on which turn-in teaches Poisons <span class="tag verify">verify</span>). <span class="q">Hinott's Assistance</span> ×2 carries a sample to Serge Hinott in Tarren Mill and cures the Touch of Zanzil; do it on the shaman's Hillsbrad trip at 23–25 if the debuff bothers you.</span></label></li>
+    <li data-class="priest"><label><input type="checkbox"><span class="body"><span class="tag cls">Priest</span><b>Level 20: Shadowguard.</b> Zayus or Ur'kyo in the Spirit Lodge, Valley of Spirits, give <span class="q">Shadowguard</span>: learn it on the spot. Rank 1 is 3 charges for 10 minutes, 20 Shadow damage to each attacker with no threat; seven ranks. Cast it before every pull for the rest of the game.</span></label></li>
+    <li data-class="warlock"><label><input type="checkbox"><span class="body"><span class="tag cls">Warlock</span><span class="tag forever">Forever</span> <b>Level 20: Succubus.</b> Gan'rul's <span class="q">Devourer of Souls</span> → Cazul, the blind warlock in the Cleft → <span class="q">Blind Cazul</span> to Zankaja <span class="c">37,60</span>, between the Valley of Wisdom and the Valley of Strength → <span class="q">News of Dogran</span> to Ken'zigla at Malaka'jin, Stonetalon <span class="c">73,95</span> → the second <span class="q">News of Dogran</span> to Grunt Logmar at Camp Taurajo → <span class="q">Ken'zigla's Draught</span> → <span class="q">Dogran's Captivity</span>: deliver the draught to Grunt Dogran, held in the two-hut quilboar camp north of Camp Taurajo <span class="c">43,49</span>, heavily guarded → <span class="q">Love's Gift</span> to Zankaja → <span class="q">The Binding</span> with Cazul: summon and defeat her. Reward: Summon Succubus. Takar the Seer east of Taurajo is the Alliance version's NPC; ignore him. Orc chain, sub-objectives from the wiki <span class="tag verify">verify</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Wailing Caverns (17–24) if a group forms in Crossroads chat: <span class="q">Deviate Hides</span>, <span class="q">Trouble at the Docks</span>, <span class="q">Smart Drinks</span>, <span class="q">Leaders of the Fang</span> from Nalpak and Ebru at the entrance in Lushwater Oasis <span class="c">46,36</span>. Ragefire Chasm at 13–15 for Hidden Enemies (Bazzalan and Jergosh) and Neeru's <span class="q">Slaying the Beast</span> if a group is at the door in Orgrimmar. Otherwise skip both; the zone quests outpace them.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 20. Fly Camp Taurajo → Sun Rock Retreat and rebind there.</p>
+  <div class="note forever"><div class="who">Forever</div><div><p>The 15–25 Undercity-surface zone is the Forsaken's answer to a crowded Barrens; a Troll only goes if the Crossroads is a war zone. Shen'Dralas is confirmed to sit between Mulgore and Desolace with no published level range; if it turns out to be 15–25 it would slot in here instead.</p></div></div>
+</section>
+
+<!-- ================================================================ -->
+<section id="b4" class="bracket" data-bracket="b4">
+  <div class="sec-head"><span class="eyebrow">20–25</span><h2>Stonetalon Mountains, then Ashenvale</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Sun Rock Retreat <span class="c">47,64</span> · Splintertree Post <span class="c">73,61</span> · Zoram'gar Outpost <span class="c">12,34</span></div>
+    <div><span class="k">Hearth</span>Sun Rock Retreat (Innkeeper Jayka) until 22, then Splintertree (Innkeeper Kaylisk)</div>
+    <div><span class="k">Flight points</span>Sun Rock (Tharm), Splintertree (Vhulgra), Zoram'gar (Andruk). Malaka'jin has neither in Era.</div>
+  </div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body"><b>Stonetalon 20–22.</b> On the way, Ratchet: Sputtervalve's <span class="q">Ziz Fizziks</span> and Mebok's <span class="q">Deepmoss Spider Eggs</span> (15, Sishir Canyon and Windshear Crag). Sun Rock: Mor'rogal's <span class="q">Boulderslide Ravine</span> (10 Resonite Crystals from the kobold cave <span class="c">62,91</span>), Tammra Windfield's <span class="q">Cycle of Rebirth</span> (10 Gaea Seeds at Mirkfallon Lake, north), the <span class="q">Arachnophobia</span> poster (Besseleth, group). Windshear Crag <span class="c">59,62</span>: Ziz Fizziks' <span class="q">Super Reaper 6000</span> (15 Venture Co. Loggers for the blueprints) → <span class="q">Further Instructions</span>, Piznik's <span class="q">Gerenzo's Orders</span> at the mine. Deepmoss spiders in Sishir Canyon <span class="c">57,76</span> are the grind, and Beast Slaying makes them yours.</span></label></li>
+    <li data-class="warrior"><label><input type="checkbox"><span class="body"><span class="tag cls">Warrior</span>The kobolds in Boulderslide Ravine drop the 15 Smoky Iron Ingots for <span class="q">Brutal Armor</span>. Loot them now even if you have not taken the quest yet; they are the slowest part of the chain.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Ashenvale 22–24.</b> Fly to Splintertree, rebind. Senani Thunderheart's <span class="q">The Ashenvale Hunt</span>, Kuray'bin's <span class="q">Ashenvale Outrunners</span> (9 stealthed elves on the road west; fast XP), Mastok's <span class="q">Stonetalon Standstill</span>, Locke Okarr's <span class="q">Warsong Supplies</span>, Pixel's <span class="q">Satyr Horns</span> at Night Run <span class="c">66,56</span>. Torek's <span class="q">Torek's Assault</span> on Silverwing Outpost <span class="c">66,73</span>: clear the outpost first, then start the escort. The Hunt: Ursangous the bear at <span class="c">40,65</span>, Shadumbra at the Laughing Sisters <span class="c">58,55</span>, Sharptalon (31) at the Forsaken camp <span class="c">75,71</span>, pulled to the guards.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Zoram'gar 23–25.</b> Fly across. Marukai's <span class="q">Naga at the Zoram Strand</span> (20 Wrathtail Heads; grind here to 23), Muglash's <span class="q">Vorsha the Lasher</span> event (three naga waves, doable solo at 24 with care), Karang Amakkar's <span class="q">Between a Rock and a Thistlefur</span> and Mitsuwa's <span class="q">Troll Charm</span> at Thistlefur Village <span class="c">30,45</span>, Je'neu Sancrea's <span class="q">Je'neu of the Earthen Ring</span> chain at Mystral Lake <span class="c">52,70</span> (12 Befouled Water Elementals, then Tideress for the globe). Je'neu also holds the Blackfathom Deeps quests.</span></label></li>
+    <li data-class="shaman"><label><input type="checkbox"><span class="body"><span class="tag cls">Shaman</span><b>Call of Water, part two.</b> The Blue skin fills at the fountain in the Ruins of Stardust, south-west Ashenvale <span class="c">33,67</span>, near Mystral Lake. The Red skin is the Tarren Mill well in Hillsbrad and the cleansing is at the Brazier of Everfount on the Silverpine coast <span class="c">38,45</span>: one Eastern Kingdoms trip at 23–25 (fly Orgrimmar, walk out to the zeppelin, Undercity, fly Sepulcher, ride Tarren Mill). Take the Vial of Purest Water back to Islen, drink the Water Sapta at the brazier, kill the Corrupt Manifestation, place its bracers on the brazier, carry the Shard of Water to Islen. Reward: Water Totem and Healing Stream Totem. Rogues carrying Hinott's Assistance can share the same trip.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Southern Barrens interlude at 24–25 if Ashenvale runs dry: Korran's <span class="q">Egg Hunt</span> (12 Silithid Eggs, Field of Giants), Camp Taurajo's <span class="q">Betrayal from Within</span> (Lok Orcbane <span class="c">41,80</span>, Nak <span class="c">43,83</span>, Kuz <span class="c">45,80</span>), Gann Stonespire's <span class="q">Gann's Reclamation</span> at Bael Modan (15 Excavators, 5 Foremen, Khazgorm's Journal; enter from the south slope <span class="c">46,84</span>) → <span class="q">Revenge of Gann</span>.</span></label></li>
+    <li data-class="warlock"><label><input type="checkbox"><span class="body"><span class="tag cls">Warlock</span><span class="tag forever">Forever</span> <b>Level 25: The Orb of Soran'ruk.</b> Doan Karhan camps in the southern Barrens south of Camp Taurajo <span class="c">49,57</span> <span class="tag verify">verify</span>: 3 Soran'ruk Fragments from the Twilight Acolytes in Blackfathom Deeps and 1 Large Soran'ruk Fragment from a Shadowfang Keep wizard. Orb of Soran'ruk or Staff of Soran'ruk. Take it when a Blackfathom group forms at Zoram'gar; the Shadowfang half can wait for a Silverpine trip.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 25. Fly Splintertree → Camp Taurajo, ride south down the Gold Road to the Great Lift. Brave Moonhorn at the top hands you <span class="q">Message to Freewind Post</span>.</p>
+  <div class="note forever"><div class="who">Forever</div><div><p>Nothing announced touches Stonetalon or Ashenvale. Blackfathom Deeps is unchanged as far as anyone has reported.</p></div></div>
+</section>
+
+<!-- ================================================================ -->
+<section id="b5" class="bracket" data-bracket="b5">
+  <div class="sec-head"><span class="eyebrow">25–30</span><h2>Thousand Needles</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Freewind Post <span class="c">46,51</span> · Whitereach Post <span class="c">21,32</span> · Shimmering Flats <span class="c">78,76</span></div>
+    <div><span class="k">Hearth</span>Freewind Post, Innkeeper Abeqwa</div>
+    <div><span class="k">Flight points</span>Freewind Post (Nyse); Camp Mojache in Feralas if you ride in for it at 29</div>
+  </div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body">Freewind: turn in the message, bind, grab the flight point. Cliffwatcher Longhorn's <span class="q">Pacify the Centaur</span> (12 Galak Scouts, 10 Wranglers, 6 Windchasers at Splithoof Crag directly north), Hagar Lightninghoof's <span class="q">Alien Egg</span> and <span class="q">Serpent Wild</span>, Elu's <span class="q">Wind Rider</span> (Highperch wyvern eggs) <span class="tag verify">verify</span>, the <span class="q">WANTED: Arnak Grimtotem</span> poster. Galak centaur are the grind to 27.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">The Weathered Nook, the hidden cave in the northern cliffs <span class="c">54,44</span>: Dorn Plainstalker's <span class="q">Test of Faith</span> is a jump off the planks with no fall damage; <span class="q">Test of Endurance</span> and <span class="q">Test of Strength</span> are local. Drop <span class="q">Test of Lore</span>; it tours Kalimdor for a pittance.</span></label></li>
+    <li data-class="mage"><label><input type="checkbox"><span class="body"><span class="tag cls">Mage</span><b>Level 26: Nether-lace Garment.</b> Your Orgrimmar trainer's <span class="q">Speak with Deino</span> → Deino in Darkbriar Lodge → <span class="q">Waters of Xavian</span>: the Xavian Water Sample comes from the waterfall at Xavian, east Ashenvale <span class="c">76,41</span>, north of Splintertree; fly there from Freewind when you next train. Then <span class="q">Laughing Sisters</span> (the dryads at the Laughing Sisters, Ashenvale <span class="tag verify">verify</span>) and <span class="q">Nether-lace Garment</span>. The robe carries you to 40.</span></label></li>
+    <li data-class="shaman"><label><input type="checkbox"><span class="body"><span class="tag cls">Shaman</span><b>Level 30: Call of Air.</b> Searn Firewarder's <span class="q">Call of Air</span> ends in this same cave: Prate Cloudseer sits in the Weathered Nook <span class="c">54,43</span>. Air Totem plus Swift Wind, an hour of +30% run speed. If you reach 30 anywhere in this bracket, hearth to Freewind and walk over.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Highperch <span class="c">12,32</span>: wyvern eggs, then <span class="q">Homeward Bound</span>, Pao'ka Swiftmountain's escort out to Whitereach Post. Whitereach <span class="c">21,32</span>: Motega Firemane's <span class="q">Sacred Fire</span> (to Zangen Stonehoof in Thunder Bluff; drop it unless you took the flight point), Kanati Greycloud's <span class="q">Protect Kanati</span> after the Assassination Note drops. Skip the Wizlo Bearingshiner tonic chain: it is not in Era.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Darkcloud Pinnacle <span class="c">34,36</span>, path up from <span class="c">31,37</span>: three Secret Notes from the chests for <span class="q">Grimtotem Spying</span>, Arnak Grimtotem for the poster, and <span class="q">Free At Last</span>, Lakota Windsong's escort down. Level 29–30 here.</span></label></li>
+    <li data-class="warrior"><label><input type="checkbox"><span class="body"><span class="tag cls">Warrior</span><b>Level 30: Berserker Stance.</b> Your Orgrimmar warrior trainer's <span class="q">The Islander</span>: Klannoc Macleod on Fray Island off the Barrens coast south of Ratchet <span class="c">68,48</span>, swim from the sand bar. <span class="q">The Affray</span>: step on the grate, kill the challenger waves, then Big Will (33); Berserking on Will. Berserker Stance and Intercept. He follows with <span class="q">The Windwatcher</span>, which starts the Whirlwind weapon chain in the next bracket. Fly Freewind → Ratchet for this; it is on the way to Orgrimmar anyway.</span></label></li>
+    <li data-class="warlock"><label><input type="checkbox"><span class="body"><span class="tag cls">Warlock</span><span class="tag forever">Forever</span> <b>Level 30: Felhunter.</b> Gan'rul Bloodeye's <span class="q">Seeking Strahad</span>: Strahad Farsan in the tower above Ratchet <span class="c">63,37</span>. <span class="q">Tome of the Cabal</span> ×3: the Tattered Manuscript is in the cave north-west of Freewind Post <span class="c">44,37</span>, so take it before you leave the Needles; the 3 Rods of Channeling come from Dragonmaw Bonewarders at Angerfang Encampment in the Wetlands, an Eastern Kingdoms trip (the research also lists a first step with Jorah Annison in Undercity <span class="tag verify">verify</span>). <span class="q">The Binding</span> at Strahad's circle: summon and defeat the Felhunter.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Shimmering Flats <span class="c">78,76</span> at 29–31: the Mirage Raceway goblins and gnomes hand out short beast-part quests (Fizzle Brassbolts' <span class="q">Salt Flat Venom</span>, Pozzik's <span class="q">Load Lightening</span>, Wizzle's <span class="q">Hardened Shells</span>, Kravel's <span class="q">Rocket Car Parts</span>) all done in circles around the track. Flat ground, no travel, no downtime, and every one of them is a beast; finish 30 here.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Razorfen Kraul (29–33) with a group: <span class="q">Blueleaf Tubers</span> (Mebok, Ratchet) and <span class="q">Going, Going, Guano!</span> (Faranell, Undercity) are yours; <span class="q">A Vengeful Fate</span> (Auld Stonespire) is Thunder Bluff's and only worth the flight if you took the point. Camp Taurajo's <span class="q">Melor Sends Word</span> → <span class="q">Steelsnap</span> at 30 if you pass through.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 30. Fly Freewind → Orgrimmar, walk out of the main gate to the zeppelin tower, take the Grom'gol platform. Rebind at Grom'gol.</p>
+  <div class="note forever"><div class="who">Forever</div><div><p>Nothing announced touches Thousand Needles. Rapid Regeneration does nothing for travel, but the Needles are where a Troll without a mount first misses Plainsrunning; buy Swiftness Potions for the Shimmering Flats laps.</p></div></div>
+</section>
+
+<!-- ================================================================ -->
+<section id="b6" class="bracket" data-bracket="b6">
+  <div class="sec-head"><span class="eyebrow">30–35</span><h2>Stranglethorn Vale, with a Desolace swing</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Grom'gol Base Camp <span class="c">32,29</span> · Shadowprey Village <span class="c">24,70</span></div>
+    <div><span class="k">Hearth</span>Grom'gol (Innkeeper Thulbek), then Shadowprey for the Desolace weeks</div>
+    <div><span class="k">Flight points</span>Grom'gol (Thysta), Booty Bay (Gyll), Shadowprey (Thalon Songweaver)</div>
+    <div><span class="k">Travel</span>The zeppelin tower outside Orgrimmar's gate has a Grom'gol platform; it lands you in the base camp</div>
+  </div>
+  <div class="note"><div class="who">Two ways to run it</div><div><p>Stranglethorn has the most quests of any zone but they spread from 30 to 45. Do the 30–35 layer now (Nesingwary's first two tiers, Grom'gol's troll war, Booty Bay's coastal jobs), go to Desolace for 32–35, and return to Stranglethorn at 37 and again at 42 as the higher tiers open. Buy food and water in Grom'gol before you leave it; the jungle sells nothing between camps. Every Nesingwary target is a beast: Beast Slaying makes this the best zone in the game for a Troll.</p></div></div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body">Nesingwary's Expedition <span class="c">35,10</span>: <span class="q">Welcome to the Jungle</span> then tier one from all three hunters: <span class="q">Panther Mastery</span> (Sir Erlgadin), <span class="q">Tiger Mastery</span> (Ajeck Rouack), <span class="q">Raptor Mastery</span> (Barnil Stonepot). Tier two at 32–34 asks for the named beasts Bhag'thera, Sin'Dall and Tethis. <span class="q">Big Game Hunter</span> (King Bangalash) is level 43 and a group.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Grom'gol: Nimboya's Bloodscalp chain (<span class="q">Hunt for Yenniku</span>, <span class="q">Headhunting</span>, the Bloodscalp camps north-west toward Zul'Kunda), Kin'weelay's <span class="q">Trollbane</span>, Commander Aggro'gosh's <span class="q">The Defense of Grom'gol</span> (raptors and trolls beside the camp). Trolls come in threes; kill the caster first and save Berserking for the third.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Booty Bay <span class="c">27,77</span> by road or the Grom'gol flight: Drizzlik's <span class="q">Supply and Demand</span> (8 Crocolisk hides on the river), Kebok's <span class="q">Bookie Herod</span> (Kurzen's Compound, level 34–36), Sea Wolf MacKinley's <span class="q">Scaring Shaky</span> → <span class="q">Return to MacKinley</span> → <span class="q">Voodoo Dues</span>, Brikk Keencraft's <span class="q">Singing Blue Shards</span> (Mosh'Ogg ogres, 36+). Grab the Booty Bay flight point and the Ratchet boat while you are here.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Venture Co. mine north of Grom'gol <span class="c">47,26</span> for <span class="q">Venture Company Mining</span>, the Lake Nazferiti murlocs and basilisks for the beast tiers, and <span class="q">The Vile Reef</span> chests off the west coast. They are underwater; surface between chests.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Desolace 32–35.</b> Zeppelin to Orgrimmar, fly to Shadowprey via Sun Rock. Rebind. <span class="q">Ghost-o-plasm Round Up</span>, <span class="q">Clam Bait</span> (underwater clams), <span class="q">Kodo Roundup</span> (Smeed Scrabblescrew at the Kodo Graveyard <span class="c">62,38</span>: a rope, six kodos, easy), <span class="q">Bone Collector</span>, <span class="q">Portals of the Scourge</span>, Ethel Rethor's <span class="q">Sceptre of Light</span> → <span class="q">Book of the Ancients</span> → <span class="q">Hand of Iruxos</span> at Thunder Axe Fortress <span class="c">55,32</span>, and <span class="q">Claim Rackmore's Treasure</span> (chest is underwater at Ranazjar Isle <span class="c">28,16</span>) <span class="tag verify">verify</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Pick a centaur clan for Gelkis or Magram rep only if you want the Maraudon Scepter chain later; otherwise ignore the clan quests, they are kill-count grinds with no story reward.</span></label></li>
+    <li data-class="warrior"><label><input type="checkbox"><span class="body"><span class="tag cls">Warrior</span><b>Whirlwind weapon, part one.</b> Klannoc Macleod sent you to Bath'rah the Windwatcher after The Affray; if you have not been, he is in the ruins on the east bank of the river north-east of Tarren Mill, Alterac <span class="c">80,67</span>. <span class="q">Cyclonian</span> wants 8 Liferoot (herb or auction house), 30 Bloodscalp Tusks and an Essence of the Exile. Farm the tusks now from the Bloodscalp trolls north-west of Grom'gol while you do Nimboya's chain; the Essence comes from Arathi in the next bracket.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 35. Fly Shadowprey → Orgrimmar, zeppelin to Undercity, fly to Tarren Mill, road east into Arathi. Rebind at Hammerfall. This is the one leg that runs through Undercity: Hammerfall has no flight point until you have walked to it.</p>
+</section>
+
+<!-- ================================================================ -->
+<section id="b7" class="bracket" data-bracket="b7">
+  <div class="sec-head"><span class="eyebrow">35–40</span><h2>Arathi Highlands, Stranglethorn tier two, Dustwallow Marsh</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Hammerfall <span class="c">73,36</span> · Grom'gol · Brackenwall Village <span class="c">36,31</span></div>
+    <div><span class="k">Hearth</span>Hammerfall, then Grom'gol at 37, then Brackenwall at 38</div>
+    <div><span class="k">Flight points</span>Hammerfall (Urda), Brackenwall (Shardi)</div>
+  </div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body"><b>Arathi 35–37.</b> Hammerfall: Tor'gan's Witherbark chain (<span class="q">Foul Magics</span>, <span class="q">Witherbark Cages</span> at Witherbark Village <span class="c">62,73</span>, freeing the caged spirits), Drum Fel's Boulderfist chain (ogres at Boulderfist Hall <span class="c">73,68</span> and Boulder'gor <span class="c">42,45</span>), <span class="q">Call to Arms</span> and its follow-ups at Stromgarde Keep <span class="c">30,58</span> (humans outside the walls are 35–38; the inner keep is elite). Skip the Trol'kalar sigils unless a group wants the sword.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">The Circles of Binding (<span class="q">Stones of Binding</span> chain, four stone circles in the corners of the zone) are worth the walk: each stone is a turn-in with good XP and you pass Witherbark and Boulderfist camps on the loop <span class="tag verify">verify</span>. Mages: Witherbark Totem Sticks drop here for Tabetha's bramble; loot 10.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Stranglethorn 37–38.</b> Zeppelin from Undercity. Nesingwary tier three (Elder Stranglethorn Tigers, Shadow Panthers, Jungle Stalkers), Nimboya's Skullsplitter chain (<span class="q">Split Bone Necklace</span>, the Ruins of Zul'Mamwe <span class="c">55,42</span>), Kebok's Kurzen job, Mosh'Ogg ogres for Brikk. Bring food.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Dustwallow 38–40.</b> Zeppelin to Orgrimmar, fly Orgrimmar → Brackenwall (the Ratchet boat lands at Theramore, which is Alliance). <span class="q">Theramore Spies</span> (Nazeer Bloodpike), Ogron's <span class="q">Hungry!</span>, Jarl's <span class="q">Jarl Needs Eyes</span> (Darkmist Cavern <span class="c">33,49</span>), Draz'Zilb's <span class="q">The Brood of Onyxia</span> chain at Wyrmbog <span class="c">55,75</span> (dragonkin, big XP, pull singles), <span class="q">Stinky's Escape</span> if you find him, and the <span class="q">Overlord Mok'Morokk's Concern</span> chain that ends in a fight with him (level 40, group).</span></label></li>
+    <li data-class="mage"><label><input type="checkbox"><span class="body"><span class="tag cls">Mage</span><b>Level 30–40: Mage's Wand.</b> Your trainer's <span class="q">Journey to the Marsh</span> sends you to Tabetha in her farmhouse in the middle of the marsh <span class="c">43,57</span>. Two branches: <span class="q">Hidden Secrets</span> → Magus Tirth at the Shimmering Flats raceway <span class="c">77,76</span> → <span class="q">Get the Scoop</span> (/beckon Plucky Johnson, the chicken) → <span class="q">Rituals of Power</span>, the book on the Athenaeum shelf in the Scarlet Monastery Library (group). And <span class="q">Items of Power</span>: 1 Jade (auction house) and 1 Bolt Charged Bramble, made by using the 10 Witherbark Totem Sticks from Arathi at the Circle of Outer Binding <span class="c">51,48</span> during a thunderstorm. <span class="q">Mage's Wand</span> at 40: Icefury, Ragefire or Nether Force Wand, the best wand you will hold until 50. Tabetha's <span class="q">Return to the Marsh</span> chain after it (Uldaman, the Exorcism) pays a Celestial Orb or Stave at 40 if a group is handy.</span></label></li>
+    <li data-class="warrior"><label><input type="checkbox"><span class="body"><span class="tag cls">Warrior</span><b>Whirlwind weapon, part two.</b> While you loop the Circles of Binding collect 8 Burning Charms (Burning Exiles, Circle of West Binding <span class="c">26,30</span>), 8 Thundering Charms (Circle of Outer Binding <span class="c">51,49</span>) and 8 Cresting Charms (Circle of East Binding <span class="c">67,31</span>). Fly to Tarren Mill, ride to Bath'rah, combine them at his cauldron into the Essence of the Exile, turn in <span class="q">Cyclonian</span>, then <span class="q">The Summoning</span>: Cyclonian is a level 40 elite that stuns, so bring a partner or come back at 40. <span class="q">Whirlwind Weapon</span> pays a Whirlwind Axe, Sword or Warhammer at 40, the best leveling weapon a warrior will hold until 50.</span></label></li>
+    <li data-class="warrior"><label><input type="checkbox"><span class="body"><span class="tag cls">Warrior</span><b>Brutal Armor, optional.</b> If you took <span class="q">Brutal Armor</span> from Thun'grim at 30 it wants 15 Smoky Iron Ingots (Stonetalon kobolds), 10 Powdered Azurite (Hillsbrad miners at Azurelode <span class="tag verify">verify</span>), 10 Iron Bars and a Vial of Phlogiston from Roogug in Razorfen Kraul. The hauberk is a good chest at 30; the gauntlet follow-up (Ula'elek in Sen'jin Village, 7 Uncloven Satyr Hooves from north-east Ashenvale) is the one a Troll passes anyway; the legguard and helm sub-chains go to Undercity and Thunder Bluff and are only worth it if you are already there.</span></label></li>
+    <li data-class="warlock"><label><input type="checkbox"><span class="body"><span class="tag cls">Warlock</span><span class="tag forever">Forever</span> <b>Level 40: Felsteed.</b> Your Orgrimmar trainer's <span class="q">Summon Felsteed</span> sends you back to Strahad Farsan in Ratchet; the ritual with his acolytes is the second <span class="q">Summon Felsteed</span>. A free 60% mount; Apprentice Riding from Xar'Ti is still 20 gold <span class="tag verify">verify</span>.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 40 with the mount bought. Fly Brackenwall → Orgrimmar, ride the road south through Razor Hill to Sen'jin Village for Xar'Ti's riding and Zjolnir's raptor, then back to Orgrimmar, zeppelin to Undercity, fly to Kargath.</p>
+  <div class="note forever"><div class="who">Forever</div><div><p><b>Riverdale</b>, a new 35–45 zone east of Burning Steppes and the Badlands, sits exactly on top of this bracket. If it is dense, it replaces the Dustwallow leg entirely; it is on the Undercity flight net, one zeppelin from Orgrimmar.</p></div></div>
+</section>
+
+<!-- ================================================================ -->
+<section id="b8" class="bracket" data-bracket="b8">
+  <div class="sec-head"><span class="eyebrow">40–45</span><h2>Badlands, Swamp of Sorrows, Stranglethorn tier three</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Kargath <span class="c">3,47</span> · Stonard <span class="c">46,56</span></div>
+    <div><span class="k">Hearth</span>Kargath, then Stonard at 42</div>
+    <div><span class="k">Flight points</span>Kargath (Gorrik), Stonard (Breyk). Both on the Undercity network.</div>
+  </div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body"><b>Badlands 40–43.</b> Kargath: <span class="q">Broken Alliances</span> (Boss Tho'grun at the southern ogre camps), Rigglefuzz's <span class="q">Barbecued Buzzard Wings</span> and <span class="q">Power Stones</span> (Uldaman), Theldurin the Lost's <span class="q">Solution to Doom</span>, Martek the Exiled's <span class="q">Indurium</span>, Lotwil Veriatus' <span class="q">Study of the Elements: Rock</span> (rock elementals at <span class="c">50,42</span>). The Dark Iron dwarves at Angor Fortress and the dust stormers around Camp Kosh fill gaps.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Uldaman (41–51) with a group: Power Stones, <span class="q">Reclaimed Treasures</span> (Kargath), <span class="q">The Platinum Discs</span> inside, <span class="q">Solution to Doom</span>. One clear is two levels.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Swamp of Sorrows 42–44.</b> Stonard: Fel'zerul's <span class="q">Pool of Tears</span> (Atal'ai artifacts underwater at <span class="c">68,58</span>; surface between dives) → <span class="q">Return to Fel'zerul</span> → the Atal'ai Exile chain that prepares Sunken Temple, Magtoor's <span class="q">Draenethyst Crystals</span> at the Fallow Sanctuary <span class="c">25,31</span>, <span class="q">Noboru the Cudgel</span>, and the Misty Reed murlocs for pouches and the coast quests.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Stranglethorn 42–43.</b> Zeppelin to Grom'gol. Nesingwary tier four and <span class="q">Big Game Hunter</span> with a partner, the Bloodsail chain from Baron Revilgaz in Booty Bay (<span class="q">The Bloodsail Buccaneers</span>, pirates at Wild Shore south of Booty Bay), the Zul'Gurub-adjacent troll ruins for <span class="q">Split Bone Necklace</span> leftovers, and Grom'gol's <span class="q">Krazek's Cookery</span> in Booty Bay.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Scarlet Monastery (34–45) any time in this stretch: <span class="q">Hearts of Zeal</span> (Master Apothecary Faranell, Undercity, 20 hearts) and <span class="q">Into The Scarlet Monastery</span> (Varimathras in the Royal Quarter: Doan, Herod, Mograine and Whitemane) are Horde-wide; <span class="q">Compendium of the Fallen</span> is Thunder Bluff's. Mages: Rituals of Power is in the Library wing. Four wings, an hour each, and it is next door to the Undercity zeppelin.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 45. Zeppelin to Orgrimmar, fly to Gadgetzan. Rebind there.</p>
+</section>
+
+<!-- ================================================================ -->
+<section id="b9" class="bracket" data-bracket="b9">
+  <div class="sec-head"><span class="eyebrow">45–50</span><h2>Tanaris, Feralas, the Hinterlands, Searing Gorge</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Gadgetzan <span class="c">51,28</span> · Camp Mojache <span class="c">75,44</span> · Revantusk Village <span class="c">79,79</span> · Thorium Point <span class="c">39,28</span></div>
+    <div><span class="k">Hearth</span>Gadgetzan, then Camp Mojache, then Revantusk</div>
+    <div><span class="k">Flight points</span>Gadgetzan (Bulkrek Ragefist), Camp Mojache (Shyn), Revantusk (Otho Moji'ko), Thorium Point (Enohar Thunderbrew)</div>
+  </div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body"><b>Tanaris 45–47.</b> Gadgetzan: <span class="q">Wastewander Justice</span> and <span class="q">Water Pouch Bounty</span> (bandits at Waterspring Field <span class="c">60,25</span>), Tran'rek's <span class="q">Thistleshrub Valley</span>, Marvon Rivetseeker's <span class="q">Gahz'ridian</span> at the Broken Pillar <span class="c">52,45</span>, Chief Engineer Bilgewhizzle's <span class="q">Gadgetzan Water Survey</span> and <span class="q">Southsea Shakedown</span> (pirates at Lost Rigger Cove <span class="c">72,45</span>), Senior Surveyor Fizzledowser's <span class="q">The Scrimshank Redemption</span> into the Noxious Lair. Steamwheedle Port's Yeh'kinya gives <span class="q">Screecher Spirits</span> and the <span class="q">The God Hakkar</span> chain at 50.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Zul'Farrak (44–54) with a group: <span class="q">Divino-matic Rod</span> (Bilgewhizzle), <span class="q">Scarab Shells</span> (Tran'rek), <span class="q">The Prophecy of Mosh'aru</span> (Yeh'kinya), <span class="q">Tiara of the Deep</span>. Best XP per hour in this bracket, and the Sandfury are the first trolls you fight who are not your cousins.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Feralas 47–49.</b> Camp Mojache is a Tauren camp and its quest givers are as generous to a Troll: the three Gordunni ogre chains (<span class="q">The Ogres of Feralas</span>, <span class="q">Gordunni Cobalt</span>, <span class="q">The Gordunni Scroll</span>, ogres at <span class="c">68,38</span> and the Ruins of Isildien), Hadoken Swiftstrider's <span class="q">The Mark of Quality</span> (yeti hides at Feral Scar Vale <span class="c">55,50</span>), <span class="q">War on the Woodpaw</span> and <span class="q">Alpha Strike</span> (gnolls in the Woodpaw Hills), Witch Doctor Uzer'i's <span class="q">Zukk'ash Infestation</span> at the Writhing Deep <span class="c">68,70</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Hinterlands 48–50.</b> Fly Undercity → Revantusk, a forest-troll village that takes the Horde kindly. <span class="q">Snapjaws, Mon!</span> (turtles on the beach), <span class="q">Gammerita, Mon!</span> (the named turtle, photo with the camera), <span class="q">Vilebranch Hooligans</span> and <span class="q">Cannibalistic Cousins</span> (trolls around the Altar of Zul <span class="c">48,66</span>), Elder Torntusk's ogre rescue at Jintha'Alor (elites at the top; group), and the <span class="q">Rhapsody's Kalimdor Kocktail</span> parts if you hold the quest.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Searing Gorge 49–50.</b> Thorium Point: <span class="q">What the Flux?</span>, <span class="q">Incendosaurs? Whateverosaur is More Like It</span>, <span class="q">Fiery Menace!</span>, the Dark Iron jobs in the Slag Pit (<span class="q">JOB OPPORTUNITY: Culling the Competition</span>, <span class="q">STOLEN: Smithing Tuyere and Lookout's Spyglass</span>), and Kalaran Windblade's torch chain (<span class="q">Divine Retribution</span> → <span class="q">The Flawless Flame</span> → <span class="q">Set Them Ablaze!</span>).</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 50. Fly to Gadgetzan or Camp Mojache and ride into Un'Goro Crater; it has no Horde flight point.</p>
+</section>
+
+<!-- ================================================================ -->
+<section id="b10" class="bracket" data-bracket="b10">
+  <div class="sec-head"><span class="eyebrow">50–55</span><h2>Un'Goro Crater, Felwood, Burning Steppes, Azshara</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Marshal's Refuge <span class="c">44,8</span> · Bloodvenom Post <span class="c">35,52</span> · Flame Crest <span class="c">65,24</span> · Valormok <span class="c">22,50</span></div>
+    <div><span class="k">Hearth</span>Gadgetzan while in Un'Goro (Marshal's Refuge has no inn), then Flame Crest</div>
+    <div><span class="k">Flight points</span>Bloodvenom Post (Bibilfaz Featherwhistle), Flame Crest (Vahgruk)</div>
+  </div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body"><b>Un'Goro 50–53.</b> Marshal's Refuge: J.D. Collie's <span class="q">Crystals of Power</span> and the three pylon quests (pick up every crystal you see, all four colors), Spraggle Frock's <span class="q">Beware of Pterrordax</span> and <span class="q">Lost!</span> → <span class="q">A Little Help From My Friends</span> (Ringo escort from Fire Plume Ridge <span class="c">51,45</span>), Williden Marshal's <span class="q">Williden's Journal</span> and <span class="q">Expedition Salvation</span> (dirt piles), Torwa Pathfinder's <span class="q">The Apes of Un'Goro</span> (Fungal Rock <span class="c">63,17</span>) and Lar'korwi chain, <span class="q">Chasing A-Me 01</span>, the Krakle <span class="q">Volcanic Activity</span> → <span class="q">Fire Plume Ridge</span> loop, and the whole <span class="q">It's a Secret to Everybody</span> chain from Linken's pack. Gorillas and devilsaurs are beasts and punish greed anyway: one at a time.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Felwood 52–54.</b> Fly Orgrimmar → Bloodvenom Post. Winna Hazzard's <span class="q">Winna's Kitten</span>, the Jaedenar keys (<span class="q">A Strange Red Key</span>, <span class="q">Rescue From Jaedenar</span>, Arko'narin's escort out), the Emerald Sanctuary cleansing chain (<span class="q">Cleansing Felwood</span> and the <span class="q">Salve via</span> gathering follow-ups; a herbalist feeds it for free), and the Timbermaw path: Grazle's <span class="q">Timbermaw Ally</span> → <span class="q">Speak to Nafien</span> → <span class="q">Deadwood of the North</span> (repeatable furbolg kills; the tunnel to Winterspring needs the rep anyway).</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Burning Steppes 53–55.</b> Fly to Flame Crest. Tinkee Steamboil's <span class="q">Broodling Essence</span> (use the Draco-Incarcinatrix on Broodlings at the Pillar of Ash), Kibler's <span class="q">Kibler's Exotic Pets</span> (Worg Pup and Smolderweb Hatchling from LBRS mobs), Ragged John's story, Warlord Goretooth's command chain into Blackrock Depths, and the Dark Iron camps around Dreadmaul Rock.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Azshara 52–54, any time.</b> Valormok has no flight point; ride from Orgrimmar. Jediga's <span class="q">Stealing Knowledge</span> tablets (Ruins of Eldarath <span class="c">32,55</span>) pay out four times in Orgrimmar and Thunder Bluff, Loh'atu's <span class="q">A Land Filled With Hatred</span> (satyrs at Haldarr Encampment), Ag'tor Bloodfist's <span class="q">Betrayed</span> chain (ends at an elite; group), Kim'jael's <span class="q">Kim'jael Indeed!</span> and the Blood Elf ruins. Empty zone, so no competition for spawns, and four of the six Troll class chains below send you here.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Maraudon (46–55) and Sunken Temple (50–56) are the dungeons for this stretch. Sunken Temple carries the level-50 class quest for every Troll class (the steps below), so run it once with the Atal'ai chain from Stonard and clear them all at the same time: the six troll mini-bosses on the balconies for the feather chains, Morphaz on the inner ring for the drake chains.</span></label></li>
+    <li data-class="warrior"><label><input type="checkbox"><span class="body"><span class="tag cls">Warrior</span><b>Level 50: Sunken Temple.</b> Grezz Ragefist in the Hall of the Brave (any Horde warrior trainer) gives <span class="q">A Troubled Spirit</span>: the Fallen Hero of the Horde stands on the road at the Blasted Lands border, Swamp of Sorrows <span class="c">34,66</span>. <span class="q">Warrior Kinship</span> (7 Helboar) and <span class="q">War on the Shadowsworn</span> (20 Adepts, 10 Cultists, 20 Thugs around the Altar of Storms <span class="tag verify">verify</span>) are Blasted Lands kills, then <span class="q">Voodoo Feathers</span>: the six troll mini-bosses on the temple balconies (Gasher, Loro, Hukku, Zul'Lor, Mijan, Zolo) drop two Amber, two Blue and two Green feathers. Fury Visor, Diamond Flask or Razorsteel Shoulders.</span></label></li>
+    <li data-class="hunter"><label><input type="checkbox"><span class="body"><span class="tag cls">Hunter</span><b>Level 50: Sunken Temple.</b> Ormak Grimshot in Hunter's Hall, Orgrimmar gives <span class="q">The Hunter's Charm</span>. Ogtinc waits on the cliffs above the Ruins of Eldarath, Azshara <span class="c">42,43</span>, so do this on the Azshara swing: <span class="q">Courser Antlers</span> (2 Perfect Courser Antlers from Mosshoof Coursers, low drop rate <span class="tag verify">verify</span>), <span class="q">Wavethrashing</span> (6 scales from Wavethrashers in the water off the north-east coast <span class="c">87,26</span>), then <span class="q">The Green Drake</span>: kill Morphaz in the Temple of Atal'Hakkar for the Tooth. Devilsaur Eye, Devilsaur Tooth or Hunting Spear; the Eye is the pick.</span></label></li>
+    <li data-class="shaman"><label><input type="checkbox"><span class="body"><span class="tag cls">Shaman</span><b>Level 50: Sunken Temple.</b> Any Grommash Hold shaman trainer (Kardris Dreamseeker, Sagorne Creststrider) gives <span class="q">Elemental Mastery</span>: one Elemental Air, Fire, Earth and Water (auction house, or the Arathi circles) to Bath'rah the Windwatcher in Alterac <span class="c">80,67</span>. He follows with <span class="q">Spirit Totem</span>, 8 Bloodshot Spider Eyes and 8 Thick Black Claws from the lurkers and diseased bears of Western Plaguelands <span class="c">34,59</span>, which you will be standing in at 55 anyway, and <span class="q">Da Voodoo</span>: the same six troll mini-bosses as the warrior quest for two Amber, two Blue, two Green Voodoo Feathers. Azurite Fists, Enamored Water Spirit or Wildstaff.</span></label></li>
+    <li data-class="rogue"><label><input type="checkbox"><span class="body"><span class="tag cls">Rogue</span><b>Level 50: Sunken Temple.</b> Any rogue trainer gives <span class="q">A Simple Request</span>: Lord Jorach Ravenholdt at Ravenholdt Manor, north of Durnholde in Hillsbrad <span class="c">76,43</span> <span class="tag verify">verify</span>. <span class="q">Sealed Azure Bag</span>: pickpocket the Timbermaw Shamans in northern Azshara <span class="c">45,21</span> for the bag; the elf at <span class="c">28,50</span> teleports you up to Archmage Xylem's tower. <span class="q">Encoded Fragments</span>: 10 from the Forest Oozes <span class="c">64,25</span>. <span class="q">The Azure Key</span>: Morphaz in the Temple of Atal'Hakkar, then back to Jorach for Whisperwalk Boots, Duskbat Drape or Ebon Mask and 150 Ravenholdt.</span></label></li>
+    <li data-class="priest"><label><input type="checkbox"><span class="body"><span class="tag cls">Priest</span><b>Level 50: Sunken Temple.</b> Ur'kyo or any capital priest trainer gives <span class="q">Cenarion Aid</span>: Ogtinc on the cliff above the Shattered Strand, Azshara <span class="c">42,43</span>. <span class="q">Of Coursers We Know</span> (4 Healthy Courser Glands from Mosshoof Coursers, away from the naga), <span class="q">The Ichor of Undeath</span> (one Ichor, a 5–10% drop from any undead at your level; the Plaguelands at 55 or a Scholomance run), then <span class="q">Blood of Morphaz</span>: kill Morphaz, loot the blood. Blessed Prayer Beads, Woestave or Circle of Hope; the Beads are the pick.</span></label></li>
+    <li data-class="mage"><label><input type="checkbox"><span class="body"><span class="tag cls">Mage</span><b>Level 50: Sunken Temple.</b> Any capital mage trainer gives <span class="q">Magecraft</span>: Archmage Xylem in his tower in Azshara, reached by the teleporter elf at <span class="c">29,40</span>. <span class="q">Magic Dust</span> (Blood Elf mobs around <span class="c">57,28</span>), <span class="q">The Siren's Coral</span> (naga at the ruins around <span class="c">44,54</span>), then <span class="q">Destroy Morphaz</span>: the Arcane Shard from Morphaz in the Temple of Atal'Hakkar. Fire Ruby, Arcane Crystal Pendant or Glacial Spike. Xylem also holds the <span class="q">Warlord Krellian</span> → <span class="q">Fragmented Magic</span> chain at 60 for Tome of Polymorph: Pig (cast Polymorph 50 times on the Spitelash naga); Polymorph: Turtle drops from Gahz'ranka in Zul'Gurub, not Zul'Farrak.</span></label></li>
+    <li data-class="warlock"><label><input type="checkbox"><span class="body"><span class="tag cls">Warlock</span><span class="tag forever">Forever</span> <b>Level 50: Sunken Temple.</b> Your capital trainer's <span class="q">An Imp's Request</span>: bring 1 Felcloth to Impsy, just north of Bloodvenom Falls in Felwood. <span class="q">Hot and Itchy</span> (objective unconfirmed <span class="tag verify">verify</span>), <span class="q">The Wrong Stuff</span> (10 Rotting Wood from the Irontree treants and Withered Protectors, 4 Bloodvenom Essence from Tainted Oozes), then <span class="q">Trolls of a Feather</span>: the six troll mini-bosses' two Amber, two Blue and two Green Voodoo Feathers. Soul Harvester, Abyss Shard or Robe of Servitude.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 55. Fly Flame Crest → Undercity → The Bulwark. Bind in Undercity (Innkeeper Norman, Trade Quarter); the Bulwark has no inn.</p>
+</section>
+
+<!-- ================================================================ -->
+<section id="b11" class="bracket" data-bracket="b11">
+  <div class="sec-head"><span class="eyebrow">55–60</span><h2>Western and Eastern Plaguelands, Winterspring, Silithus</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>The Bulwark <span class="c">83,68 (Tirisfal)</span> · Light's Hope Chapel <span class="c">81,59</span> · Everlook <span class="c">60,50</span> · Cenarion Hold <span class="c">50,40</span></div>
+    <div><span class="k">Hearth</span>Undercity for the Plaguelands (both are one flight or ride away), then Everlook</div>
+    <div><span class="k">Flight points</span>The Bulwark (Jamie Nore), Light's Hope (Georgia), Everlook (Yugrek), Cenarion Hold (Runk Windtamer)</div>
+  </div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body"><b>Western Plaguelands 55–57.</b> The Bulwark: High Executor Derrington's <span class="q">Scarlet Diversions</span> → <span class="q">Mission Accomplished!</span> (the Scarlet camp near Felstone Field), Apothecary Dithers' <span class="q">The Scourge Cauldrons</span> chain, which walks you through Felstone Field, Dalson's Tank, Gahrron's Withering and the Writhing Haunt with a named Cauldron Lord at each and a Bulwark turn-in between. Then <span class="q">All Along the Watchtowers</span> and <span class="q">Alas, Andorhal</span> (Araj the Summoner is elite; group) in Andorhal. Shamans and priests: the Spirit Totem claws and the Ichor of Undeath both drop here.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Eastern Plaguelands 57–59.</b> Light's Hope Chapel: the Argent Dawn commission (<span class="q">Argent Dawn Commission</span>, then every Scourgestone you loot is a rep turn-in), Carlin Redpath's Darrowshire chain (<span class="q">Villains of Darrowshire</span> → <span class="q">Hidden Treasures</span> → <span class="q">Marauders of Darrowshire</span> → <span class="q">The Battle of Darrowshire</span>, best story in the zone; start it with <span class="q">Pamela's Doll</span> at Darrowshire <span class="c">47,75</span>), Lord Maxwell Tyrosus' <span class="q">Un-Life's Little Annoyances</span>, the Plaguewood and Corin's Crossing kill quests, and Nathanos Blightcaller at the Marris Stead <span class="c">26,74</span>, a Horde hub (<span class="q">The Ranger Lord's Behest</span> starts with Varimathras in Undercity; Nathanos' targets Duskwing and the Scarlet Oracle are group kills).</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Winterspring 57–60.</b> Fly to Everlook. Donova Snowden's <span class="q">Threat of the Winterfall</span> and <span class="q">Winterfall Activity</span> (furbolgs at Winterfall Village <span class="c">67,37</span>), Umi Thorson's <span class="q">Are We There, Yeti?</span> chain, <span class="q">Winterfall Runners</span>, <span class="q">Enraged Wildkin</span>, <span class="q">Mystery Goo</span> → <span class="q">Toxic Test</span>, Witch Doctor Mau'ari's E'ko turn-ins (repeatable buffs). Frostsaber Rock and the Timbermaw tunnel quests if you carried Deadwood rep.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Silithus 58–60.</b> Cenarion Hold: the Twilight's Hammer camps, <span class="q">Wanted: Deathclasp</span>, the hive kill quests. Elementals and cultists both die fast to a 58 with dungeon gear. Also the fastest place to farm the last bars if you are tired of questing.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Dungeons for the finish: Blackrock Depths (52–60, the Kargath and Flame Crest chains), Lower Blackrock Spire (55–60), Dire Maul (Feralas), Scholomance and Stratholme (58–60, the Argent Dawn and Light's Hope hooks). One Stratholme clear is most of a level at 59.</span></label></li>
+    <li data-class="warlock"><label><input type="checkbox"><span class="body"><span class="tag cls">Warlock</span><span class="tag forever">Forever</span> <b>Level 60: Dreadsteed.</b> Mor'zul Bloodbringer on the hill across the road from the Altar of Storms, north-west Burning Steppes <span class="c">12,31</span>: the Rage of Blood and Lord Banehollow chains (Jaedenar), Gorzeeki's Bell, Wheel and Candle (150 gold or more in materials <span class="tag verify">verify</span>), <span class="q">Imp Delivery</span> into Scholomance, then <span class="q">Dreadsteed of Xoroth</span> in Dire Maul West: kill Immol'thar, run the ritual, kill the Dreadsteed Spirit. Summon Dreadsteed.</span></label></li>
+  </ol>
+  <p class="leave"><b>Ding 60.</b> Bind in Orgrimmar, buy the epic Swift Raptor from Zjolnir in Sen'jin Village when you have 1,000 gold (900 at Darkspear Trolls Exalted <span class="tag verify">verify</span>), and start attunements.</p>
+  <div class="note forever"><div class="who">Forever</div><div><p><b>Mount Hyjal</b> is the new 60 zone, continuing the Reign of Chaos story, and two new 10–20 player raids come with launch. The cap is permanent, so gear from this bracket keeps its value.</p></div></div>
+</section>
+
+<!-- ================================================================ -->
+<section id="dungeons">
+  <div class="sec-head"><h2>Dungeons worth the detour</h2><span class="eyebrow">Horde and Troll quest hooks</span></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Dungeon</th><th class="mono">Levels</th><th>Where</th><th>Troll / Horde quests to bring</th></tr></thead>
+    <tbody>
+      <tr><td>Ragefire Chasm</td><td class="mono">13–18</td><td>Orgrimmar</td><td><b>Hidden Enemies</b> (Thrall, Grommash Hold) and <b>Slaying the Beast</b> (Neeru Fireblade, Cleft of Shadow) are yours; Searching for the Lost Satchel and Testing an Enemy's Strength come from Rahauro in Thunder Bluff. It is under your capital, so worth it whenever a group is at the door.</td></tr>
+      <tr><td>Wailing Caverns</td><td class="mono">17–24</td><td>Barrens</td><td><b>Deviate Hides</b>, <b>Trouble at the Docks</b>, <b>Smart Drinks</b>, <b>Leaders of the Fang</b> (Nalpak and Ebru at the entrance, Ratchet). Twenty minutes from the Crossroads hearth. Rogues and hunters: the Deviate daggers and the Venomstrike bow drop here.</td></tr>
+      <tr><td>Blackfathom Deeps</td><td class="mono">24–32</td><td>Ashenvale</td><td>Blackfathom Villainy, Allegiance to the Old Gods, Amongst the Ruins (Je'neu Sancrea, Zoram'gar). On the route at 24–25. Warlocks: the Soran'ruk Fragments.</td></tr>
+      <tr><td>Shadowfang Keep</td><td class="mono">22–30</td><td>Silverpine</td><td>Deathstalkers in Shadowfang, Arugal Must Die, The Book of Ur, all from Silverpine and Undercity. One zeppelin from Orgrimmar; shamans on the Everfount trip and warlocks needing the Large Soran'ruk Fragment can pair it with a group formed in Orgrimmar.</td></tr>
+      <tr><td>Razorfen Kraul</td><td class="mono">29–38</td><td>Barrens</td><td>Blueleaf Tubers (Mebok, Ratchet), Going, Going, Guano! (Faranell, Undercity), Willix the Importer inside; A Vengeful Fate is Thunder Bluff's. Warriors: Roogug's Vial of Phlogiston for Brutal Armor.</td></tr>
+      <tr><td>Scarlet Monastery</td><td class="mono">34–45</td><td>Tirisfal</td><td>Hearts of Zeal (Faranell), Into The Scarlet Monastery (Varimathras); Compendium of the Fallen is Thunder Bluff's. Mages: <b>Rituals of Power</b> in the Library. A zeppelin and a walk from Orgrimmar.</td></tr>
+      <tr><td>Razorfen Downs</td><td class="mono">37–45</td><td>Barrens</td><td>A Host of Evil and Extinguishing the Idol (Myriam Moonsinger at the door), Bring the Light (Andrew Brownell, Undercity Magic Quarter).</td></tr>
+      <tr><td>Uldaman</td><td class="mono">41–51</td><td>Badlands</td><td>Power Stones, Reclaimed Treasures, Solution to Doom, The Platinum Discs. Mages: Power in Uldaman for the Celestial chain.</td></tr>
+      <tr><td>Zul'Farrak</td><td class="mono">44–54</td><td>Tanaris</td><td>Divino-matic Rod, Scarab Shells, Prophecy of Mosh'aru, Tiara of the Deep, Nekrum's Medallion. Sandfury trolls all the way down.</td></tr>
+      <tr><td>Maraudon</td><td class="mono">46–55</td><td>Desolace</td><td>Corruption of Earth and Seed, Legends of Maraudon (the Scepter of Celebras). Shamans: the Cenarion quest givers at the entrance are your people.</td></tr>
+      <tr><td>Sunken Temple</td><td class="mono">50–56</td><td>Swamp of Sorrows</td><td>The Atal'ai chain from Stonard, Jammal'an the Prophet, and the level-50 class quest for every Troll class (see the 50–55 bracket): feathers for warrior, shaman and warlock, Morphaz for hunter, rogue, priest and mage.</td></tr>
+      <tr><td>Blackrock Depths</td><td class="mono">52–60</td><td>Searing Gorge / Burning Steppes</td><td>Dark Iron Legacy, the Kargath and Flame Crest chains, Onyxia attunement (Warlord's Command).</td></tr>
+      <tr><td>Scholomance / Stratholme</td><td class="mono">58–60</td><td>Plaguelands</td><td>Argent Dawn and Light's Hope chains, Kirtonos the Herald. Warlocks: Imp Delivery for the Dreadsteed.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="logistics">
+  <div class="sec-head"><h2>Orgrimmar logistics</h2></div>
+  <div class="two prose">
+    <div>
+      <h4>Getting around the city</h4>
+      <ul>
+        <li><b>Valley of Strength</b> (inside the main gate): bank, auction house, the inn (Innkeeper Gryshka), and the flight master Doras on the upper tier <span class="tag verify">verify</span>. Everything you need between quests is within sight of the gate.</li>
+        <li><b>Valley of Honor</b> (north-east): the Hall of the Brave for warriors (Grezz Ragefist, Sorek, Zel'mak <span class="c">80,31</span>), Hunter's Hall for hunters (Ormak Grimshot, Sian'dur, Xor'juul <span class="c">66,18</span>, pet trainer Xao'tsu), the weapon masters Hanashi and Sayoc at Arms of Legend <span class="c">82,20</span>, the Ring of Valor.</li>
+        <li><b>Valley of Wisdom</b> (north-west): Grommash Hold with Thrall and Nazgrel, and the shaman trainers Kardris Dreamseeker, Sagorne Creststrider, Sian'tsu and Searn Firewarder <span class="c">39,36</span>. Not the Valley of Spirits, whatever the name suggests.</li>
+        <li><b>Valley of Spirits</b> (south-west, the troll district): the Spirit Lodge for priests (Ur'kyo, X'yera Al'tenas, Zayus <span class="c">36,88</span>) and Darkbriar Lodge for mages (Uthel'nay, Deino, Enyo, Thuul <span class="c">39,86</span>). Zankaja, the warlock succubus contact, stands on the rise between here and the Valley of Wisdom <span class="c">37,60</span>.</li>
+        <li><b>Cleft of Shadow</b> (the cave under the Drag): the Shadowswift Brotherhood for rogues (Shenthul, Ormok, Gest, Therzok <span class="c">43,54</span>), the Darkfire Enclave for warlocks (Gan'rul Bloodeye, Zevrost, Grol'dar, Kurgul <span class="c">47,50</span>), Neeru Fireblade, Kor'ghan, and the Ragefire Chasm entrance.</li>
+        <li><b>The Drag</b> holds most profession trainers; First Aid is with Arnok in the Valley of Honor <span class="tag verify">verify</span>. Cooking is in the Drag.</li>
+      </ul>
+      <h4>Zeppelins and boats</h4>
+      <ul>
+        <li>The zeppelin tower stands just outside the main gate: platforms for <b>Undercity</b> and <b>Grom'gol</b>. Doras is inside the gate, so a flight in and a zeppelin out is a two-minute walk.</li>
+        <li>Ratchet ↔ Booty Bay boat links the Barrens to Stranglethorn without a zeppelin.</li>
+        <li>Undercity's tower returns to Orgrimmar and Grom'gol; you use it for Tarren Mill, Kargath, Stonard, Revantusk and the Plaguelands flights only.</li>
+        <li>Thunder Bluff is optional for a Troll: Apothecary Zamah's delivery from the Crossroads gets you the flight point if you want the Razorfen and Scarlet Monastery quests it holds.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Flight points to collect, in route order</h4>
+      <p class="mono" style="font-size:.85rem;line-height:1.7">Kalimdor: Orgrimmar · Crossroads · Ratchet · Camp Taurajo · Sun Rock · Splintertree · Zoram'gar · Freewind · Shadowprey · Brackenwall · Gadgetzan · Camp Mojache · Bloodvenom · Everlook · Cenarion Hold · (Thunder Bluff, optional)</p>
+      <p class="mono" style="font-size:.85rem;line-height:1.7">Eastern Kingdoms: Grom'gol · Booty Bay · Undercity · Tarren Mill · Hammerfall · Kargath · Stonard · Revantusk · Thorium Point · Flame Crest · The Bulwark · Light's Hope</p>
+      <h4>Class quest stops</h4>
+      <ul>
+        <li><b>Level 4</b>: shaman Call of Earth at the Den (Canaga Earthcaller); warlock imp from Ruzan beside him.</li>
+        <li><b>Level 10</b>: every class. Warrior to Uzzek at Far Watch Post; hunter to Thotar in Razor Hill, then Ormak Grimshot in Hunter's Hall; shaman Call of Fire from Searn Firewarder in Grommash Hold or Swart in Sen'jin; priest Hex of Weakness from Ur'kyo in the Spirit Lodge; rogue Therzok in the Cleft; mage Ju-Ju Heaps from Un'thuwa in Sen'jin; warlock Gan'rul Bloodeye in the Cleft for the Voidwalker.</li>
+        <li><b>Levels 15–18</b>: mage Spellfire Robes through Undercity (optional); rogue Zando'zan and Wrenix of Ratchet for Thistle Tea.</li>
+        <li><b>Level 20</b>: shaman Call of Water (Searn → Islen Waterseer south of Ratchet); warrior Speak with Ruga at Camp Taurajo; rogue poisons from Shenthul in the Cleft and the Sludge Fen; priest Shadowguard from Zayus; warlock succubus through Cazul, Zankaja, Malaka'jin and Camp Taurajo.</li>
+        <li><b>Level 26</b>: mage Nether-lace Garment (Deino, then Xavian in Ashenvale).</li>
+        <li><b>Level 30</b>: shaman Call of Air (Prate Cloudseer, Thousand Needles); warrior The Islander (Fray Island) then the Whirlwind chain from Bath'rah in Alterac; mage Journey to the Marsh (Tabetha); warlock Seeking Strahad (Ratchet).</li>
+        <li><b>Level 40</b>: mage Mage's Wand from Tabetha; warlock Felsteed from Strahad.</li>
+        <li><b>Level 50</b>: every class has a Sunken Temple chain from its Orgrimmar trainer: warrior Fallen Hero (Swamp of Sorrows), hunter and priest Ogtinc (Azshara), shaman Bath'rah (Alterac), rogue Lord Jorach Ravenholdt (Hillsbrad) then Xylem, mage Xylem (Azshara), warlock Impsy (Felwood).</li>
+        <li><b>Level 60</b>: warlock Dreadsteed from Mor'zul Bloodbringer; mage Polymorph: Pig from Xylem.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="mount">
+  <div class="sec-head"><h2>Mount and gold</h2></div>
+  <div class="prose">
+    <ul>
+      <li>Apprentice Riding from Xar'Ti and an Emerald, Turquoise or Violet Raptor from Zjolnir, both in <b>Sen'jin Village</b>, not Orgrimmar. Together 100 gold at level 40 before reputation discounts. Fly Orgrimmar and ride the road south through Razor Hill; twelve minutes each way.</li>
+      <li>Shamans have Ghost Wolf at 20 (40% speed, usable indoors, instant with the talent). It does not replace a raptor at 60, but it lets you spend the 100 gold on weapons first and buy the raptor at 43–45 when the money is easy. Warlocks in Forever get the Felsteed free at 40 and the Dreadsteed for about 150 gold of materials at 60.</li>
+      <li>Realistic gold by 40 on this route with Skinning plus a gathering skill and nothing bought but weapons: 130–170. Without gathering: 70–90, which is why the 38–40 bracket sits in Dustwallow, where the dragonkin drop vendor greens.</li>
+      <li>Epic Swift Blue, Olive or Orange Raptor at 60: 1,000 gold, 900 with Darkspear Trolls Exalted <span class="tag verify">verify</span>. Every Durotar quest counts toward that rep, as do Sen'jin's and Malaka'jin's, and the Barrens quests split between Orgrimmar and Darkspear.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="forever">
+  <div class="sec-head"><h2>WoW Forever watchlist</h2><span class="eyebrow">Confirmed as of Sep 19, 2026</span></div>
+  <div class="prose">
+    <p>World of Warcraft: Forever is Blizzard's permanent Classic+ ruleset: the original continents with new zones, dungeons, raids and quests, a talent rework, and a level cap that stays at 60. Beta runs Sep 17 to Oct 21, 2026 (level 20 cap, rising to 30); launch is Nov 4, 2026. Everything below is from the BlizzCon reveal and beta datamining; treat it as a list of things to re-check in the client, not settled fact.</p>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>Change</th><th>What is known</th><th>Effect on this route</th></tr></thead>
+    <tbody>
+      <tr><td>Troll racials</td><td>Berserking becomes a flat 10% haste; Rapid Regeneration (channel 50% health over 6 s, 3 min) replaces Bow and Throwing Specialization; Regeneration and Beast Slaying unchanged.</td><td>Warriors and rogues get a free half-health heal every three minutes and stop carrying bandages by the stack. Hunters lose the reason to prefer a bow; take whichever ranged weapon has the better stats. Nothing in the route order moves.</td></tr>
+      <tr><td>Troll Warlock</td><td>New combination. No Troll-specific warlock quests, trainers or starting text have been published; the Orc chain from Durotar is assumed on this page.</td><td>Every violet warlock step is a guess at where the beta will put the class. Check Ruzan, Ophek and Gan'rul Bloodeye in the client first.</td></tr>
+      <tr><td>Priest racial spells</td><td>Icy Veins' Forever troll page lists Hex of Weakness and Shadowguard with Classic wording; Fear Ward becomes baseline for all priests.</td><td>If the level-10 and level-20 quests survive, the route is unchanged; if the spells become trained, two class stops disappear.</td></tr>
+      <tr><td>Shen'Dralas</td><td>New zone of elven ruins between Mulgore and Desolace (Blizzard's panel recap), entered from the Valley of Bones in southern Desolace, tied to the Shen'dralar, Dire Maul and the centaur clans. Level range unpublished; one site says "mid-level".</td><td>If it is 30–35 it replaces the Desolace swing; a Troll reaches it by the Sun Rock and Shadowprey flights either way. If it is 20–30 it replaces Stonetalon. Watch this first.</td></tr>
+      <tr><td>Class talents</td><td>Every tree reworked to replace passive stat talents with active abilities; crit is a unified stat.</td><td>Class ranking above may reshuffle. Class quest chains (totems, stances, pets, poisons) were not mentioned as changed; verify each at the level it appears.</td></tr>
+      <tr><td>Undercity surface / Ruins of Lordaeron</td><td>15–25 Horde zone plus a dungeon reported at 15–20.</td><td>Forsaken content next to their hearth; for a Troll it is one zeppelin from Orgrimmar and the Barrens are denser. Use it if the Crossroads is a war zone.</td></tr>
+      <tr><td>Riverdale</td><td>New 35–45 zone east of Burning Steppes and the Badlands.</td><td>Replaces Dustwallow and possibly Swamp of Sorrows. Mages still need Tabetha for the wand.</td></tr>
+      <tr><td>Dalaran</td><td>City opened during its restoration.</td><td>New Alterac-area hub at 30ish, next to Bath'rah's ruins; may add Hillsbrad follow-ups to the warrior and shaman trips.</td></tr>
+      <tr><td>Skyborne, Mount Hyjal, Zephras Isle</td><td>New race for both factions (Horde Skyborne can be druid and shaman), the 60 zone, and the Skyborne starting isle.</td><td>No effect on a Troll's route before 60.</td></tr>
+      <tr><td>1,000+ new quests</td><td>Spread across all level ranges, and existing zones "expanded or reworked".</td><td>Every bracket gets re-scoped. Keep this page's structure; swap the step lists.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="sources" class="foot">
+  <div class="sec-head"><h2>Sources and verification</h2></div>
+  <p>Route order and 1–20 quest objectives were checked against Joana's Durotar 1–12 chapter, wow-pro's Durotar 1–12 and Barrens 12–20 guides, Warcraft Tavern's Horde leveling guide, Wowhead Classic quest pages (Valley of Trials kill counts are the Classic ones, not the retail wiki's) and Warcraft Wiki zone quest lists and NPC pages. Class quests were checked quest by quest against Warcraft Wiki, Wowhead Classic and Icy Veins' class quest guides; the warlock chain is the Orc one. The 20–60 brackets are shared with the Tauren guide, with the travel lines rewritten for an Orgrimmar hearth; counts and coordinates there were not individually re-checked and the <span class="tag verify">verify</span> tag marks the least certain ones. Barrens and Far Watch coordinates come from the Classic-era guides, because the wiki's are on the post-Cataclysm maps. Orgrimmar trainer coordinates are the TBC Classic layout, which matches Era. WoW Forever details come from Blizzard's BlizzCon 2026 panel recaps and the sites listed below.</p>
+  <ul>
+    <li><a href="https://www.joanasworld.com/horde-1-12-durotar.php">Joana's 1–12 Durotar</a> · <a href="https://www.wow-pro.com/durotar-leveling-guide-1-12/">wow-pro Durotar 1–12</a> · <a href="https://www.wow-pro.com/guide-to-the-barrens-12-20/">wow-pro Barrens 12–20</a> · <a href="https://www.warcrafttavern.com/wow-classic/guides/horde-leveling-guide/">Warcraft Tavern Horde leveling guide</a> · <a href="https://wow.allakhazam.com/wiki/WOW_Guide_Valley_of_Trials_Newbie_Walkthrough">Allakhazam Valley of Trials walkthrough</a></li>
+    <li><a href="https://warcraft.wiki.gg/wiki/Durotar_quests">Warcraft Wiki: Durotar quests</a> · <a href="https://warcraft.wiki.gg/wiki/The_Barrens_quests">Barrens quests</a> · <a href="https://warcraft.wiki.gg/wiki/Valley_of_Spirits">Valley of Spirits</a> · <a href="https://warcraft.wiki.gg/wiki/Cleft_of_Shadow">Cleft of Shadow</a> · <a href="https://www.lootxphub.com/orgrimmar-class-and-weapon-trainer-guide-for-wow-tbc-classic/">lootxphub: Orgrimmar trainers</a> · <a href="https://www.wowhead.com/classic/quest=788">Wowhead Classic: Cutting Teeth</a> · <a href="https://www.wowhead.com/classic/quest=840">Conscript of the Horde</a></li>
+    <li>Class quests: <a href="https://www.icy-veins.com/wow-classic/warrior-quests-in-wow-classic">Icy Veins warrior</a> · <a href="https://www.icy-veins.com/wow-classic/hunter-quests-in-wow-classic">hunter</a> · <a href="https://www.icy-veins.com/wow-classic/rogue-quests-in-wow-classic">rogue</a> · <a href="https://www.icy-veins.com/wow-classic/priest-quests-in-wow-classic">priest</a> · <a href="https://www.icy-veins.com/wow-classic/shaman-quests-in-wow-classic">shaman</a> · <a href="https://www.icy-veins.com/wow-classic/mage-quests-in-wow-classic">mage</a> · <a href="https://www.icy-veins.com/wow-classic/warlock-quests-in-wow-classic">warlock</a> · <a href="https://www.icy-veins.com/wow-classic/sunken-temple-class-quests-guide">Sunken Temple class quests</a> · <a href="https://www.warcrafttavern.com/wow-classic/guides/rogue-poisons-guide/">Warcraft Tavern rogue poisons</a> · <a href="https://warcraft.wiki.gg/wiki/Quest:Call_of_Fire_(Horde)">Warcraft Wiki: Call of Fire (Horde)</a> · <a href="https://warcraft.wiki.gg/wiki/Quest:Mission:_Possible_But_Not_Probable">Mission: Possible But Not Probable</a> · <a href="https://warcraft.wiki.gg/wiki/Quest:Shadowguard">Shadowguard</a> · <a href="https://warcraft.wiki.gg/wiki/Hex_of_Weakness">Hex of Weakness</a> · <a href="https://warcraft.wiki.gg/wiki/Quest:Devourer_of_Souls_(Orgrimmar)">Devourer of Souls (Orgrimmar)</a> · <a href="https://warcraft.wiki.gg/wiki/Tome_of_the_Cabal_(quest)">Tome of the Cabal</a> · <a href="https://www.wowhead.com/classic/quest=1944/waters-of-xavian">Waters of Xavian</a> · <a href="https://warcraft.wiki.gg/wiki/Dreadsteed_questline">Dreadsteed questline</a></li>
+    <li>WoW Forever: <a href="https://news.blizzard.com/en-us/article/24303862/world-of-warcraft-forever-whats-next-panel-recap">Blizzard: What's Next panel recap</a> · <a href="https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap">Deep Dive recap</a> · <a href="https://www.icy-veins.com/wow-classic/race-guide-to-trolls">Icy Veins: Troll race guide (Era)</a> · <a href="https://www.icy-veins.com/wow-forever/troll-race-guide">Icy Veins: Troll race guide (Forever)</a> · <a href="https://www.method.gg/wow-classic/all-new-racial-abilities-in-world-of-warcraft-forever">Method: all new racials</a> · <a href="https://www.warcrafttavern.com/forever/news/all-racial-abilities-in-world-of-warcraft-forever/">Warcraft Tavern: all racials</a> · <a href="https://www.warcrafttavern.com/forever/news/priest-racials-in-world-of-warcraft-forever-fear-ward-is-baseline/">Warcraft Tavern: priest racials</a> · <a href="https://www.wowhead.com/forever/guide/new-race-class-combinations">Wowhead: race/class combos</a> · <a href="https://outputlag.com/news/world-of-warcraft-forever-adds-shendralas-a-new-zone-between-mulgore-and-desolace/">Output Lag: Shen'dralas</a> · <a href="https://lfcarry.com/guides/wow-forever-new-zones">lfcarry: new zones</a></li>
+  </ul>
+</section>
+
+</main>
+</div>
+</div>
+
+<script>
+(function(){
+  var KEY='troll-v1', CKEY='troll-class';
+  var CLASSES=['warrior','hunter','rogue','priest','shaman','mage','warlock'];
+  var state={};
+  try{state=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){state={};}
+  var boxes=document.querySelectorAll('.steps input[type=checkbox]');
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+  function visible(el){return !!(el.offsetWidth||el.offsetHeight||el.getClientRects().length);}
+  function paint(){
+    var done=0,total=0;
+    boxes.forEach(function(b){var li=b.closest('li');li.classList.toggle('done',b.checked);if(visible(li)){total++;if(b.checked)done++;}});
+    var p=document.getElementById('prog');
+    if(p)p.textContent=done+' / '+total+' steps ticked';
+  }
+  boxes.forEach(function(b,i){
+    var sec=b.closest('section');
+    var id=(sec&&sec.id||'x')+'-'+i;
+    b.id='step-'+id;
+    if(state[id])b.checked=true;
+    b.addEventListener('change',function(){state[id]=b.checked?1:0;if(!b.checked)delete state[id];save();paint();});
+  });
+
+  // class filter: URL ?class= wins, then the remembered pick, else show all
+  var pick='';
+  try{pick=localStorage.getItem(CKEY)||'';}catch(e){}
+  var m=/[?&]class=([a-z]+)/i.exec(location.search);
+  if(m&&CLASSES.indexOf(m[1].toLowerCase())>=0)pick=m[1].toLowerCase();
+  if(CLASSES.indexOf(pick)<0)pick='';
+  var buttons=[].slice.call(document.querySelectorAll('.picker button'));
+  var hint=document.getElementById('pick-hint');
+  function applyPick(){
+    if(pick)document.body.setAttribute('data-class',pick);else document.body.removeAttribute('data-class');
+    buttons.forEach(function(bt){bt.classList.toggle('on',bt.getAttribute('data-pick')===pick);bt.setAttribute('aria-pressed',bt.getAttribute('data-pick')===pick?'true':'false');});
+    if(hint)hint.textContent=pick?('Showing '+pick.charAt(0).toUpperCase()+pick.slice(1)+' quests only. Remembered in this browser; the Evergreen addon picks the same from your character.'):'Showing every class quest. Pick one and the other classes\' steps are hidden everywhere on the page; the Evergreen addon does the same in-game from your character\'s class.';
+    paint();
+  }
+  buttons.forEach(function(bt){bt.addEventListener('click',function(){pick=bt.getAttribute('data-pick')||'';try{if(pick)localStorage.setItem(CKEY,pick);else localStorage.removeItem(CKEY);}catch(e){}applyPick();});});
+  applyPick();
+
+  var links=[].slice.call(document.querySelectorAll('nav.toc a'));
+  var map={};
+  links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  if('IntersectionObserver' in window){
+    var current=null;
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          if(current)current.classList.remove('on');
+          current=map[en.target.id];
+          if(current)current.classList.add('on');
+        }
+      });
+    },{rootMargin:'-20% 0px -70% 0px',threshold:0});
+    document.querySelectorAll('main > section').forEach(function(s){io.observe(s);});
+  }
+})();
+</script>
+</body>
+</html>

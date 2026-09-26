@@ -1,0 +1,32 @@
+## Interface: 16001, 11509
+## Title: |cff7fd35eEvergreen|r
+## Notes: WoW Forever companion in modules: leveling guide (/eg), buff button (/eb), window mover (/emove), world map reveal (/eg reveal), dungeon journal (/ej). /eg modules
+## Author: DJ
+## Version: 0.6.0
+## SavedVariables: EvergreenDB, EverbuffDB, EverMoveDB
+## SavedVariablesPerCharacter: EvergreenCharDB
+## OptionalDeps: TomTom
+## X-Website: https://claude.ai/artifact/Tdi1g6tkKDr3H9zwLaNXJJ
+
+Modules.lua
+Data.lua
+Routes_Tauren.lua
+Routes_Forsaken_Class.lua
+Routes_Orc.lua
+Routes_Troll.lua
+Routes_Human.lua
+Routes_Dwarf.lua
+Routes_Gnome.lua
+Routes_NightElf.lua
+Routes_Skyborne.lua
+Routes_Forever_Combos.lua
+Routes_Questie_Fixes.lua
+Routes_Forsaken_Opt.lua
+QuestIDs.lua
+Core.lua
+Modules\Buffs.lua
+Modules\Move.lua
+Modules\Reveal_Data.lua
+Modules\Reveal.lua
+Modules\Journal_Data.lua
+Modules\Journal.lua

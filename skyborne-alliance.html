@@ -1,0 +1,747 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Violet Road</title>
+<meta name="description" content="Alliance Skyborne (High Order) 1–60 leveling route for WoW Forever: Zephras Isle, Dalaran, Loch Modan, then the Alliance road to 60, with class quests for Warrior, Hunter, Mage, Rogue and Druid.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#EAE4D6; --surface:#F3EEE3; --sunk:#DED6C5; --ink:#221C17; --muted:#615A50; --line:#C9BFAD;
+  --accent:#2E6F9E; --accent-ink:#1F5578; --accent-soft:#D6E6F2;
+  --violet:#5A4478; --violet-soft:#E2DAEE; --gold:#8A6B1F; --danger:#9A3B2E; --danger-soft:#F0D9D4;
+  --shadow:0 1px 0 rgba(34,28,23,.06), 0 8px 24px -16px rgba(34,28,23,.35);
+  --display:"Grenze Gotisch","Cinzel",Georgia,serif;
+  --body:"Source Serif 4","Iowan Old Style",Georgia,serif;
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#15120F; --surface:#1E1A16; --sunk:#100E0B; --ink:#DCD5C8; --muted:#948B7D; --line:#342C25;
+    --accent:#6FB3E0; --accent-ink:#9CCCEC; --accent-soft:#182A3A;
+    --violet:#A98FD6; --violet-soft:#2A2238; --gold:#D2AE4C; --danger:#E08A7A; --danger-soft:#3A2220;
+    --shadow:0 1px 0 rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#15120F; --surface:#1E1A16; --sunk:#100E0B; --ink:#DCD5C8; --muted:#948B7D; --line:#342C25;
+  --accent:#6FB3E0; --accent-ink:#9CCCEC; --accent-soft:#182A3A;
+  --violet:#A98FD6; --violet-soft:#2A2238; --gold:#D2AE4C; --danger:#E08A7A; --danger-soft:#3A2220;
+  --shadow:0 1px 0 rgba(0,0,0,.4), 0 8px 24px -16px rgba(0,0,0,.8);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{height:auto}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+h1,h2,h3,h4{font-family:var(--display);font-weight:500;line-height:1.05;margin:0;text-wrap:balance;letter-spacing:.005em}
+h2{font-size:2.1rem}
+h3{font-size:1.45rem}
+h4{font-size:1.15rem;font-family:var(--body);font-weight:600}
+p{margin:0 0 1em}
+code,.mono{font-family:var(--mono);font-size:.86em}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:clamp(16px,4vw,40px);padding-block:0 96px}
+
+/* masthead */
+.mast{border-bottom:1px solid var(--line);padding-block:40px 28px}
+.mast .grid{display:grid;grid-template-columns:1fr auto;gap:24px 40px;align-items:end}
+.mast h1{font-size:clamp(3rem,7.5vw,5.6rem);font-weight:700;line-height:.92;color:var(--ink)}
+.mast h1 span{color:var(--accent)}
+.mast .lede{max-width:62ch;font-size:1.1rem;margin-top:18px}
+.stamp{font-family:var(--mono);font-size:.78rem;line-height:1.5;color:var(--muted);border-left:2px solid var(--gold);padding-left:14px;min-width:220px}
+.stamp b{color:var(--ink);font-weight:500}
+.sister{font-family:var(--mono);font-size:.74rem;margin-top:10px}
+@media (max-width:760px){.mast .grid{grid-template-columns:1fr}.stamp{border-left:0;border-top:1px solid var(--line);padding:12px 0 0}}
+
+/* two column */
+.cols{display:grid;grid-template-columns:230px minmax(0,1fr);gap:48px;margin-top:32px}
+@media (max-width:900px){.cols{grid-template-columns:1fr;gap:24px}}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;max-height:calc(100vh - 32px);overflow:auto;font-size:.9rem;padding-right:8px}
+nav.toc .eyebrow{margin-bottom:10px}
+nav.toc ol{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:2px}
+nav.toc a{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:baseline;padding:5px 8px;border-radius:4px;text-decoration:none;color:var(--ink);border-left:2px solid transparent}
+nav.toc a .lv{font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+nav.toc a:hover{background:var(--surface)}
+nav.toc a.on{border-left-color:var(--accent);background:var(--surface);color:var(--accent-ink)}
+nav.toc .prog{margin-top:6px;font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+nav.toc ol.flat a{grid-template-columns:1fr}
+@media (max-width:900px){nav.toc{position:static;max-height:none;border:1px solid var(--line);background:var(--surface);padding:14px 14px 4px;border-radius:6px}
+  nav.toc ol{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}}
+
+main{min-width:0}
+main > section{padding-block:40px;border-bottom:1px solid var(--line);scroll-margin-top:16px}
+main > section:first-child{padding-top:8px}
+.sec-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 18px;margin-bottom:18px}
+.sec-head .eyebrow{margin:0}
+.prose{max-width:72ch}
+.prose ul,.prose ol{padding-left:1.3em;margin:0 0 1em}
+.prose li{margin-bottom:.35em}
+.prose li::marker{color:var(--muted)}
+strong{font-weight:600}
+.q{font-weight:600}
+.c{font-family:var(--mono);font-size:.8em;color:var(--gold);white-space:nowrap}
+.lvl{font-family:var(--mono);font-size:.78em;color:var(--muted)}
+.tag{display:inline-block;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px;vertical-align:middle;line-height:1.4}
+.tag.forever{background:var(--violet-soft);color:var(--violet)}
+.tag.era{background:var(--accent-soft);color:var(--accent-ink)}
+.tag.verify{background:var(--danger-soft);color:var(--danger)}
+.tag.cls{background:var(--sunk);color:var(--ink);margin-right:6px}
+
+/* class picker */
+.picker{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 18px;padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+.picker .eyebrow{margin-right:6px}
+.picker button{font:inherit;font-size:.9rem;padding:6px 14px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.picker button:hover{border-color:var(--accent)}
+.picker button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.picker .hint{flex-basis:100%;font-size:.84rem;color:var(--muted);margin:2px 0 0}
+body[data-class="warrior"] [data-class]:not([data-class~="warrior"]),
+body[data-class="hunter"]  [data-class]:not([data-class~="hunter"]),
+body[data-class="rogue"]   [data-class]:not([data-class~="rogue"]),
+body[data-class="druid"]   [data-class]:not([data-class~="druid"]),
+body[data-class="mage"]    [data-class]:not([data-class~="mage"]){display:none}
+body[data-class] .classes article[data-class]{outline:2px solid var(--accent);outline-offset:-2px}
+
+/* bracket */
+.bracket .meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:0 0 22px;font-size:.92rem}
+.bracket .meta div{background:var(--surface);padding:10px 12px}
+.bracket .meta .k{display:block;font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.steps{list-style:none;padding:0;margin:0 0 20px;counter-reset:step;max-width:80ch}
+.steps > li{counter-increment:step;display:grid;grid-template-columns:26px 1fr;gap:12px;padding:12px 0;border-top:1px solid var(--line);align-items:start}
+.steps > li:first-child{border-top:0}
+.steps > li::before{content:counter(step);font-family:var(--mono);font-size:.78rem;color:var(--muted);padding-top:4px;text-align:right}
+.steps > li[data-class]{background:linear-gradient(90deg,var(--accent-soft),transparent 60%);margin-inline:-10px;padding-inline:10px;border-radius:4px}
+.steps label{display:block;cursor:pointer}
+.steps input{margin:0 8px 0 0;vertical-align:-1px;accent-color:var(--accent)}
+.steps li.done .body{color:var(--muted)}
+.steps .body{display:inline}
+.steps .sub{margin:.35em 0 0;padding-left:1.1em;color:var(--muted);font-size:.94rem}
+.steps .sub li{margin:.2em 0}
+.note{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:12px 14px;border-radius:4px;margin:0 0 18px;max-width:80ch;font-size:.95rem;background:var(--surface);border:1px solid var(--line)}
+.note .who{font-family:var(--display);font-size:1.15rem;color:var(--accent);white-space:nowrap;padding-top:1px}
+.note.forever{border-color:var(--violet);background:var(--violet-soft)}
+.note.forever .who{color:var(--violet)}
+.note.warn{border-color:var(--danger)}
+.note.warn .who{color:var(--danger)}
+.note p:last-child{margin:0}
+.leave{font-family:var(--mono);font-size:.82rem;color:var(--muted);margin:0 0 6px}
+.leave b{color:var(--ink);font-weight:500}
+
+/* tables */
+.tbl{overflow-x:auto;margin:0 0 20px;border:1px solid var(--line);border-radius:6px}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:520px}
+th,td{padding:9px 12px;text-align:left;vertical-align:top;border-top:1px solid var(--line)}
+thead th{border-top:0;background:var(--surface);font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+td.mono,th.mono{font-family:var(--mono);font-size:.8rem;white-space:nowrap}
+tbody tr:nth-child(even) td{background:color-mix(in srgb,var(--surface) 55%,transparent)}
+
+/* class grid */
+.classes{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:0 0 20px}
+.classes article{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 16px;font-size:.94rem}
+.classes h4{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px}
+.classes .speed{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;color:var(--accent-ink);font-weight:500}
+.classes p{margin:0}
+
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px 32px;max-width:90ch}
+.foot{padding-top:32px;font-size:.88rem;color:var(--muted)}
+.foot ul{padding-left:1.2em}
+@media print{nav.toc{display:none}.cols{grid-template-columns:1fr}body{font-size:11pt}.steps input{display:none}.picker{display:none}}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast">
+  <div class="grid">
+    <div>
+      <div class="eyebrow">WoW Forever · Alliance · Skyborne (High Order) · 1–60</div>
+      <h1>The <span>Violet</span> Road</h1>
+      <p class="lede">A hub-by-hub route for an Alliance Skyborne: Zephras Isle to level 12, the airship to Dalaran, Loch Modan to 20, then the Alliance road to 60, with the class quests for Warrior, Hunter, Mage, Rogue and Druid folded into the steps. Pick your class once and the page shows only yours. The Skyborne do not exist in Classic Era, so the whole page is beta data; the isle is tester reports, the Alliance landing is an inference, and everything not certain is flagged.</p>
+      <p class="sister"><a href="index.html">All guides</a> · Horde Skyborne? <a href="skyborne-horde.html">The Falling Sky</a> · Sister guides: <a href="undead.html">The Forsaken Road</a> and <a href="tauren.html">The Long Walk</a>.</p>
+    </div>
+    <div class="stamp">
+      <b>Baseline</b> WoW Forever beta 1.60.1 (no Era data)<br>
+      <b>WoW Forever</b> beta Sep 17 → Oct 21, 2026<br>
+      <b>Forever launch</b> Nov 4, 2026 · cap stays 60<br>
+      <b>Page revised</b> Sep 19, 2026
+    </div>
+  </div>
+</header>
+
+<div class="cols">
+<nav class="toc" aria-label="Sections">
+  <div class="eyebrow">Route</div>
+  <ol id="toc-route">
+    <li><a href="#b1"><span class="lv">1–5</span>Thendal Village</a></li>
+    <li><a href="#b2"><span class="lv">5–8</span>Shen'dar Village</a></li>
+    <li><a href="#b3"><span class="lv">8–10</span>Falaath &amp; the Overlook</a></li>
+    <li><a href="#b4"><span class="lv">10–12</span>Valanaar &amp; the airship</a></li>
+    <li><a href="#b5"><span class="lv">12–20</span>Dalaran → Loch Modan</a></li>
+    <li><a href="#b6"><span class="lv">20–25</span>Wetlands · Ashenvale · Duskwood</a></li>
+    <li><a href="#b7"><span class="lv">25–30</span>Duskwood · Redridge · Wetlands II</a></li>
+    <li><a href="#b8"><span class="lv">30–35</span>Stranglethorn · Desolace · Hillsbrad</a></li>
+    <li><a href="#b9"><span class="lv">35–40</span>Arathi · Dustwallow</a></li>
+    <li><a href="#b10"><span class="lv">40–45</span>Badlands · Swamp · Stranglethorn</a></li>
+    <li><a href="#b11"><span class="lv">45–50</span>Tanaris · Feralas · Hinterlands</a></li>
+    <li><a href="#b12"><span class="lv">50–55</span>Un'Goro · Felwood · Steppes</a></li>
+    <li><a href="#b13"><span class="lv">55–60</span>Plaguelands · Winterspring</a></li>
+  </ol>
+  <div class="eyebrow">Reference</div>
+  <ol class="flat">
+    <li><a href="#start">Start here</a></li>
+    <li><a href="#racials">Racials</a></li>
+    <li><a href="#classes">Class pick &amp; filter</a></li>
+    <li><a href="#rules">Rules of the road</a></li>
+    <li><a href="#dungeons">Dungeons</a></li>
+    <li><a href="#logistics">Ironforge &amp; Stormwind logistics</a></li>
+    <li><a href="#mount">Mount &amp; gold</a></li>
+    <li><a href="#forever">WoW Forever watchlist</a></li>
+    <li><a href="#sources">Sources</a></li>
+  </ol>
+  <div class="prog" id="prog"></div>
+</nav>
+
+<main>
+
+<section id="start">
+  <div class="sec-head"><h2>Start here</h2></div>
+  <div class="prose">
+    <p>This is a route, not an encyclopedia. Each bracket tells you where to bind your hearthstone, which flight point to grab, and a numbered order of quests to run. Tick the boxes as you go; the page remembers them in this browser only.</p>
+    <p>Steps shaded in blue are <b>class quests</b>. Choose your class in <a href="#classes">Pick your class</a> and the other four classes' steps disappear; the choice is remembered, and <code>?class=mage</code> in the address bar does the same thing. With no class chosen every class step shows, each with a tag.</p>
+    <p>Two kinds of callouts appear throughout. <span class="tag era">Era</span> would be the Classic Era baseline; the Skyborne have none, so it only appears in the racials table to say so. <span class="tag forever">Forever</span> marks what WoW Forever has publicly changed or added and what to re-check in the beta client. Where a coordinate, count or quest name comes from a tester's forum post or from memory rather than a checked source it is tagged <span class="tag verify">verify</span>; treat those as "the right area", not gospel. On Zephras Isle that is almost everything, and nobody has yet posted where the Alliance airship lands.</p>
+    <p><span class="c">47,60</span> style numbers are map coordinates for the zone named in that step. Quest names are in <span class="q">bold</span>. Coordinates were checked for Loch Modan, the Ironforge class chains and the level-50 chains; the 20–60 brackets are built from Boston's and Jame's Alliance guides with the TBC-only content removed and are hub-and-chain level.</p>
+    <p>The shape of the route: the High Order airship is inferred to land at rebuilt Dalaran in the Alterac Mountains, a 30ish area, so a level-12 Skyborne rides out to Southshore, flies to Ironforge and joins the Alliance road in Loch Modan, the nearest 10–20 zone that also feeds the Wetlands at 20. From 20 the route is the standard Alliance one: Eastern Kingdoms hubs with Menethil's boats to Kalimdor when the quests are there. Ironforge is the home city on this page; Stormwind is a free tram ride away and holds the mage and rogue quest givers.</p>
+  </div>
+</section>
+
+<section id="racials">
+  <div class="sec-head"><h2>Why Skyborne</h2><span class="eyebrow">Racials</span></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Racial</th><th>Classic Era <span class="tag era">Era</span></th><th>WoW Forever <span class="tag forever">Forever</span></th><th>Leveling use</th></tr></thead>
+    <tbody>
+      <tr><td><b>Walk on Air</b> (active)</td><td>Race does not exist in Era.</td><td>Glide downward for 10 s while steering. Instant, 2 min cooldown, applies a Slow Fall aura. Not usable in arenas.</td><td>A free Slow Fall on a short cooldown. The Loch Modan dam, the Wetlands cliffs, Thousand Needles and every ledge in Stonetalon stop costing you the walk-around. Bind it on day one; it also saves the death when a mob knocks you off something.</td></tr>
+      <tr><td><b>Read Ley Line</b> (active, High Order only)</td><td>Race does not exist in Era.</td><td>2 s cast, 2 min cooldown: +100% health and mana regeneration for 15 s, or 15 min if a ley line is nearby. Arcane.</td><td>The best leveling racial of the four. Cast it after every fight and you skip most of the eating; find the ley lines (known on Zephras, unmapped on the mainland <span class="tag verify">verify</span>) and a mage or druid never drinks for a quarter of an hour. Casters, this is why you rolled Skyborne.</td></tr>
+      <tr><td><b>Wind Blessed</b> (passive)</td><td>Race does not exist in Era.</td><td>+1% melee, ranged and spell haste.</td><td>Small and always on. Slightly more auto-attacks for warriors and rogues, slightly faster Frostbolts and Wraths.</td></tr>
+      <tr><td><b>Elemental Insight</b> (passive)</td><td>Race does not exist in Era.</td><td>+5% damage to Elementals.</td><td>The Arathi binding circles, the Wetlands oozes, Mystral Lake's water elementals, the Cyclonian summon, the mage's Items of Power and Un'Goro's tar elementals all go faster. Marginal elsewhere.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="note forever"><div class="who">Forever</div><div><p>Every race gets two active and two passive racials in Forever. The High Order set is Walk on Air and Read Ley Line (active), Wind Blessed and Elemental Insight (passive); the Horde Windshapers swap Read Ley Line for Skysight. Tooltips are from the Wowhead Forever database and Method's racial list as of Sep 19, 2026 <span class="tag verify">verify</span>. No source reports a Skyborne-specific class quest; every class chain below is a standard Alliance one, and which race's version a Skyborne gets is guessed at and flagged.</p></div></div>
+</section>
+
+<section id="classes">
+  <div class="sec-head"><h2>Pick your class</h2><span class="eyebrow">Solo leveling speed, 1–60</span></div>
+  <div class="picker" role="group" aria-label="Show class quests for">
+    <span class="eyebrow">Show quests for</span>
+    <button type="button" data-pick="">All five</button>
+    <button type="button" data-pick="warrior">Warrior <span class="tag forever">Forever</span></button>
+    <button type="button" data-pick="hunter">Hunter <span class="tag forever">Forever</span></button>
+    <button type="button" data-pick="mage">Mage <span class="tag forever">Forever</span></button>
+    <button type="button" data-pick="rogue">Rogue <span class="tag forever">Forever</span></button>
+    <button type="button" data-pick="druid">Druid <span class="tag forever">Forever</span></button>
+    <p class="hint" id="pick-hint">Showing every class quest. Pick one and the other classes' steps are hidden everywhere on the page; the Evergreen addon does the same in-game from your character's class.</p>
+  </div>
+  <div class="classes">
+    <article data-class="hunter"><h4>Hunter <span class="tag forever">Forever</span> <span class="speed">Fastest</span></h4><p>A pet from level 10 and nothing ever touches you again. The isle has its own taming chain (three local winged beasts, which show as the Fox family once tamed <span class="tag verify">verify</span>), then Beast Training. Keep the pet fed, keep arrows stocked, and Read Ley Line between pulls so the pet's mend never waits on your mana.</p></article>
+    <article data-class="mage"><h4>Mage <span class="tag forever">Forever</span> <span class="speed">Fast</span></h4><p>Frostbolt, Frost Nova, repeat, and Read Ley Line makes the drinking that slows every other mage optional. The class quests are Ironforge's (Bink at 10 <span class="tag verify">verify</span>), then Stormwind's Manaweave Robe at 15 with its gems in Silver Stream Mine right on this route, the Astral Knot robe at 26, Tabetha's wand at 30–40, and Xylem at 50. The High Order's own class.</p></article>
+    <article data-class="druid"><h4>Druid <span class="tag forever">Forever</span> <span class="speed">Medium, then fast</span></h4><p>Slow until Bear Form at 10 (the Moonglade chain works for Skyborne per an Alliance tester; Lunaclaw is in Darkshore), steady until Cat Form at 20, then fast. Skyborne forms are sky-blue, feathered avian hybrids. Which druid trainer an Alliance Skyborne reports to is unconfirmed; this page routes through Mathrengyl Bearwalker in Darnassus <span class="tag verify">verify</span>, which makes the 14 and 16 chains a Darkshore trip.</p></article>
+    <article data-class="rogue"><h4>Rogue <span class="tag forever">Forever</span> <span class="speed">Medium</span></h4><p>Stealth past everything, kill one thing at a time. The Alliance class chains are race-specific at 10 (this page assumes Ironforge's Road to Salvation <span class="tag verify">verify</span>), then shared: Alther's Mill at 16, Klaven's Tower for Poisons at 20, Ravenholdt at 50 for the Sunken Temple mask.</p></article>
+    <article data-class="warrior"><h4>Warrior <span class="tag forever">Forever</span> <span class="speed">Slowest</span></h4><p>Gear-dependent and downtime-heavy, and the Skyborne bring no health racial to soften it; Read Ley Line at least halves the sitting. Stances come by quest: Defensive at 10 (Ironforge's Vejrek chain, assumed <span class="tag verify">verify</span>), Berserker at 30 (Fray Island) alongside the Whirlwind weapon chain. Run Deadmines and the Stockade for weapons, buy Heavy Linen Bandages by the stack.</p></article>
+  </div>
+  <div class="note forever"><div class="who">Forever</div><div><p>All five combinations are new in Forever; there is no Era baseline for any of them. The speed ranking is the Era ranking of the same classes on other Alliance races and every talent tree is reworked, so it may reshuffle. Beta testers report standard Classic class chains for hunters and druids and no Skyborne-only class quest for anyone <span class="tag verify">verify</span>.</p></div></div>
+</section>
+
+<section id="rules">
+  <div class="sec-head"><h2>Rules of the road</h2></div>
+  <div class="two prose">
+    <div>
+      <h4>Hearthstone policy</h4>
+      <ul>
+        <li>Bind it where the page tells you, and nowhere else. Every bracket has one hearth and one flight point to collect.</li>
+        <li>Your hearth starts bound on Zephras Isle (Thendal Village, presumably) <span class="tag verify">verify</span>. The isle is a place you leave; the first thing to do on the mainland is rebind, in Ironforge at the Stonefire Tavern, then at Thelsamar once you are questing there.</li>
+        <li>Ironforge is the hub of the Alliance flight net and the tram makes Stormwind free, so "bind in a capital" means Ironforge on this page unless a bracket says otherwise.</li>
+        <li>Log out in an inn or a capital. Rested XP doubles kill experience; a night's log-off is worth a bar and a half early on.</li>
+      </ul>
+      <h4>Kill order</h4>
+      <ul>
+        <li>Kill everything green or yellow on the way to an objective. Red is downtime, grey is nothing.</li>
+        <li>Turn in quests in batches. Walk the hub once per loop, not once per quest.</li>
+        <li>Skip escorts that fail on a bad pull, group quests you cannot solo two levels late, and anything that sends you across an ocean for a single turn-in.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Skyborne-specific habits</h4>
+      <ul>
+        <li>Bind Walk on Air and Read Ley Line on day one. Read Ley Line after every fight that cost you health or mana; the 2-second cast is shorter than sitting down.</li>
+        <li>Learn First Aid in Thendal or Valanaar if a trainer exists <span class="tag verify">verify</span>; otherwise from the Ironforge Physician in the Great Forge at 12. Bandages are your only emergency button until 20.</li>
+        <li>Skinning plus Herbalism from the isle onward, or Mining if you are a warrior. Nothing racial pushes a profession.</li>
+        <li>Class quests are in the steps, shaded and tagged. Do them when they appear: each one is a spell or form you cannot buy, and the level-10 ones (stance, pet, Blade of Cunning, Ley Staff, Bear Form) are the single biggest speed jump in the route.</li>
+        <li>You are a guest of the Alliance rather than a member in the isle's dialogue (the Horde side says so explicitly; the Alliance equivalent is unconfirmed <span class="tag verify">verify</span>). Ironforge and Stormwind reputation start at neutral either way.</li>
+      </ul>
+      <h4>Gold</h4>
+      <ul>
+        <li>Sell everything grey. Vendor whites that are not your weapon upgrade.</li>
+        <li>Mount money at 40 is 100 gold: 20 for Apprentice Riding and 80 for the mount. The Skyborne mount is the Galestrider, datamined as a reputation reward with no vendor found yet <span class="tag verify">verify</span>; the fallback is a ram from Veron Amberstill at Amberstill Ranch at Ironforge Exalted, or a horse or nightsaber at the matching city's Exalted. Druids have Travel Form at 30 and can push the purchase to 45.</li>
+        <li>Buy weapons, not armor. A green weapon two levels above yours is the one purchase that pays back.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================ -->
+<section id="b1" class="bracket" data-bracket="b1">
+  <div class="sec-head"><span class="eyebrow">1–5</span><h2>Thendal Village</h2></div>
+  <div class="meta">
+    <div><span class="k">Hub</span>Thendal Village, north-west corner of Zephras Isle <span class="tag verify">verify</span></div>
+    <div><span class="k">Hearth</span>Bound to Thendal at creation, presumably; no inn reported <span class="tag verify">verify</span></div>
+    <div><span class="k">Flight point</span>None known on the isle. It is a flying island; travel is on foot.</div>
+    <div><span class="k">Trainers</span>Class trainers in the village <span class="tag verify">verify</span>. Both factions start here and play the same quests.</div>
+  </div>
+  <div class="note warn"><div class="who">Read first</div><div><p>No quest list for Zephras Isle has been published. Blizzard puts every zone at 50 to 200 quests; testers finish the isle at 13 to 14. What follows is the story order from beta reports, the two quest names that are public, and the subzone names from the beta map, split across the four settlements at levels that are an estimate <span class="tag verify">verify</span>. Take every quest a hub offers and clear it before moving on; the isle is linear and you will not miss anything by doing so.</p></div></div>
+  <div class="note"><div class="who">Before you move</div><div><p>Turn on Auto Loot in the Interface options. Bind keys to Walk on Air and Read Ley Line. Read the class scroll you spawn with if there is one: it is a free turn-in at your trainer <span class="tag verify">verify</span>. The zone plays as a U: start here in the north-west, south and downhill through forest and farmland, then back up to the north-east and the finale.</p></div></div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body">Take every quest in the village. The opening beats establish that the wind spirits are gone, the anchor pylons holding the isle aloft are failing, and Al'Aketh cultists (the cult of Al'Akir) are inside the village. Expect wildlife kills and cult infiltration errands around Thendal Grove, Thendal Cave and the Thendal Standing Stones <span class="tag verify">verify</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Shriekling Den and Nightclaw Cavern are the two named beast lairs on the map; expect a collect quest in each and treat them as your first grind spots <span class="tag verify">verify</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Clear the village's quests to level 5, train, and walk south. Level 5 is a guess at where the village runs out <span class="tag verify">verify</span>.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 5, south into the Shen'dar Highlands. There is no breadcrumb between the villages; testers complained about it.</p>
+  <div class="note forever"><div class="who">Forever</div><div><p>Blessing of Zephras (+40% run speed for 5 minutes, breaks on hostile action) is datamined for this zone; its source object is undocumented <span class="tag verify">verify</span>. Read Ley Line gets its 15-minute duration at special isle locations, so cast it near anything that looks like a ley line. Access to the isle requires the Skyborne Heroic Pack or higher.</p></div></div>
+</section>
+
+<!-- ================================================================ -->
+<section id="b2" class="bracket" data-bracket="b2">
+  <div class="sec-head"><span class="eyebrow">5–8</span><h2>Shen'dar Village &amp; the Highlands</h2></div>
+  <div class="meta">
+    <div><span class="k">Hub</span>Shen'dar Village, Shen'dar Highlands <span class="tag verify">verify</span></div>
+    <div><span class="k">Hearth</span>Bind here if the village has an inn; otherwise leave it on Thendal <span class="tag verify">verify</span></div>
+    <div><span class="k">Flight point</span>None</div>
+    <div><span class="k">Trainers</span>Unknown; train at Valanaar at 10 if not before <span class="tag verify">verify</span></div>
+  </div>
+  <div class="note warn"><div class="who">Among the Faithful</div><div><p>A stealth quest: hide behind the wardrobe in the cultists' house and eavesdrop. The protective buff drops if you log out, so finish it in one sitting. It was bugged on Sep 17 and 18 (the wardrobe did not spawn); the workaround was a full client restart or grouping with someone on another layer. If it is still broken you can skip it and leave the isle under-levelled, but do not.</p></div></div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body">Walk south into the highlands and take the village's quests. <span class="q">Among the Faithful</span> is the one everyone names: eavesdrop on the Al'Aketh from behind the wardrobe, then turn in to Constable Aonda <span class="tag verify">verify</span>. Aonda's Written Report is a quest item in the client, so expect a delivery or two from him next.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>The farmland loop.</b> Bandits at the Bandit Hideout (a camping-system scroll in the cave gives a temporary fire-damage weapon buff; take it), corrupted wildlife in the Gustberry Lowlands and Windfield Orchard, and Fairweather Stables. Which hub gives which of these is unreported; do them from whichever offers them <span class="tag verify">verify</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">The Windshaper and High Order rivalry starts to show in the dialogue here. You are the High Order's agent; the Windshaper shamans think you rely on the wrong power. Level 8 by the end of the farmland <span class="tag verify">verify</span>.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 8, on toward Falaath Village.</p>
+</section>
+
+<!-- ================================================================ -->
+<section id="b3" class="bracket" data-bracket="b3">
+  <div class="sec-head"><span class="eyebrow">8–10</span><h2>Falaath Village &amp; the Overlook</h2></div>
+  <div class="meta">
+    <div><span class="k">Hub</span>Falaath Village, position unverified <span class="tag verify">verify</span></div>
+    <div><span class="k">Hearth</span>As before</div>
+    <div><span class="k">Flight point</span>None</div>
+    <div><span class="k">Areas</span>Overlook Standing Stones, Rise of Spirits, Shrine of Akir, the druid enclave</div>
+  </div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body">Falaath is the third, minor hub. The rivalry escalates: you witness a secret meeting between a High Order magister and the Al'Aketh, the cultists murder the magister, and the High Order blame you. Do the quests in the order the village offers them <span class="tag verify">verify</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Overlook Standing Stones and the Rise of Spirits: the spirit-side quests, where the Windshapers try to reach whatever elementals are left, and the High Order look for arcane answers instead <span class="tag verify">verify</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Shrine of Akir is the cult stronghold and the bridge there (Blizzard Watch's "Shrine of Alar") is the last set of quests before the capital <span class="tag verify">verify</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>The druid enclave</b> near the end of the zone fights the Al'Aketh and runs an old-school reputation grind: its quests take you to Friendly, then a repeatable cultist-ear turn-in continues it. Do the quests, skip the grind; nothing in the Galestrider datamine says how much rep the mount needs <span class="tag verify">verify</span>.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 10 for Valanaar.</p>
+</section>
+
+<!-- ================================================================ -->
+<section id="b4" class="bracket" data-bracket="b4">
+  <div class="sec-head"><span class="eyebrow">10–12</span><h2>Valanaar, the Sanctum of Storms, and the airship</h2></div>
+  <div class="meta">
+    <div><span class="k">Hub</span>Valanaar, the capital, neutral to both factions</div>
+    <div><span class="k">Hearth</span>Valanaar's inn if there is one <span class="tag verify">verify</span></div>
+    <div><span class="k">Flight point</span>Valanaar Skydocks: one airship dock per faction; the High Order dock flies the Kirin Tor flag</div>
+    <div><span class="k">Trainers</span>Train at 10 here <span class="tag verify">verify</span>. Class quests below; the ones that need the mainland are carried to Ironforge.</div>
+  </div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body">Escort the cult defector to Valanaar. He is found dead but leaves the intel that matters: the Al'Aketh plan to destroy the anchor pylons that hide the isle. Train at 10, learn professions if the city has trainers <span class="tag verify">verify</span>.</span></label></li>
+    <li data-class="hunter"><label><input type="checkbox"><span class="body"><span class="tag cls">Hunter</span><b>Level 10: your pet.</b> The isle has a Classic-style chain: three Taming the Beast rods for three local winged beasts, then Beast Training for Feed Pet and Revive Pet <span class="tag verify">verify</span>. The tamed beasts show as the Fox family. Beta bug: if Beast Training is greyed out afterwards, dismiss, abandon and re-tame. If the training step sends you to a capital, it is Belia Thundergranite in Ironforge's Hall of Arms or Stormwind's Einris Brightspear <span class="tag verify">verify</span>. Tame whichever has the highest damage; feed it.</span></label></li>
+    <li data-class="druid"><label><input type="checkbox"><span class="body"><span class="tag cls">Druid</span><b>Level 10: Bear Form.</b> Your druid trainer gives <span class="q">Heeding the Call</span> and teaches Teleport: Moonglade <span class="tag verify">verify</span>. In Nighthaven, Dendrite Starblaze <span class="c">56,30</span> gives <span class="q">Great Bear Spirit</span>: walk due west along the mountains to the spirit at <span class="c">39,27</span>, finish its dialogue, return. <span class="q">Back to Darnassus</span> and <span class="q">Body and Heart</span> then run through Mathrengyl Bearwalker in the Cenarion Enclave <span class="c">38,22</span> for Alliance <span class="tag verify">verify</span>; the Moonkin Stone is in the cave east of Auberdine, Darkshore <span class="c">43,46</span>. From Moonglade take Leora, the druid-only hippogryph, to Rut'theran, then the boat to Auberdine (if a Skyborne may use her <span class="tag verify">verify</span>; otherwise it is the Menethil boat at 12). Use the Lunardust, fight Lunaclaw (12) with Mark of the Wild, Thorns, Roots and Wrath, hearth. One Alliance Skyborne confirmed the chain works; some players hit a missing follow-up bug.</span></label></li>
+    <li data-class="warrior rogue mage"><label><input type="checkbox"><span class="body"><span class="tag cls">Warrior · Rogue · Mage</span><b>Level 10 breadcrumbs.</b> The Alliance level-10 warrior, rogue and mage chains are race-specific: Stormwind's (Bartleby, SI:7, Jennea Cannon), Ironforge's (Muren Stormpike, Hulfdan Blackbeard, Bink) or Darnassus' (Elanaria, Syurna). Which one a Skyborne trainer hands out is unreported <span class="tag verify">verify</span>. This page assumes the Ironforge versions, because Ironforge is where the route lands, and puts them in the next bracket; if your trainer's breadcrumb names Stormwind instead, take the tram.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>The truce and the finale.</b> Windshapers and High Order agree to a truce against the cult (the High Order say openly they will kill the Windshapers' agent afterwards; on your side the setup differs but the climax is shared <span class="tag verify">verify</span>). <span class="q">A Firm Response</span>: confront the magister Belathaan Brightwish; High Priestess Lorthuna and two Living Storms spawn. Then the portal to the floating Skywall tower: Rohash, the djinn lord of the Four Winds, appears; the Kirin Tor (Ansirem Runeweaver) and the Earthen Ring (Muln Earthfury) arrive as reinforcements; you beat back his elementals and he retreats, talking about other lost Skyborne provinces. The quest was bugged on Sep 18 and fixed within a day; layer-hop by relogging if it recurs.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Sanctum of Storms, Rohashi Spires and the Ruins of Ban'aethal in the north-east (blue-fog Shadowgale Forest, a sleeping Altarius parked in the ruins) are the end-of-zone areas. Testers finish at 13 to 14, so leave at 12 with quests still in the log if the isle is crowded.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 12. Airship from the High Order dock at the Valanaar Skydocks. Where it lands has not been posted; the Kirin Tor flag on the dock, Ansirem Runeweaver in the finale and the High Order's stated Kirin Tor alignment all point at Dalaran in the Alterac Mountains <span class="tag verify">verify</span>.</p>
+  <div class="note forever"><div class="who">Forever</div><div><p>Blizzard calls Zephras a self-contained experience "added with care and restraint": there are no raids or farms here and you are not expected to come back. A pre-beta forum claim gives Alliance Skyborne "their own district in Dalaran behind the Violet Citadel"; treat it as rumour <span class="tag verify">verify</span>.</p></div></div>
+</section>
+
+<!-- ================================================================ -->
+<section id="b5" class="bracket" data-bracket="b5">
+  <div class="sec-head"><span class="eyebrow">12–20</span><h2>Dalaran to Loch Modan</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Ironforge (transit) · Thelsamar <span class="c">34,48</span> · Farstrider Lodge <span class="c">82,62</span></div>
+    <div><span class="k">Hearth</span>Ironforge, Innkeeper Firebrew at the Stonefire Tavern in The Commons, on arrival; then Thelsamar, Innkeeper Hearthstove <span class="c">35,48</span></div>
+    <div><span class="k">Flight points</span>Southshore (Darla Harris) on the way out, Ironforge (Gryth Thurden, Great Forge <span class="c">55,48</span>), Thelsamar (Thorgrum Borrelson, hill south of town <span class="c">34,51</span>)</div>
+    <div><span class="k">Trainers</span>Ironforge has warrior, hunter, rogue and mage trainers; druids train in Darnassus. Fly back at 14 and 18 (Thelsamar → Ironforge is one hop).</div>
+  </div>
+  <div class="note"><div class="who">Why Loch Modan</div><div><p>Dalaran and the Alterac wilds are 28–33 content; a level-12 cannot quest there. Of the Alliance 10–20 zones, Loch Modan is one flight from Ironforge, its north road drops straight into the Wetlands at 20 where the Alliance 20–25 bracket starts, and Ironforge holds the class-quest NPCs this page assumes for a Skyborne plus the tram to Stormwind. Darkshore would mean a Menethil boat and a Kalimdor start away from the 20–25 hubs; Westfall a longer Stormwind detour that ends in Redridge, which the route reaches later anyway. If Forever gives Dalaran a flight master or a breadcrumb quest to a new 12–20 Alliance area, follow that instead <span class="tag verify">verify</span>.</p></div></div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body"><b>Getting out of Alterac.</b> From Dalaran ride south on the road into Hillsbrad and on to Southshore <span class="c">50,58</span> <span class="tag verify">verify</span>, staying on the road: the mobs are 20–30 and Walk on Air is your escape off the cliffs. Grab Darla Harris' flight point and fly Southshore → Ironforge. If Dalaran turns out to have a flight master, fly direct.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Ironforge.</b> Bind at the Stonefire Tavern, get the flight point from Gryth Thurden in the Great Forge, train, learn First Aid from the Physician <span class="c">55,58</span>, pick up professions. Gnoarn in Tinker Town gives <span class="q">Find Bingles</span> for the loch. Then the class quests below.</span></label></li>
+    <li data-class="warrior"><label><input type="checkbox"><span class="body"><span class="tag cls">Warrior</span><b>Level 10: Defensive Stance.</b> <span class="q">Muren Stormpike</span> in the Hall of Arms, Military Ward <span class="c">66,89</span> gives <span class="q">Vejrek</span>: the Frostmane troll stands south of Frostmane Hold in Dun Morogh <span class="c">27,57</span>; bring his head for Defensive Stance, Taunt and Sunder Armor. <span class="q">Tormus Deepforge</span> in the Great Forge <span class="c">49,43</span> <span class="tag verify">verify</span> then sends you to <span class="q">Ironband's Compound</span> in east Dun Morogh <span class="c">77,61</span>: loot the Umbral Ore from the chest past Captain Beld (11) and his Dark Iron dwarves, and <span class="q">Grey Iron Weapons</span> pays your first real weapon. All assuming a Skyborne gets Ironforge's chain <span class="tag verify">verify</span>.</span></label></li>
+    <li data-class="rogue"><label><input type="checkbox"><span class="body"><span class="tag cls">Rogue</span><b>Level 10: Blade of Cunning.</b> <span class="q">Road to Salvation</span> → Hulfdan Blackbeard in the Forlorn Cavern <span class="c">52,15</span> → <span class="q">Simple Subterfugin'</span>: find Onin MacHammar on the ramp outside Gnomeregan, west Dun Morogh <span class="c">25,44</span> → <span class="q">Onin's Report</span> back to Hulfdan for the Blade of Cunning. Assumes the Ironforge chain <span class="tag verify">verify</span>; Stormwind's is <span class="q">Seek out SI:7</span> and a pickpocket at Jerod's Landing.</span></label></li>
+    <li data-class="mage"><label><input type="checkbox"><span class="body"><span class="tag cls">Mage</span><b>Level 10: Ley Staff.</b> <span class="q">Speak with Bink</span> → Bink in the Hall of Mysteries, Mystic Ward <span class="c">27,8</span> → <span class="q">Mage-tastic Gizmonitor</span>: search the huts outside Gnomeregan, west Dun Morogh <span class="c">28,36</span> <span class="tag verify">verify</span>, for the Gizmonitor. Assumes the Ironforge chain; Stormwind's is <span class="q">Speak with Jennea</span> → <span class="q">Mirror Lake</span> <span class="tag verify">verify</span>. Reward: Ley Orb or Ley Staff.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Thelsamar (12–13).</b> Fly to Thelsamar, bind. Mountaineer Kadrell patrolling by the inn: <span class="q">Rat Catching</span> (12 Tunnel Rat Ears, kobolds outside Silver Stream Mine <span class="c">35,19</span> and the camps west of the north road) and <span class="q">Mountaineer Stormpike's Task</span>. Vidra Hearthstove at the bar: <span class="q">Thelsamar Blood Sausages</span> (3 Bear Meat, 3 Spider Ichor, 3 Boar Intestines, north of town). Brock in the hut east <span class="c">37,48</span>: <span class="q">Honor Students</span> → Thorgrum → <span class="q">Ride to Ironforge</span> (skippable; the Deep Mountain Mining Guild in Ironforge and back). Skip <span class="q">Stout to Kadrell</span>: it starts in Dun Morogh.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Valley of Kings (12–14).</b> The bunker in the south-west <span class="c">22,73</span>: Mountaineer Cobbleflint's <span class="q">In Defense of the King's Lands</span> (10 Stonesplinter Troggs, 10 Scouts) and Captain Rugelfuss' <span class="q">The Trogg Threat</span> (8 Trogg Stone Teeth) in Stonesplinter Valley <span class="c">32,73</span>. Turn in; Wallbang inside gives part two (10 Skullthumpers, 10 Seers, same valley, turn in to Gravelgaw), then part three (10 Shamans, 10 Bonesnappers on the northern loch islands <span class="c">54,26</span>), then Rugelfuss' finale (Grawmug, Gnasher and Brawler in the west cave; group of two).</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Algaz Station and Silver Stream (13–14).</b> The tower at <span class="c">25,18</span>, upstairs: turn in Stormpike's Task, take <span class="q">Filthy Paws</span> (4 Miners' Gear from crates inside Silver Stream Mine <span class="c">35,19</span>; the kobolds come in threes, pull to the entrance) and <span class="q">Stormpike's Order</span> (to Furen Longbeard in Stormwind's Dwarven District; carry it for the tram trip). Finish Rat Catching outside the mine. Hearth, turn in the sausages and the ears. Level 14: fly to Ironforge to train, fly back.</span></label></li>
+    <li data-class="mage"><label><input type="checkbox"><span class="body"><span class="tag cls">Mage</span><b>Level 15: Manaweave Robe.</b> <span class="q">Report to Jennea</span> → tram to Stormwind, Jennea Cannon in the Wizard's Sanctum, Mage Quarter <span class="c">39,82</span>. <span class="q">Investigate the Blue Recluse</span>: take the Cantation and the coffers from behind her, reveal and capture the invisible Rift Spawn in the Blue Recluse tavern, 3 Filled Containment Coffers. <span class="q">Gathering Materials</span>: 10 Linen Cloth and 6 Charged Rift Gems from the crates in Silver Stream Mine, which you are clearing for Filthy Paws anyway, to Wynne Larson at Larson Clothiers in the Mage Quarter for the <span class="q">Manaweave Robe</span>. Hand Stormpike's Order to Furen Longbeard on the same trip.</span></label></li>
+    <li data-class="druid"><label><input type="checkbox"><span class="body"><span class="tag cls">Druid</span><b>Level 14: Cure Poison.</b> Bearwalker's <span class="q">Lessons Anew</span> → Dendrite in Moonglade → <span class="q">The Principal Source</span>: fill the sampler at Cliffspring Falls, Darkshore <span class="c">55,34</span> <span class="tag verify">verify</span>. Alanndarian Nightsong in Auberdine takes it and gives <span class="q">Gathering the Cure</span> (12 Lunar Fungus from the caves around Auberdine, 5 Earthroot) and <span class="q">Curing the Sick</span> (salve on 10 Sickly Deer). Back through Moonglade to Bearwalker for <span class="q">Power over Poison</span>. Darkshore is reached by the Menethil boat (Thelsamar → Menethil is one flight) or the druid hippogryph from Moonglade; bundle it with the 16 chain below and do both in one trip. Assumes a Skyborne gets the Alliance version <span class="tag verify">verify</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Ironband's Excavation (15–17).</b> Jern Hornhelm in the south-east house: <span class="q">Ironband's Excavation</span> → Magmar Fellhew at the dig <span class="c">65,65</span> (round the south tip of the loch, then east). <span class="q">Gathering Idols</span> (8 Carved Stone Idols from the troggs at the dig), Prospector Ironband's <span class="q">Excavation Progress Report</span> → Jern → <span class="q">Report to Ironforge</span> (Prospector Stormpike, Hall of Explorers) → <span class="q">Powder to Ironband</span> → Jern → <span class="q">Resupplying the Excavation</span>: Huldar on the south shore, a Dark Iron ambush, <span class="q">After the Ambush</span> to Miran (respawns in two minutes), <span class="q">Protecting the Shipment</span>, escort Miran to the dig past two Dark Iron Raiders.</span></label></li>
+    <li data-class="druid"><label><input type="checkbox"><span class="body"><span class="tag cls">Druid</span><b>Level 16: Aquatic Form.</b> <span class="q">A Lesson to Learn</span> → <span class="q">Trial of the Lake</span>: the Shrine Bauble sits somewhere on the bottom of Lake Elune'ara (bubbling fissures refill breath), carry it to the Shrine of Remulos in north-west Moonglade, talk to Tajarri; 30-minute timer. <span class="q">Trial of the Sea Lion</span>, Alliance halves: dive between the two boulders in the far-north Darkshore sea <span class="c">49,11</span>, and off the Westfall coast at <span class="c">18,33</span>, straight down into fatigue water (do that one from Sentinel Hill at 20). Combine at the shrine, show Bearwalker. Aquatic Form plus the Aquarius Belt. Assumes the Alliance halves <span class="tag verify">verify</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Farstrider Lodge (17–18).</b> <span class="c">82,62</span> on the east side: Marek Ironheart's <span class="q">Crocolisk Hunting</span> (5 meat, 6 skins from the Loch Crocolisks on the southern and middle islands <span class="c">55,54</span>), Daryl the Youngling's <span class="q">A Hunter's Boast</span> (6 Mountain Buzzards south-west <span class="c">77,74</span>, 15-minute timer) → <span class="q">A Hunter's Challenge</span> (Elder Mountain Boars north-west, 12-minute timer; 5 or 8 <span class="tag verify">verify</span>) → Vyrin Swiftwind's <span class="q">Vyrin's Revenge</span>: Ol' Sooty on Grizzlepaw Ridge <span class="c">42,65</span>, 20-minute respawn, a group of two. Bingles on the east shore <span class="c">64,47</span>: turn in Find Bingles, do <span class="q">Bingles' Missing Supplies</span> around the northern islands (Blastencapper <span class="c">54,26</span>, Hammer <span class="c">52,24</span>, Wrench <span class="c">49,30</span>, Screwdriver <span class="c">48,20</span>; 5-minute respawns).</span></label></li>
+    <li data-class="rogue"><label><input type="checkbox"><span class="body"><span class="tag cls">Rogue</span><b>Level 16: Alther's Mill.</b> Your trainer's breadcrumb (<span class="q">To Hulfdan!</span> for Ironforge rogues <span class="tag verify">verify</span>) → <span class="q">Kingly Shakedown</span> → <span class="q">Redridge Rendezvous</span>: Lucius in Lakeshire → <span class="q">Alther's Mill</span> (level 20, needs 16): pick the practice lockboxes at the mill directly east of Lakeshire, open Lucius' Lockbox for the Token of Thievery. Certificate of Thievery and 1,550 XP. Redridge is a Stormwind flight; do it at 20 when the next bracket passes through, and get Lockpicking to 75 on the boxes for the Poisons quest.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>The Stonewrought Dam and Mo'grosh (18–20).</b> Chief Engineer Hinderweir VII at the dam <span class="c">47,13</span>: <span class="q">A Dark Threat Looms</span>, the Suspicious Barrel east of the dam <span class="c">56,13</span>, then 2 Dark Iron Sappers (17), then the later parts through the Mo'grosh ogres and Dark Iron dwarves (seven parts to 20 <span class="tag verify">verify</span>). Magistrate Bluntnose in Thelsamar: <span class="q">Mercenaries</span> (Mo'grosh Enforcers and Brutes at the stronghold in the north-east corner <span class="c">72,22</span> <span class="tag verify">verify</span>) and <span class="q">WANTED: Chok'sul</span> (level-20 elite in the cave; group). Walk on Air off the dam is the fastest way onto the north islands. Grizzlepaw Ridge for the last bars.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Deadmines (18–23) if a group forms in Ironforge: <span class="q">Collecting Memories</span> and <span class="q">Oh, Brother...</span> (Wilder Thistlenettle, Stormwind Dwarven District), <span class="q">Underground Assault</span> (Shoni the Shilent), <span class="q">Red Silk Bandanas</span> (Scout Riell, Sentinel Hill). VanCleef's Unsent Letter starts the Stockade chain. A tram and a flight to Sentinel Hill; worth it at 19–20, not before.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 20. North past Algaz Station through Dun Algaz into the Wetlands, then north and west to Menethil Harbor. Rebind there.</p>
+  <div class="note forever"><div class="who">Forever</div><div><p>Nothing announced touches Loch Modan. The Wetlands expansion, new content north of here, is the thing to watch at 20; it may add a hub between Dun Algaz and Menethil. Dalaran itself is a 30ish city with its own quests and the 28–33 City of Dalaran dungeon; you come back for it in the 30–35 bracket.</p></div></div>
+</section>
+
+<!-- ================================================================ -->
+<section id="b6" class="bracket" data-bracket="b6">
+  <div class="sec-head"><span class="eyebrow">20–25</span><h2>Wetlands, Ashenvale, then Duskwood</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Menethil Harbor <span class="c">11,52</span> · Astranaar <span class="c">36,50</span> · Darkshire <span class="c">74,45</span></div>
+    <div><span class="k">Hearth</span>Menethil (Deepwater Tavern, Innkeeper Helbrek) 20–22, Astranaar (Innkeeper Kimlya) 22–24, Darkshire (Scarlet Raven Tavern, Innkeeper Trelayne) at 24</div>
+    <div><span class="k">Flight points</span>Menethil (Shellei Brondir), Auberdine (Caylais Moonfeather), Astranaar (Daelyshia), Darkshire (Felicia Maline), Sentinel Hill (Thor) and Lakeshire (Ariena Stormfeather) when you pass</div>
+    <div><span class="k">Boats</span>Menethil → Auberdine (The Bravery) and Menethil → Theramore, both from the Menethil docks</div>
+  </div>
+  <div class="note"><div class="who">Order</div><div><p>Boston's 20–30 guide starts in Redridge and Duskwood and reaches the Wetlands third; you arrive from Loch Modan, so the Wetlands come first, the boat takes you to Ashenvale, and the boat back drops you a flight from Duskwood at 24. Rogues who need Alther's Mill and Klaven's Tower fold them into the Duskwood leg. Forest Song in Ashenvale is TBC content; it is not there.</p></div></div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body"><b>Wetlands 20–22.</b> Bind, flight point. Mountaineer Rockgar's <span class="q">The Algaz Gauntlet</span> (Dun Algaz tunnel, on the way in), Einar Stonegrip's <span class="q">Daily Delivery</span> <span class="c">49,39</span>, Tarrel Rockweaver's <span class="q">In Search of The Excavation Team</span> → Merrin Rockweaver at Whelgar's site <span class="c">33,38</span>, James Halloran's <span class="q">Young Crocolisk Skins</span>, Karl Boran's <span class="q">Claws from the Deep</span> (Bluegill murloc camps on the coast <span class="c">14,38</span>), First Mate Fitzsimmons' <span class="q">The Greenwarden</span> → Rethiel <span class="c">56,40</span>, Sida's <span class="q">Digging Through the Ooze</span> (Black Oozes <span class="c">44,24</span>; Elemental Insight), Ormer Ironbraid's <span class="q">Ormer's Revenge</span> one to three at Whelgar's (Sarltooth is a 29 elite on the ledge; stop at two). Red Jack Flint's <span class="q">Fiora Longears</span> is a free turn-in on the Auberdine pier.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Ashenvale 22–24.</b> Boat to Auberdine (turn in Fiora Longears, get the flight point), road south past the Grove of the Ancients into Ashenvale. Maestra's Post <span class="c">26,38</span>: Orendil Broadleaf's <span class="q">Bathran's Hair</span> → <span class="q">Orendil's Cure</span>, Delgren the Purifier's <span class="q">The Tower of Althalaxx</span> steps. Astranaar: bind, Raene Wolfrunner's <span class="q">Raene's Cleansing</span> (Teronis' corpse at Lake Falathim, Dal Bloodclaw <span class="c">34,37</span>, Elune's Tears on the Iris Lake island <span class="c">46,46</span>), Shindrell Swiftfire's <span class="q">The Zoram Strand</span> (feeds Blackfathom Deeps), Sentinel Thenysil's <span class="q">On Guard in Stonetalon</span> → Kaela Shadowspear at the Webwinder Path camp, Sentinel Velene Starstrike's <span class="q">Elemental Bracers</span> at Silverwind Refuge <span class="c">50,67</span> (Foulweald furbolg camps <span class="c">50,61</span>). Shael'dryn's moonwell <span class="c">53,46</span> for Raene's later steps.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Blackfathom Deeps (24–32) if a group forms in Astranaar: The Zoram Strand, Gershala Nightwhisper's <span class="q">Researching the Corruption</span> (Auberdine), <span class="q">Twilight Falls</span> and <span class="q">In Search of Thaelrid</span> from Darnassus, and <span class="q">Blackfathom Villainy</span> inside. Otherwise the boat back to Menethil at 24.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Duskwood 24–25.</b> Boat to Menethil, fly Ironforge → Stormwind → Darkshire (collect Sentinel Hill and Lakeshire as you can). Bind. Elaine Carevin's <span class="q">Raven Hill</span> → <span class="q">Deliveries to Sven</span> (starts the Jitters and Sven / Morbent Fel chains), Watcher Dodds' <span class="q">Eight-Legged Menaces</span> <span class="c">45,66</span>, Lars' <span class="q">Wolves at Our Heels</span> at Sven's camp <span class="c">7,33</span>, Abercrombie's <span class="q">Supplies from Darkshire</span> <span class="c">27,31</span>, Commander Althea Ebonlocke's <span class="q">The Night Watch</span>, Chef Grual's <span class="q">Seasoned Wolf Kabobs</span>, Tavernkeep Smitts' <span class="q">Gather Rot Blossoms</span>, Madame Eva's <span class="q">Deliver the Thread</span> and <span class="q">The Totem of Infliction</span>. Click the Weathered Grave <span class="c">17,28</span> to start the Mor'Ladim chain. Tranquil Gardens Cemetery <span class="c">79,70</span> skeletons are the grind at 21–23, Raven Hill Cemetery <span class="c">24,36</span> at 23–25.</span></label></li>
+    <li data-class="rogue"><label><input type="checkbox"><span class="body"><span class="tag cls">Rogue</span><b>Level 20: Poisons.</b> Tram or fly to Stormwind: Master Mathias Shaw in SI:7, Old Town <span class="c">76,60</span>, gives <span class="q">Mathias and the Defias</span> → Agent Kearnen by the abandoned tower at the south end of Westfall. <span class="q">Klaven's Tower</span>: pickpocket the Defias Tower Key from a Malformed Defias Drone, enter the tower on the Westfall–Duskwood border, sap or kill Klaven Mortwake, take his journal from the Duskwood Chest. Shaw teaches Poisons and gives Recipe: Thistle Tea. <span class="q">The Touch of Zanzil</span>: Doc Mixilpixil in the Barracks cellar cures the seven-day debuff for a Simple Wildflowers, a Leaded Vial, a Bronze Tube and a Spool of Light Chartreuse Silk Thread. Do <span class="q">Alther's Mill</span> in Redridge on the same loop if you carried it from 16.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">The Stockade (22–30) from Stormwind any time in this stretch: <span class="q">Crime and Punishment</span> (Councilman Millstipe, Darkshire), <span class="q">What Comes Around...</span> (Guard Berton, Lakeshire), <span class="q">The Fury Runs Deep</span> (Motley Garmason, Dun Modr in the Wetlands; it unlocks the Dark Iron War later), <span class="q">The Stockade Riots</span> (Warden Thelwater, after the Unsent Letter chain). One clear is a level and a half.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 25, hearth bound to Darkshire.</p>
+  <div class="note forever"><div class="who">Forever</div><div><p>The <b>Wetlands expansion</b> is the announced Alliance change that sits on this bracket: new content north of Menethil with no published level range. If it is 20–25 it replaces the Ashenvale boat trip; if 25–30 it slots into the next bracket's Wetlands leg. Watch it before anything else on this page.</p></div></div>
+</section>
+
+<!-- ================================================================ -->
+<section id="b7" class="bracket" data-bracket="b7">
+  <div class="sec-head"><span class="eyebrow">25–30</span><h2>Duskwood II, Redridge, Wetlands II, a Stonetalon pass</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Darkshire · Lakeshire <span class="c">30,45</span> · Menethil Harbor · Astranaar and Stonetalon Peak <span class="c">43,16</span></div>
+    <div><span class="k">Hearth</span>Darkshire 25–27, Menethil at 28–29. Stonetalon Peak has no inn in Classic.</div>
+    <div><span class="k">Flight points</span>Lakeshire (Ariena Stormfeather), Stonetalon Peak (Teloren), Thalanaar (Thyssiana) if you ride south for Thousand Needles</div>
+  </div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body"><b>Duskwood 25–28.</b> Viktori Prism'Antras' <span class="q">Look to the Stars</span> (needs a Bronze Tube), Madame Eva → Clerk Daltry's <span class="q">The Legend of Stalvan</span> (thirteen steps through Stormwind's Cathedral and Keep, Goldshire, the Moonbrook schoolhouse footlocker <span class="c">41,66</span> in Westfall, ending at Manor Mistmantle; do it in one loop), Calor's <span class="q">Worgen in the Woods</span> (Gutspill's cave <span class="c">73,75</span>), Althea Ebonlocke's later <span class="q">The Night Watch</span> parts, Chef Grual's <span class="q">Return to Jitters</span>. Sven's chain continues (<span class="q">Proving Your Worth</span> → <span class="q">Seeing What Sven Sees?</span> → <span class="q">Sven's Camp</span>) and ends at Morbent Fel with a group and the Lightforged Blade. Raven Hill Cemetery ghouls and the catacombs are the grind at 26–30.</span></label></li>
+    <li data-class="mage"><label><input type="checkbox"><span class="body"><span class="tag cls">Mage</span><b>Level 26: Astral Knot Garment.</b> High Sorcerer Andromath in the Wizard's Sanctum gives <span class="q">Ur's Treatise on Shadow Magic</span>: the book is in Morganth's library at the Tower of Ilgalar in east Redridge <span class="c">79,49</span>, which the next step visits anyway. <span class="q">Pristine Spider Silk</span> from the giant spiders of Duskwood or the Wetlands <span class="tag verify">verify</span>, then <span class="q">Astral Knot Garment</span>. The best caster chest until Tabetha.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Redridge 25–27.</b> Fly to Lakeshire. Guard Howe's <span class="q">Blackrock Bounty</span>, Marshal Marris' <span class="q">Shadow Magic</span> → <span class="q">Tharil'zun</span> and <span class="q">Blackrock Menace</span> (Stonewatch Keep <span class="c">67,55</span>, the tower <span class="c">63,50</span> for Midnight Orbs), the <span class="q">WANTED: Gath'Ilzogg</span> and <span class="q">WANTED: Lieutenant Fangore</span> posters (Fangore at <span class="c">80,38</span>), Bailiff Conacher's <span class="q">Solomon's Law</span>, Martie Jainrose's <span class="q">An Unwelcome Guest</span> (Bellygrub <span class="c">16,49</span>), Verner Osgood's <span class="q">A Baying of Gnolls</span> → <span class="q">Howling in the Hills</span> (Yowler <span class="c">27,21</span>), Dockmaster Baren's fish and murloc jobs, Corporal Keeshan's <span class="q">Missing in Action</span> escort from Render's Camp <span class="c">35,9</span>. The Stormwind stop on the way: Collin Mauren's <span class="q">Retrieval for Mauren</span> and Thomas' <span class="q">The Missing Diplomat</span> in Cathedral Square, a chain you carry to Theramore.</span></label></li>
+    <li data-class="warrior"><label><input type="checkbox"><span class="body"><span class="tag cls">Warrior</span><b>Level 28, optional: Fire Hardened armor.</b> Three parallel chains from the trainer's breadcrumb <span class="tag verify">verify</span>: Grimand Elmore in Stormwind's Dwarven District → <span class="q">Burning Blood</span> (20 Burning Blood from the Nightbane worgen in Roland's Doom, south-east Duskwood, plus a Burning Rock from Gutspill) → Fire Hardened Coif; Klockmort Spannerspan in Ironforge → <span class="q">Iron Coral</span> (20 Searing Coral clicked in the water south of Menethil) → Fire Hardened Gauntlets; Mathiel in Darnassus → <span class="q">Sunscorched Shells</span> (20 from under the Highperch nests in Thousand Needles) → Fire Hardened Leggings. The coif and gauntlets are on this bracket's route; do them. Skip the leggings unless you ride to the Needles.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Wetlands 28–29.</b> Fly to Menethil, rebind. Karl Boran's <span class="q">Reclaiming Goods</span>, James Halloran's <span class="q">Apprentice's Duties</span>, Harlo Barnaby's <span class="q">Fall of Dun Modr</span> → Captain Stoutfist at Whelgar's (<span class="q">War Banners</span>, the Dragonmaw chain at Angerfang <span class="c">43,43</span>), First Mate Fitzsimmons' <span class="q">The Third Fleet</span> chain (the wrecked ship <span class="c">21,64</span>), Prospector Whelgar's <span class="q">Uncovering the Past</span>, Dun Modr <span class="c">49,18</span>: Longbraid the Grim's <span class="q">A Grim Task</span> (group), Motley Garmason's <span class="q">The Dark Iron War</span> if you did The Fury Runs Deep, Rhag Garmason's three-part Thandol Span chain that ends in Arathi. Dark Iron camps at <span class="c">61,28</span>; Balgaras the Foul.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Stonetalon and Ashenvale second pass, 29–30.</b> Boat to Auberdine, fly Astranaar. Raene's Cleansing continues at Shael'dryn's moonwell, the Althalaxx step at 28, Shindrell's <span class="q">Pridewings of Stonetalon</span> (Mirkfallon Lake <span class="c">47,45</span>), Ziz Fizziks at Windshear Crag <span class="c">58,62</span> (<span class="q">Super Reaper 6000</span> → <span class="q">Further Instructions</span> → <span class="q">Gerenzo Wrenchwhistle</span>), Gaxim Rustfizzle at the Webwinder Path camp <span class="c">59,66</span> (<span class="q">A Gnome's Respite</span> chain, <span class="q">Special Delivery for Gaxim</span>), Kaela Shadowspear's <span class="q">Covert Ops</span> → <span class="q">Enraged Spirits</span> → <span class="q">Wounded Ancients</span>, Blackened Basilisks in the Charred Vale <span class="c">32,66</span> for Retrieval for Mauren. Grab the Stonetalon Peak flight point; the Talondeep Path <span class="c">43,71</span> in Ashenvale is the tunnel between the zones. Walk on Air off the Charred Vale rim.</span></label></li>
+    <li data-class="rogue"><label><input type="checkbox"><span class="body"><span class="tag cls">Rogue</span><b>Level 24, optional: Ravenholdt.</b> <span class="q">The Manor, Ravenholdt</span> and <span class="q">Syndicate Emblems</span> open the Ravenholdt reputation at the manor north of Durnholde in Hillsbrad <span class="c">76,43</span> <span class="tag verify">verify</span>. Take them when the next bracket lands you in Southshore; the level-50 chain starts at the same manor.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Gnomeregan (29–38) and Razorfen Kraul (29–38) with groups: Gnomeregan from Tinker Town (<span class="q">Save Techbot's Brain!</span>, <span class="q">Data Rescue</span>, <span class="q">Essential Artificials</span>, <span class="q">The Grand Betrayal</span>) and Kharanos (<span class="q">Gnogaine</span> → <span class="q">The Only Cure is More Green Glow</span>); the Kraul from Thalanaar (<span class="q">The Crone of the Kraul</span> after Lonebrow's Journal at the Great Lift) and Darnassus (<span class="q">Mortality Wanes</span>).</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 30. Druids: train Travel Form first. From Stonetalon ride south down the Barrens to Ratchet (PvP realms: it is Horde country) for the boat to Booty Bay, or hearth and fly Ironforge → Booty Bay once you have its flight point.</p>
+  <div class="note forever"><div class="who">Forever</div><div><p>Nothing announced touches Duskwood, Redridge or Stonetalon. The Wetlands expansion may add to the 28–29 leg here.</p></div></div>
+</section>
+
+<!-- ================================================================ -->
+<section id="b8" class="bracket" data-bracket="b8">
+  <div class="sec-head"><span class="eyebrow">30–35</span><h2>Stranglethorn, Shimmering Flats, Hillsbrad and Dalaran, Desolace</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Booty Bay <span class="c">27,77</span> · Nesingwary's Expedition <span class="c">35,10</span> · Rebel Camp <span class="c">37,3</span> · Southshore <span class="c">50,58</span> · Nijel's Point <span class="c">63,10</span></div>
+    <div><span class="k">Hearth</span>Booty Bay (Salty Sailor Tavern, Innkeeper Skindle) 30–34, Southshore (Innkeeper Anderson) at 34, Nijel's Point (Innkeeper Lyshaerya) for Desolace</div>
+    <div><span class="k">Flight points</span>Booty Bay (Gyll, on the inn roof), Southshore (Darla Harris), Nijel's Point (Baritanas Skyriver), Gadgetzan (Bera Stonehammer) on the Flats trip. Rebel Camp has no flight point in Classic.</div>
+  </div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body"><b>Duskwood loose ends, 30–31.</b> Clerk Daltry's <span class="q">The Caravan Road</span> → <span class="q">The Carevin Family</span> → Jonathan Carevin's <span class="q">The Scythe of Elune</span> (continues in Ashenvale and Darnassus), Worgen in the Woods at Gutspill's cave, Morbent Fel with a group. Stormwind: Brohann Caskbelly in the Dwarven District <span class="c">69,40</span> gives <span class="q">In Search of The Temple</span> at 43; note it for later.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Shimmering Flats 30–32.</b> Thalanaar flight point, then the Mirage Raceway <span class="c">80,77</span>: Wizzle's <span class="q">Hardened Shells</span>, Fizzle's <span class="q">Salt Flat Venom</span>, Pozzik's <span class="q">Load Lightening</span>, Kravel Koalbeard's <span class="q">Rocket Car Parts</span> → <span class="q">Wharfmaster Dizzywig</span> → <span class="q">Parts for Kravel</span>, <span class="q">Hemet Nesingwary Jr.</span>, <span class="q">A Bump in the Road</span>, <span class="q">Martek the Exiled</span> (carry to the Badlands), <span class="q">Goblin Sponsorship</span> (carry to Booty Bay). Keep 10 Turtle Meat for Southshore's <span class="q">Soothing Turtle Bisque</span>. Ride on to Gadgetzan for its flight point. Walk on Air is the whole point of the Needles.</span></label></li>
+    <li data-class="mage"><label><input type="checkbox"><span class="body"><span class="tag cls">Mage</span><b>Level 30: the wand chain begins.</b> <span class="q">Journey to the Marsh</span> from your trainer → Tabetha in Dustwallow Marsh <span class="c">43,57</span> (Theramore boat from Menethil, or ride from the Barrens). <span class="q">Hidden Secrets</span> → Magus Tirth at the Mirage Raceway <span class="c">77,76</span>, right where you are: <span class="q">Get the Scoop</span> (/beckon Plucky Johnson the chicken) → <span class="q">Rituals of Power</span>, the book from the Athenaeum bookshelf in Scarlet Monastery's Library at 34–38. <span class="q">Items of Power</span> wants a Jade and a Bolt Charged Bramble (10 Witherbark Totem Sticks from the Arathi trolls, used at the Circle of Outer Binding during a thunderstorm); that is the 35–40 bracket. <span class="q">Mage's Wand</span> at 40: Icefury, Ragefire or Nether Force Wand.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Stranglethorn 32–34.</b> Nesingwary's: <span class="q">Welcome to the Jungle</span>, Ajeck's <span class="q">Tiger Mastery</span>, Erlgadin's <span class="q">Panther Mastery</span>, Hemet's <span class="q">Raptor Mastery</span>, tiers one and two (plateau <span class="c">30,9</span>, panthers <span class="c">41,10</span>, Bal'lal Ruins <span class="c">29,20</span>, Tkashi Ruins <span class="c">33,15</span>). Rebel Camp: Sergeant Yohwa's <span class="q">The Second Rebellion</span> → <span class="q">Bad Medicine</span>, Private Thorsen's <span class="q">Jungle Secrets</span>, Lieutenant Doren's <span class="q">Bookie Herod</span> chain toward Colonel Kurzen (compound <span class="c">44,11</span>), Corporal Kaleb's <span class="q">Krazek's Cookery</span>. Booty Bay: Drizzlik's <span class="q">Supply and Demand</span>, Krazek's <span class="q">Investigate the Camp</span>, Kebok's <span class="q">Bloodscalp Ears</span> and <span class="q">Hostile Takeover</span>, Crank Fizzlebub's <span class="q">Singing Blue Shards</span>, Baron Revilgaz's <span class="q">The Stone of the Tides</span> (the island <span class="c">21,22</span>; water elementals, Elemental Insight). Start keeping Green Hills pages.</span></label></li>
+    <li data-class="warrior"><label><input type="checkbox"><span class="body"><span class="tag cls">Warrior</span><b>Level 30: Berserker Stance.</b> Any warrior trainer gives <span class="q">The Islander</span>: Klannoc Macleod on Fray Island off the Barrens coast south of Ratchet <span class="c">68,48</span>. Booty Bay → Ratchet boat, swim from the sand bar. <span class="q">The Affray</span>: step on the grate, kill the challenger waves, then Big Will (33). Berserker Stance and Intercept. <span class="q">The Windwatcher</span> then points at Bath'rah in Alterac <span class="c">80,67</span>, a ride from Southshore on this bracket's Hillsbrad leg: take <span class="q">Cyclonian</span> from him (8 Liferoot, 30 Bloodscalp Tusks from the trolls north of Nesingwary's, and the Essence of the Exile from Arathi next bracket). Farm the tusks now.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Hillsbrad 34–35.</b> Fly to Southshore, rebind. Lieutenant Farren Orinelle's <span class="q">Down the Coast</span> → <span class="q">Farren's Proof</span> → <span class="q">Stormwind Ho!</span> → <span class="q">Reassignment</span> (naga on the east shore; Major Samuelson in Stormwind Keep), Phin Odelic's <span class="q">Hints of a New Plague?</span> (Go'Shek Farm, Arathi <span class="c">60,53</span>), Magistrate Maleb's <span class="q">Syndicate Assassins</span>, Darren Malvew's <span class="q">Costly Menace</span>, <span class="q">Bartolo's Yeti Fur Cloak</span>, Marshal Redpath's <span class="q">Crushridge Bounty</span> (Alterac ogres; the Warmongers follow-up is a group), <span class="q">Soothing Turtle Bisque</span> with the meat you saved. Alterac side trips: <span class="q">Encrypted Letter</span> and <span class="q">Foreboding Plans</span> from the Syndicate documents at Sofera's Naze <span class="c">58,67</span>, Corrahn's Dagger <span class="c">47,76</span>, the Headland <span class="c">38,85</span>. Ravenholdt for rogues while you are north.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Desolace 33–35.</b> Boat Menethil → Auberdine, fly Nijel's Point. Corporal Melkins' <span class="q">Centaur Bounty</span>, Vahlarriel Demonslayer's <span class="q">Vahlarriel's Search</span> chain (Thunder Axe Fortress <span class="c">56,30</span>, the Dalinda escort), Kreldig Ungor's <span class="q">Reagents for Reclaimers Inc.</span> and <span class="q">The Karnitol Shipwreck</span> (Ranazjar Isle <span class="c">30,9</span>, Slitherblade naga; the turn-ins are in Ironforge's Hall of Explorers), Azore Aldamort's <span class="q">The Sceptre of Light</span> → <span class="q">Search for Tyranis</span> <span class="c">38,27</span>, Smeed Scrabblescrew's <span class="q">Kodo Roundup</span> <span class="c">60,61</span>, Bibbly F'utzbuckle's <span class="q">Bone Collector</span> (Kodo Graveyard <span class="c">48,55</span>), Brother Anton's <span class="q">Down the Scarlet Path</span> (it unlocks Southshore's <span class="q">In the Name of the Light</span> for the Monastery). Pick Gelkis or Magram only if you want the Maraudon scepter chain.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Scarlet Monastery (34–45) from Southshore: <span class="q">Mythology of the Titans</span> (Librarian Mae Paledust, Hall of Explorers), <span class="q">In the Name of the Light</span> (Raleigh the Devout, Southshore inn, after Brother Anton's chain), and the mage's Rituals of Power in the Library.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 35. Hearth to Southshore, ride east across the Thandol Span road into Arathi; Refuge Pointe has no flight point until you have walked to it.</p>
+  <div class="note forever"><div class="who">Forever</div><div><p><b>Dalaran</b> is the Forever change that sits on this bracket: a rebuilt, grounded Kirin Tor city in Alterac with its own quests ("strange magical trouble") and the 28–33 <b>City of Dalaran</b> dungeon, and it is where you landed at 12. The High Order follow the Kirin Tor, so expect your race's hooks here; if the city is dense it replaces the Hillsbrad leg and possibly Desolace. Shen'Dralas, the Highborne ruins between Mulgore and Desolace, is your ancestors' story with no published level range; Nijel's Point is the Alliance side of that door <span class="tag verify">verify</span>.</p></div></div>
+</section>
+
+<!-- ================================================================ -->
+<section id="b9" class="bracket" data-bracket="b9">
+  <div class="sec-head"><span class="eyebrow">35–40</span><h2>Arathi Highlands, Stranglethorn tier two, Dustwallow Marsh</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Refuge Pointe <span class="c">46,47</span> · Booty Bay · Theramore Isle <span class="c">56,50</span> · Dun Modr</div>
+    <div><span class="k">Hearth</span>Southshore for Arathi (Refuge Pointe has no innkeeper in Classic), Booty Bay at 37, Theramore (Innkeeper Janene) at 38</div>
+    <div><span class="k">Flight points</span>Refuge Pointe (Cedrik Prose), Theramore (Baldruc); the Menethil → Theramore boat</div>
+  </div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body"><b>Arathi 35–37.</b> Captain Nials' <span class="q">Northfold Manor</span> → <span class="q">Stromgarde Badges</span> (15 from the Syndicate inside Stromgarde; the keep is elite, the badges are not), Archmage Malin's <span class="q">Malin's Request</span> from Stormwind → Apprentice Kryten's <span class="q">Worth Its Weight in Gold</span> → the Tower of Arathor chain (<span class="q">Wand over Fist</span>, <span class="q">Trelane's Defenses</span>, <span class="q">An Apprentice's Enchantment</span>, <span class="q">Attack on the Tower</span>; elites in the tower, group), Quae's <span class="q">Hints of a New Plague?</span> escort at Go'Shek Farm <span class="c">60,53</span>, Witherbark village <span class="c">63,65</span> for tusks and pouches, the Thandol Span chain's end, Rhag Garmason's Dark Iron work at the span. The Circles of Binding elementals are your grind: Elemental Insight, and the warrior and mage both need them.</span></label></li>
+    <li data-class="warrior"><label><input type="checkbox"><span class="body"><span class="tag cls">Warrior</span><b>Whirlwind weapon.</b> 8 Burning Charms (Circle of West Binding <span class="c">26,30</span>), 8 Thundering Charms (Circle of Outer Binding <span class="c">51,49</span>), 8 Cresting Charms (Circle of East Binding <span class="c">67,31</span>). Ride to Bath'rah <span class="c">80,67</span>, combine them at his cauldron into the Essence of the Exile, turn in <span class="q">Cyclonian</span>, then <span class="q">The Summoning</span>: Cyclonian is a level 40 elite that stuns, so bring a partner or come back at 40. <span class="q">Whirlwind Weapon</span> pays a Whirlwind Axe, Sword or Warhammer, the best leveling weapon a warrior holds until 50.</span></label></li>
+    <li data-class="mage"><label><input type="checkbox"><span class="body"><span class="tag cls">Mage</span><b>Items of Power.</b> 10 Witherbark Totem Sticks from the Witherbark trolls <span class="c">65,65</span>, then stand at the Circle of Outer Binding <span class="c">51,48</span> in a thunderstorm and use them for the Bolt Charged Bramble. Buy a Jade. Both go to Tabetha in Dustwallow with the Rituals of Power book for <span class="q">Mage's Wand</span> at 40.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Stranglethorn 37–40.</b> Fly to Booty Bay. The Kurzen chain to <span class="q">Colonel Kurzen</span> (the cave <span class="c">46,20</span>), Brother Nimetz's <span class="q">Kurzen's Mystery</span> → <span class="q">Troll Witchery</span> → <span class="q">Mai'Zoth</span> (Mosh'Ogg mound <span class="c">49,28</span>, group), Panther and Raptor Mastery tier three, Catelyn the Blade's <span class="q">"Pretty Boy" Duncan</span> <span class="c">28,69</span>, <span class="q">Venture Company Mining</span> and Foreman Cozzle at the Lake Nazferiti base <span class="c">42,18</span>, McGavan's <span class="q">The Mithril Order</span>, Bloodscalp and Skullsplitter ears and tusks, the Vile Reef water elementals for the Stone of the Tides. Green Hills chapters to Barnil Stonepot as they fill.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Dustwallow 38–40.</b> Boat Menethil → Theramore, rebind. <span class="q">The Missing Diplomat</span> steps 13 to 17 (Mikhail in Menethil → Commander Samaul → Archmage Tervosh → Private Hendel at Sentry Point <span class="c">60,40</span> → Lady Jaina Proudmoore): Alliance-only and the best XP in the zone. Vincent Hyal's <span class="q">James Hyal</span> → Clerk Lendry, Guard Byron's <span class="q">They Call Him Smiling Jim</span>, Morgan Stern's <span class="q">Mudrock Soup and Bugs</span> chain from the inn, "Stinky" Ignatz's <span class="q">Stinky's Escape</span> from North Point Tower, Fiora Longears' <span class="q">Highperch Venom</span>, Tabetha's mage-tower quests at <span class="c">43,57</span>. Nat Pagle, Alcaz Island and Mudsprocket are TBC; they are not there.</span></label></li>
+    <li data-class="mage"><label><input type="checkbox"><span class="body"><span class="tag cls">Mage</span><b>Level 40: Mage's Wand, then the Celestial chain.</b> Turn in Items of Power, Hidden Secrets and Rituals of Power to Tabetha for the wand. <span class="q">Return to the Marsh</span> → <span class="q">The Infernal Orb</span> → <span class="q">The Exorcism</span> (a group fight at her farm) → <span class="q">Power in Uldaman</span> (Uldaman, next bracket) → <span class="q">Mana Surges</span> → <span class="q">Celestial Power</span> pays the Celestial Orb or Celestial Stave. Optional, but the stave carries to 50.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Razorfen Downs (37–46) from Stormwind's Cathedral: Archbishop Benedictus' <span class="q">Bring the Light</span>; Belnistrasz's <span class="q">An Unholy Alliance</span> inside. Uldaman pre-quests to collect now for 41–46: Prospector Stormpike's <span class="q">The Lost Dwarves</span> (Hall of Explorers), Prospector Ironband's <span class="q">Ironband Wants You!</span> (Loch Modan), Krom Stoutarm's <span class="q">Reclaimed Treasures</span>, Talvash del Kissel's necklace chain (Mystic Ward), Advisor Belgrum's <span class="q">The Lost Tablets of Will</span>, Ghak Healtouch's <span class="q">Badlands Reagent Run</span> (Thelsamar).</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 40 with the mount bought, if a Galestrider vendor exists by then <span class="tag verify">verify</span>; otherwise keep the gold and fly. Boat to Menethil, fly to Thelsamar, ride south into the Badlands.</p>
+  <div class="note forever"><div class="who">Forever</div><div><p><b>Riverdale</b>, a new 35–45 zone east of Burning Steppes and the Badlands, sits exactly on top of this bracket. If it is dense, it replaces the Dustwallow leg entirely; it is a ride from Thelsamar or Morgan's Vigil.</p></div></div>
+</section>
+
+<!-- ================================================================ -->
+<section id="b10" class="bracket" data-bracket="b10">
+  <div class="sec-head"><span class="eyebrow">40–45</span><h2>Badlands, Swamp of Sorrows, Stranglethorn tier three</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Thelsamar and Ironforge for the Badlands · The Harborage <span class="c">26,31</span> · Nethergarde Keep <span class="c">65,19</span> · Booty Bay</div>
+    <div><span class="k">Hearth</span>Ironforge for the Badlands leg (no Alliance town in the zone), Booty Bay for Stranglethorn</div>
+    <div><span class="k">Flight points</span>Nethergarde Keep (Alexandra Constantine); Thelsamar and Booty Bay you have. Swamp of Sorrows has no Alliance flight point in Classic.</div>
+  </div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body"><b>Badlands 40–42.</b> Ride in from Loch Modan. Prospector Ryedol at Hammertoe's Digsite <span class="c">53,43</span>: <span class="q">A Dwarf and His Tools</span> → <span class="q">A Sign of Hope</span>; Martek the Exiled in the Valley of Fangs <span class="c">42,52</span>: <span class="q">Indurium</span> and the Shimmering Flats letter; Lotwil Veriatus and Rigglefuzz <span class="c">25,44</span>: <span class="q">Study of the Elements: Rock</span> → <span class="q">This Is Going to Be Hard</span> (Elemental Insight), <span class="q">Barbecued Buzzard Wings</span>, <span class="q">Power Stones</span>; Theldurin the Lost at Agmond's End <span class="c">50,62</span>: <span class="q">Solution to Doom</span>; Prospector Ironband's <span class="q">Find Agmond</span> → <span class="q">Agmond's Fate</span> → <span class="q">Murdaloc</span>; Lucien Tosselwrench's <span class="q">Stone is Better than Cloth</span>. Camp Kosh <span class="c">67,22</span> and Camp Cagg <span class="c">10,72</span> ogres and the rock elementals <span class="c">17,83</span> fill gaps.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Uldaman (41–51) with a group: everything you collected last bracket plus <span class="q">The Hidden Chamber</span> (Baelog inside), <span class="q">The Platinum Discs</span> at Khaz'goroth's Seat, and the mage's Power in Uldaman. One clear is two levels; the follow-up <span class="q">Seeing What Happens</span> from Historian Karnik goes to the Uldum pedestal in Tanaris later.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Stormwind stop.</b> Brohann Caskbelly's <span class="q">In Search of The Temple</span> (Dwarven District <span class="c">69,40</span>) starts the Alliance Sunken Temple chain through the Hinterlands; Mazen Mac'Nadir's <span class="q">Mazen's Behest</span> (Cathedral <span class="c">40,63</span>) sends you to the Swamp; Watchmaster Sorigal in Darkshire has <span class="q">Supplies for Nethergarde</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Stranglethorn 42–44.</b> Fly to Booty Bay. First Mate Crazz's <span class="q">The Bloodsail Buccaneers</span> chain (camps <span class="c">29,80</span>, ships <span class="c">34,88</span>), Kebok's <span class="q">Skullsplitter Tusks</span> (Ziata'Jai <span class="c">42,36</span>, Balia'mah <span class="c">45,33</span>, Zul'Mamwe <span class="c">47,38</span>), Privateer Bloads' <span class="q">Akiris by the Bundle</span> (naga <span class="c">24,65</span>), Crank Fizzlebub's <span class="q">Zanzil's Secret</span> → <span class="q">Fool's Stout</span> (Aboraz <span class="c">40,57</span>, Jubuwal <span class="c">33,51</span>), Fin Fizracket's <span class="q">Stranglethorn Fever</span> (Unbagwa's cave <span class="c">35,61</span>), Krazek's <span class="q">Tran'Rek</span> (carry to Gadgetzan), Raptor Mastery's Tethis <span class="c">29,43</span>, <span class="q">Big Game Hunter</span> (King Bangalash <span class="c">38,34</span>, partner), Princess Poobah and King Mukla on Jaguero Isle, Cortello's Riddle (the bottle on the beach; the chest is in the Hinterlands). Green Hills tablets at Zul'Kunda <span class="c">21,10</span> and Gri'lek's <span class="c">24,22</span>.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Swamp of Sorrows 44–45.</b> Ride in from Deadwind or fly Nethergarde once you have it. Anchorite Avuun at the Harborage <span class="c">26,31</span>: <span class="q">Help Watcher Biggs</span> → Watcher Biggs' <span class="q">Encroaching Wildlife</span>, <span class="q">The Lost Caravan</span>, <span class="q">Driftwood</span>, <span class="q">Deliver the Shipment</span> (to Nethergarde). Mazen's essays at the Misty Valley <span class="c">13,35</span>, the Soggy Scroll under the bridge <span class="c">23,49</span>, the Pool of Tears Atal'ai artifacts <span class="c">65,45</span> (underwater; druids in Aquatic Form, everyone else surfaces between dives) that open the Sunken Temple, Noboru the Cudgel. Nethergarde Keep: Watcher Mahar Ba's turn-ins, Thadius Grimshade's <span class="q">Nekrum's Medallion</span> for Zul'Farrak, Quartermaster Lungertz. No inn there in Classic.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Scarlet Monastery Armory and Cathedral (38–42) if you skipped them; Razorfen Downs; Maraudon's <span class="q">Shadowshard Fragments</span> from Archmage Tervosh in Theramore for 46+.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 45. Fly Booty Bay → Gadgetzan (or Nethergarde → Ironforge → Gadgetzan is not a path; Gadgetzan links to Thalanaar and Theramore on the Alliance net, so boat to Theramore and fly). Rebind in Gadgetzan.</p>
+</section>
+
+<!-- ================================================================ -->
+<section id="b11" class="bracket" data-bracket="b11">
+  <div class="sec-head"><span class="eyebrow">45–50</span><h2>Tanaris, Feralas, the Hinterlands, Searing Gorge</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Gadgetzan <span class="c">51,28</span> · Feathermoon Stronghold <span class="c">31,43</span> <span class="tag verify">verify</span> · Aerie Peak <span class="c">14,44</span> · Thorium Point <span class="c">36,27</span></div>
+    <div><span class="k">Hearth</span>Gadgetzan (Innkeeper Fizzgrimble) 45–47, Feathermoon (Innkeeper Shyria) in Feralas, Aerie Peak (Wildhammer Keep, Innkeeper Thulfram) 47–49, Ironforge for Searing Gorge</div>
+    <div><span class="k">Flight points</span>Gadgetzan (Bera Stonehammer), Feathermoon (island stronghold; the ferry from the Forgotten Coast), Aerie Peak (Guthrum Thunderfist), Thorium Point (Lanie Reed)</div>
+  </div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body"><b>Tanaris 45–47.</b> Tran'rek's <span class="q">Thistleshrub Valley</span> <span class="c">28,67</span>, Senior Surveyor Fizzledowser's <span class="q">Gadgetzan Water Survey</span> → <span class="q">Noxious Lair Investigation</span> (Noxious Lair <span class="c">31,51</span>, Gaping Chasm <span class="c">55,70</span>), Curgle Cranklehop's <span class="q">Handle with Care</span> → <span class="q">The Borrower</span>, Marin Noggenfogger's elixir chain (<span class="q">The Thirsty Goblin</span> → <span class="q">In Good Taste</span> → <span class="q">Sprinkle's Secret Ingredient</span> → <span class="q">Delivery for Marin</span>), Andi Lynn's <span class="q">The Dunemaul Compound</span> (Gor'marok <span class="c">40,56</span>), Marvon Rivetseeker's Gahz'ridian at Eastmoon <span class="c">48,64</span> and Southmoon <span class="c">41,72</span>, <span class="q">Wastewander Justice</span> and <span class="q">Water Pouch Bounty</span> at Waterspring Field <span class="c">63,37</span>, Lost Rigger Cove <span class="c">68,41</span> pirates (Andre Firebeard, Stoley's Shipment, and the best grind at 44–45), Yeh'kinya's <span class="q">Screecher Spirits</span> → <span class="q">The God Hakkar</span> at Steamwheedle, Pestlezugg's <span class="q">Rise of the Silithid</span>, the Uldum pedestal <span class="c">38,79</span> for Seeing What Happens.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Zul'Farrak (44–54) with a group: Nekrum's Medallion, Tran'rek's <span class="q">Scarab Shells</span>, Trenton Lighthammer's <span class="q">Troll Temper</span>, Bilgewhizzle's <span class="q">Divino-matic Rod</span>, Yeh'kinya's <span class="q">The Prophecy of Mosh'aru</span>, Tabetha's <span class="q">Tiara of the Deep</span>, and Wizzle's <span class="q">Gahz'rilla</span> once you have the Sacred Mallet from the Altar of Zul. Best XP per hour in this bracket.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Feralas 45–47, and back at 50.</b> Fly Thalanaar or Feathermoon. Shandris Feathermoon's <span class="q">The Ruins of Solarsal</span> <span class="c">26,52</span> → <span class="q">Return to Feathermoon</span>, Latronicus Moonspear's <span class="q">Against the Hatecrest</span> → <span class="q">Against Lord Shalzaru</span> (Isle of Dread cave <span class="c">26,67</span>), Ginro Hearthkindle's <span class="q">The Missing Courier</span> chain (the row boat <span class="c">45,65</span>) → Quintis' <span class="q">The Knife Revealed</span> → <span class="q">The Woodpaw Gnolls</span> → <span class="q">The Writhing Deep</span> <span class="c">74,63</span> → <span class="q">A Hero's Welcome</span>, Kindal and Jer'Kai Moonweaver's <span class="q">Freedom for All Creatures</span> → <span class="q">Doling Justice</span> at the Grimtotem compound <span class="c">65,45</span>, Troyas Moonbreeze's <span class="q">In Search of Knowledge</span> → <span class="q">The Stave of Equinex</span> → <span class="q">The Morrow Stone</span> (Equinex Monolith <span class="c">38,13</span>), Pratt McGrubben's <span class="q">The Mark of Quality</span> (yetis <span class="c">55,56</span>), the Gordunni ogres at Isildien <span class="c">61,53</span>. Dire Maul in the centre is Eldre'Thalas, the city your ancestors fled; nothing reported changes its quests for a Skyborne, but look <span class="tag verify">verify</span>. Morrowgrain is a rep grind; skip it.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Hinterlands 47–49.</b> Fly Ironforge → Aerie Peak, rebind. Falstad Wildhammer's <span class="q">To The Hinterlands</span> → Gryphon Master Talonaxe → Rhapsody Shindigger at his camp <span class="c">26,48</span> → <span class="q">Rhapsody's Kalimdor Kocktail</span> → <span class="q">Rhapsody's Tale</span> → <span class="q">Into The Temple of Atal'Hakkar</span>, the Alliance Sunken Temple chain. Agnar Beastamer's <span class="q">Featherbeard's Endorsement</span> → <span class="q">In Pursuit of Featherbeard</span> (hovel <span class="c">13,54</span>) → <span class="q">Reclaiming the Eggs</span> at Shadra'Alor <span class="c">36,64</span>, Witherbark cages at Zun'watha <span class="c">23,58</span> and Hiri'watha <span class="c">32,57</span>, Green Sludges at Agol'watha <span class="c">46,40</span> and Jade Oozes at Skulk Rock <span class="c">56,44</span> (Elemental Insight), Gammerita on the coast, Cortello's chest at the waterfall <span class="c">79,48</span>, the Altar of Zul <span class="c">49,64</span> for the Sacred Mallet, the OOX-09/HL escort <span class="c">49,37</span>. Jammal'an the Prophet from the Atal'ai Exile is the neutral Sunken Temple quest.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Searing Gorge 48–50.</b> Fly to Thorium Point (no inn; Ironforge hearth). Kalaran Windblade's torch chain (<span class="q">Divine Retribution</span> → <span class="q">The Flawless Flame</span> → <span class="q">Forging the Shaft</span> → <span class="q">The Flame's Casing</span> → <span class="q">The Torch of Retribution</span>; Overseer Maltorius in the Slag Pit <span class="c">41,54</span>), Dorius Stonetender's <span class="q">Suntara Stones</span> → <span class="q">Dwarven Justice</span> → <span class="q">Rise, Obsidion!</span> at the Grimesilt Dig Site, <span class="q">The Horn of the Beast</span> (Margol the Rager), Zamael Lunthistle's <span class="q">Prayer to Elune</span>, the Wooden Outhouse's <span class="q">Caught!</span>, Master Smith Burninate's <span class="q">What the Flux?</span>, Hansel Heavyhands' <span class="q">Incendosaurs? Whateverosaur is More Like It</span>, the wanted posters <span class="c">37,26</span>, the four Sentry Braziers, Dark Iron Scraps for Thorium Brotherhood rep.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 50. Fly to Gadgetzan and ride down the slope at <span class="c">27,57</span> into Un'Goro Crater; Marshal's Refuge has an Alliance flight point (Gryfe) once you have walked to it.</p>
+</section>
+
+<!-- ================================================================ -->
+<section id="b12" class="bracket" data-bracket="b12">
+  <div class="sec-head"><span class="eyebrow">50–55</span><h2>Un'Goro Crater, Felwood, Burning Steppes, Azshara</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Marshal's Refuge <span class="c">45,8</span> · Talonbranch Glade <span class="c">62,24</span> · Morgan's Vigil <span class="c">73,66</span> <span class="tag verify">verify</span> · Talrendis Point <span class="c">10,74</span></div>
+    <div><span class="k">Hearth</span>Gadgetzan while in Un'Goro (no inn at the Refuge), Ironforge for Searing Gorge and the Steppes; Talonbranch and Talrendis have no inns in Classic</div>
+    <div><span class="k">Flight points</span>Marshal's Refuge (Gryfe), Talonbranch Glade (Mishellena), Morgan's Vigil (Borgus Stoutarm), Talrendis Point (Jarrodenus)</div>
+  </div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body"><b>Un'Goro 50–52.</b> Williden Marshal's <span class="q">Williden's Journal</span> → <span class="q">Expedition Salvation</span>, J.D. Collie's <span class="q">Crystals of Power</span> → <span class="q">Making Sense of It</span> → the three pylon quests (<span class="c">76,48</span>, <span class="c">54,13</span>, <span class="c">23,57</span>; pick up every crystal you see), Karna Remtravel's <span class="q">Chasing A-Me 01</span> (Fungal Rock <span class="c">63,16</span>), Spark Nilminer's <span class="q">Roll the Bones</span>, Hol'anyee's <span class="q">Alien Ecology</span>, Torwa Pathfinder's Lar'korwi chain (egg piles <span class="c">67,73</span>) and <span class="q">The Apes of Un'Goro</span> → <span class="q">The Mighty U'cha</span>, Muigin and Larion's <span class="q">Haze of Evil</span>, Spraggle Frock's <span class="q">Beware of Pterrordax</span>, the Fire Plume Ridge thermometer <span class="c">52,51</span>, Super Sticky Tar <span class="c">60,26</span>, and the whole <span class="q">It's a Secret to Everybody</span> chain from Linken's raft <span class="c">63,68</span> (Gregan Brewspewer in Feralas, then back). Gorillas and devilsaurs punish greed: one at a time. Walk on Air handles the crater rim.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Azshara 51–52.</b> Fly Talrendis Point. Loh'atu's <span class="q">A Land Filled with Hatred</span> → <span class="q">Spiritual Unrest</span> (Shadowsong Shrine <span class="c">13,74</span>, Haldarr Encampment), Kim'jael's <span class="q">Kim'jael Indeed!</span> → <span class="q">Kim'jael's "Missing" Equipment</span> (Thalassian Base Camp <span class="c">55,26</span>), Historian Karnik's <span class="q">Passing the Burden</span> → <span class="q">Arcane Runes</span> (rubbings at the Shattered Strand <span class="c">39,50</span> to <span class="c">42,64</span>) → Xiggs Fuselighter. Empty zone, no competition for spawns, and four of the five class chains below pass through it.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Felwood 52–54.</b> Fly to Talonbranch Glade. The Emerald Sanctuary <span class="c">51,80</span> (no flight point in Classic): Greta Mosshoof's <span class="q">Forces of Jaedenar</span> → <span class="q">Collection of the Corrupt Water</span> → <span class="q">Seeking Spiritual Aid</span> → <span class="q">Cleansed Water Returns to Felwood</span> (Islen Waterseer in the Barrens; Horde country) → <span class="q">Dousing the Flames of Protection</span> → <span class="q">A Final Blow</span> at Shadow Hold <span class="c">40,57</span>, Eridan Bluewind's <span class="q">The Corruption of the Jadefire</span> → <span class="q">Flute of Xavaric</span> → <span class="q">Felbound Ancients</span> → <span class="q">Ancient Spirit</span> (Jadefire Run <span class="c">39,22</span>), Jessir Moonbow's <span class="q">A Strange Red Key</span> → <span class="q">Rescue From Jaedenar</span> (Arko'narin's escort out) → <span class="q">Retribution of the Light</span>, Grazle's <span class="q">Timbermaw Ally</span> → <span class="q">Speak to Nafien</span> and the Deadwood furbolg repeatable (the tunnel to Winterspring needs the rep), Arathandris Silversky's songflower cleansing. The Timbermaw Hold tunnel <span class="c">65,8</span> is the road to Winterspring.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Burning Steppes 52–55.</b> Fly Morgan's Vigil. Oralius' <span class="q">Extinguish the Firegut</span> → <span class="q">Gor'tesh the Brute Lord</span> → <span class="q">Ogre Head On A Stick = Party</span>, Helendis Riverhorn's <span class="q">Dragonkin Menace</span> → <span class="q">The True Masters</span> (six steps through Lakeshire, Stormwind Keep and Marshal Maxwell; the Alliance Onyxia attunement starts here), Marshal Maxwell's <span class="q">Marshal Windsor</span> → <span class="q">Abandoned Hope</span> into Blackrock Depths, Jalinda Sprig's <span class="q">Overmaster Pyron</span> and <span class="q">Incendius!</span>, Oralius' <span class="q">The Good Stuff</span>, Royal Historian Archesonus' <span class="q">The Smoldering Ruins of Thaurissan</span> from Ironforge. Flame Crest (neutral): Tinkee Steamboil's <span class="q">Broodling Essence</span>, Kibler's pets, Ragged John's story.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Maraudon (46–55) from Nijel's Point (<span class="q">Vyletongue Corruption</span>, <span class="q">Corruption of Earth and Seed</span>, <span class="q">Legends of Maraudon</span> → <span class="q">The Scepter of Celebras</span>) and Sunken Temple (50–56) are the dungeons for this stretch. Sunken Temple carries the level-50 class quest for every Skyborne class (the steps below) plus Into The Temple of Atal'Hakkar, The God Hakkar and Jammal'an; run it once and clear all of them at the same time.</span></label></li>
+    <li data-class="warrior"><label><input type="checkbox"><span class="body"><span class="tag cls">Warrior</span><b>Level 50: Sunken Temple.</b> Any warrior trainer gives <span class="q">A Troubled Spirit</span>: the Fallen Hero of the Horde, an orc ghost who talks to both factions, stands on the road at the Blasted Lands border, Swamp of Sorrows <span class="c">34,66</span>. <span class="q">Warrior Kinship</span> (7 Helboar) and <span class="q">War on the Shadowsworn</span> (Shadowsworn cultists around the Altar of Storms; counts <span class="tag verify">verify</span>) are Blasted Lands kills, then <span class="q">Voodoo Feathers</span>: the six troll mini-bosses on the temple balconies (Gasher, Loro, Hukku, Zul'Lor, Mijan, Zolo) drop two Amber, two Blue and two Green feathers. Fury Visor, Diamond Flask or Razorsteel Shoulders.</span></label></li>
+    <li data-class="hunter"><label><input type="checkbox"><span class="body"><span class="tag cls">Hunter</span><b>Level 50: Sunken Temple.</b> Olmin Burningbeard in Ironforge or any hunter trainer gives <span class="q">The Hunter's Charm</span>. Ogtinc waits on the cliffs above the Ruins of Eldarath, Azshara <span class="c">42,43</span>, so do this on the Azshara swing: <span class="q">Courser Antlers</span> (2 Perfect Courser Antlers from Mosshoof Coursers, low drop rate <span class="tag verify">verify</span>), <span class="q">Wavethrashing</span> (6 scales from Wavethrashers in the water off the north-east coast <span class="c">87,26</span>), then <span class="q">The Green Drake</span>: kill Morphaz in the Temple of Atal'Hakkar for the Tooth. Devilsaur Eye, Devilsaur Tooth or Hunting Spear; the Eye is the pick.</span></label></li>
+    <li data-class="mage"><label><input type="checkbox"><span class="body"><span class="tag cls">Mage</span><b>Level 50: Sunken Temple.</b> Any capital mage trainer gives <span class="q">Magecraft</span>: Archmage Xylem in his tower above Azshara (the elf at <span class="c">28,50</span> teleports you up). <span class="q">Magic Dust</span> from the Blood Elf mobs around <span class="c">57,28</span>, <span class="q">The Siren's Coral</span> from the naga at the ruins around <span class="c">44,54</span>, then <span class="q">Destroy Morphaz</span>: the Arcane Shard from Morphaz in the temple. Fire Ruby, Arcane Crystal Pendant or Glacial Spike; the Ruby is the pick.</span></label></li>
+    <li data-class="rogue"><label><input type="checkbox"><span class="body"><span class="tag cls">Rogue</span><b>Level 50: Sunken Temple.</b> Any rogue trainer gives <span class="q">A Simple Request</span>: Lord Jorach Ravenholdt at Ravenholdt Manor north of Durnholde, Hillsbrad <span class="c">76,43</span> <span class="tag verify">verify</span>. <span class="q">Sealed Azure Bag</span>: pickpocket Timbermaw Shamans in Azshara <span class="c">45,21</span> for the bag, then the elf at <span class="c">28,50</span> teleports you up to Xylem. <span class="q">Encoded Fragments</span>: 10 from Forest Oozes <span class="c">64,25</span>. <span class="q">The Azure Key</span>: Morphaz drops it; back to Jorach for +150 Ravenholdt and Whisperwalk Boots, Duskbat Drape or the Ebon Mask.</span></label></li>
+    <li data-class="druid"><label><input type="checkbox"><span class="body"><span class="tag cls">Druid</span><b>Level 50: Sunken Temple.</b> Mathrengyl Bearwalker (or your own trainer <span class="tag verify">verify</span>) gives <span class="q">Torwa Pathfinder</span>; Torwa stands on the bluff by the waterfalls at the bottom of the Tanaris ramp, Un'Goro <span class="c">72,76</span>, so take it before you ride in. <span class="q">Bloodpetal Poison</span> (8 Bloodcap from Bloodpetal Sprouts, 8 Gorishi Stings from the Slithering Scar wasps) and <span class="q">Toxic Test</span> (Hibernate a Devilsaur, stab it with the barb, Travel Form away; no kill needed) are local. <span class="q">A Better Ingredient</span> wants the Putrid Vine from Atal'alarion in the Temple of Atal'Hakkar, who only spawns once the six altars are lit in order. Grizzled Pelt, Forest's Embrace or Moonshadow Stave.</span></label></li>
+  </ol>
+  <p class="leave"><b>Leave at</b> 55. Fly to Ironforge, then Chillwind Camp in Western Plaguelands. Keep the Ironforge hearth; Chillwind has no inn in Classic.</p>
+</section>
+
+<!-- ================================================================ -->
+<section id="b13" class="bracket" data-bracket="b13">
+  <div class="sec-head"><span class="eyebrow">55–60</span><h2>Western and Eastern Plaguelands, Winterspring, Silithus</h2></div>
+  <div class="meta">
+    <div><span class="k">Hubs</span>Chillwind Camp <span class="c">43,85</span> · Light's Hope Chapel <span class="c">75,52</span> · Everlook <span class="c">60,50</span> · Cenarion Hold <span class="c">54,34</span></div>
+    <div><span class="k">Hearth</span>Ironforge for the Plaguelands (Light's Hope's innkeeper may not be there at 1.15 <span class="tag verify">verify</span>), then Everlook (Innkeeper Vizzie)</div>
+    <div><span class="k">Flight points</span>Chillwind (Bibilfaz Featherwhistle), Light's Hope (Khaelyn Steelwing), Everlook (Maethrya), Cenarion Hold (Cloud Skydancer)</div>
+  </div>
+  <ol class="steps">
+    <li><label><input type="checkbox"><span class="body"><b>Western Plaguelands 55–57.</b> Chillwind Camp: Commander Ashlam Valorfist's <span class="q">A Call to Arms: The Plaguelands!</span> → <span class="q">Clear the Way</span> → <span class="q">All Along the Watchtowers</span> (the four Andorhal towers), High Priestess MacDonnell's Scourge cauldrons (<span class="q">Target: Felstone Field</span> <span class="c">37,57</span>, <span class="q">Dalson's Tears</span> <span class="c">46,52</span>, <span class="q">Writhing Haunt</span> <span class="c">53,66</span>, <span class="q">Gahrron's Withering</span> <span class="c">63,59</span>, each with a Cauldron Lord and a return to Chillwind), Argent Officer Pureheart's <span class="q">Argent Dawn Commission</span> (every Scourgestone is rep), Alchemist Arbington's <span class="q">Scholomance</span> → <span class="q">Skeletal Fragments</span> → the Skeleton Key chain, Kirsta Deepshadow's <span class="q">Unfinished Business</span> at Hearthglen <span class="c">45,18</span>, Mulgris Deepriver's <span class="q">The Wildlife Suffers Too</span>, Weldon Barov's <span class="q">Barov Family Fortune</span>, Marlene Redpath's <span class="q">Little Pamela</span> → Darrowshire, Caer Darrow's Kirtonos and Ras Frostwhisper chains. Sorrow Hill skeletons <span class="c">46,81</span> are the grind.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Eastern Plaguelands 57–59.</b> Light's Hope Chapel: Duke Nicholas Zverenhoff's commission, Tirion Fordring's chain at the Thondroril River (<span class="q">Demon Dogs</span> → <span class="q">Blood Tinged Skies</span> → <span class="q">Carrion Grubbage</span> → <span class="q">Redemption</span> → <span class="q">Of Forgotten Memories</span> → <span class="q">Of Lost Honor</span> → <span class="q">In Dreams</span> at Hearthglen, group), Carlin Redpath's Darrowshire chain (start it with <span class="q">Pamela's Doll</span> at Darrowshire; <span class="q">Defenders of Darrowshire</span> → <span class="q">Villains</span> → <span class="q">Marauders of Darrowshire</span> → <span class="q">The Battle of Darrowshire</span> with Chromie, best story in the zone), Egan's <span class="q">The Restless Souls</span>, Smokey LaRue's <span class="q">The Great Ezra Grimm</span>, Betina Bigglezink's <span class="q">The Flesh Does Not Lie</span> → <span class="q">The Active Agent</span>, Leonid's <span class="q">Houses of the Holy</span>, the Duke's <span class="q">The Archivist</span>. The Plaguewood and Corin's Crossing kill quests fill gaps.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Winterspring 57–60.</b> Fly to Everlook, rebind. Donova Snowden at the hot springs <span class="c">31,44</span>: <span class="q">Winterfall Firewater</span> → <span class="q">Falling to Corruption</span> → <span class="q">Mystery Goo</span> → <span class="q">Toxic Horrors</span> → <span class="q">High Chief Winterfall</span> (cave <span class="c">69,38</span>), Salfa's <span class="q">Winterfall Activity</span>, Umi's <span class="q">Are We There, Yeti?</span> (Ice Thistle yetis <span class="c">65,41</span>), Erelas Ambersky's <span class="q">Wildkin of Elune</span> → <span class="q">Moontouched Wildkin</span> → <span class="q">Find Ranshalla</span> → <span class="q">Guardians of the Altar</span> (Ranshalla's escort through Owl Wing Thicket), Wynd Nightchaser at Starfall Village: <span class="q">The Crystal of Zin-Malor</span> → the Kel'Theril fragments <span class="c">53,42</span>, Jaron Stoneshaper's Kel'Theril quests, Gregor Greystone's Zverenhoff breadcrumb, Kilram's <span class="q">Snakestone of the Shadow Huntress</span> for Lower Blackrock Spire. Frostsaber Rock and the Timbermaw tunnel quests if you carried Deadwood rep.</span></label></li>
+    <li><label><input type="checkbox"><span class="body"><b>Silithus 58–60.</b> Cenarion Hold: Fandral Staghelm's <span class="q">The New Frontier</span> → Rabine Saturna → <span class="q">Wasteland</span>, Layo Starstrike's <span class="q">The Spirits of Southwind</span> → <span class="q">Hive in the Tower</span> → <span class="q">Umber, Archivist</span>, Windcaller Proudhorn's <span class="q">Securing the Supply Lines</span> → <span class="q">Stepping Up Security</span>, the Ficklespraggs' <span class="q">Deadly Desert Venom</span> → <span class="q">Noggle's Last Hope</span>, Calandrath's cookbook chain, Geologist Larksbane's <span class="q">The Twilight Mystery</span> → <span class="q">The Deserter</span> → <span class="q">The Twilight Lexicon</span> → Hermit Ortell, Huum Wildmane's <span class="q">Twilight Geolords</span> → <span class="q">Vyral the Vile</span>. Elementals and cultists both die fast to a 58 with dungeon gear, and the elementals die faster to you. Skip Baristolth's scepter chain.</span></label></li>
+    <li><label><input type="checkbox"><span class="body">Dungeons for the finish: Blackrock Depths (Jail Break! for Onyxia, Attunement to the Core), Lower Blackrock Spire (Helendis' <span class="q">Put Her Down</span>, Bijou, Maxwell's Mission, the Snakestone), Dire Maul (Lethtendris's Web, the Shen'dralar Ancient's quests in the West wing: your people's cousins), Scholomance (the Skeleton Key chain, Barov Family Fortune, Dawn's Gambit) and Stratholme (Live: Of Love and Family, Houses of the Holy, The Archivist; Undead: The Active Agent, Above and Beyond). One Stratholme clear is most of a level at 59. Stormwind at 59–60: <span class="q">The Great Masquerade</span> → <span class="q">The Dragon's Eye</span> → the Drakefire Amulet.</span></label></li>
+  </ol>
+  <p class="leave"><b>Ding 60.</b> Bind in Ironforge, buy the epic mount when you have 1,000 gold (the Swift Galestriders are datamined at the 100% tier, vendor unknown <span class="tag verify">verify</span>), and start attunements.</p>
+  <div class="note forever"><div class="who">Forever</div><div><p><b>Mount Hyjal</b> is the new 60 zone, continuing the Reign of Chaos story, and two new 10–20 player raids come with launch. The cap is permanent, so gear from this bracket keeps its value. Zephras Isle has nothing for a 60.</p></div></div>
+</section>
+
+<!-- ================================================================ -->
+<section id="dungeons">
+  <div class="sec-head"><h2>Dungeons worth the detour</h2><span class="eyebrow">Alliance quest hooks for a Skyborne</span></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Dungeon</th><th class="mono">Levels</th><th>Where</th><th>Alliance quests to bring</th></tr></thead>
+    <tbody>
+      <tr><td>The Deadmines</td><td class="mono">18–23</td><td>Westfall</td><td><b>Collecting Memories</b>, <b>Oh, Brother...</b> (Wilder Thistlenettle, Stormwind Dwarven District), <b>Underground Assault</b> (Shoni the Shilent), Red Silk Bandanas (Scout Riell, Sentinel Hill), The Defias Brotherhood (Gryan Stoutmantle). VanCleef's Unsent Letter starts the Stockade chain. A tram and a flight from Loch Modan; go at 19–20 with a group already formed.</td></tr>
+      <tr><td>The Stockade</td><td class="mono">22–30</td><td>Stormwind</td><td>Crime and Punishment (Darkshire), What Comes Around... (Lakeshire), <b>The Fury Runs Deep</b> (Dun Modr; unlocks The Dark Iron War), The Stockade Riots (Warden Thelwater). In the city you tram through anyway.</td></tr>
+      <tr><td>Blackfathom Deeps</td><td class="mono">24–32</td><td>Ashenvale</td><td>The Zoram Strand (Astranaar), Researching the Corruption (Auberdine), Twilight Falls and In Search of Thaelrid (Darnassus), Blackfathom Villainy inside. On the route at 22–24.</td></tr>
+      <tr><td>Gnomeregan</td><td class="mono">29–38</td><td>Dun Morogh</td><td>Save Techbot's Brain!, Data Rescue, Essential Artificials, The Grand Betrayal (Tinker Town), Gnogaine → The Only Cure is More Green Glow (Kharanos). Next door to the Ironforge hearth.</td></tr>
+      <tr><td>Razorfen Kraul</td><td class="mono">29–38</td><td>Barrens</td><td>The Crone of the Kraul (Thalanaar, after Lonebrow's Journal at the Great Lift), Mortality Wanes (Darnassus), Willix the Importer inside. Horde country; go with a group from Thalanaar.</td></tr>
+      <tr><td>Scarlet Monastery</td><td class="mono">34–45</td><td>Tirisfal</td><td>Mythology of the Titans (Mae Paledust, Ironforge), <b>In the Name of the Light</b> (Raleigh the Devout, Southshore, after Brother Anton's chain), the mage's Rituals of Power in the Library. Ride north from Southshore.</td></tr>
+      <tr><td>Razorfen Downs</td><td class="mono">37–46</td><td>Barrens</td><td>Bring the Light (Archbishop Benedictus, Stormwind Cathedral), An Unholy Alliance (Belnistrasz inside).</td></tr>
+      <tr><td>Uldaman</td><td class="mono">41–51</td><td>Badlands</td><td>The Lost Dwarves, The Hidden Chamber, Reclaimed Treasures, the Talvash necklace chain, The Lost Tablets of Will, Power Stones, Solution to Doom, Uldaman Reagent Run, The Platinum Discs, the mage's Power in Uldaman. The richest dungeon quest set in the game.</td></tr>
+      <tr><td>Zul'Farrak</td><td class="mono">44–54</td><td>Tanaris</td><td>Nekrum's Medallion (Nethergarde), Scarab Shells, Troll Temper, Divino-matic Rod, The Prophecy of Mosh'aru, Tiara of the Deep, Gahz'rilla (after the Altar of Zul).</td></tr>
+      <tr><td>Maraudon</td><td class="mono">46–55</td><td>Desolace</td><td>Vyletongue Corruption and Corruption of Earth and Seed (Nijel's Point), Legends of Maraudon (the Scepter of Celebras), Shadowshard Fragments (Theramore).</td></tr>
+      <tr><td>Sunken Temple</td><td class="mono">50–56</td><td>Swamp of Sorrows</td><td>Into The Temple of Atal'Hakkar (the Hinterlands chain), The God Hakkar, Jammal'an the Prophet, and the level-50 class quest for all five Skyborne classes (see the 50–55 bracket). Rogues, hunters and mages all need Morphaz; the warrior needs the six feathers.</td></tr>
+      <tr><td>Blackrock Depths</td><td class="mono">52–60</td><td>Searing Gorge / Burning Steppes</td><td>Marshal Windsor → Jail Break! (Onyxia attunement), Overmaster Pyron, Incendius!, The Good Stuff, Kharan Mighthammer's chain to King Magni, Dark Iron Legacy, Attunement to the Core.</td></tr>
+      <tr><td>Dire Maul</td><td class="mono">55–60</td><td>Feralas</td><td>Eldre'Thalas itself: Lethtendris's Web (Feathermoon), the Shen'dralar Ancient's West-wing quests, the Royal Seal of Eldre'Thalas class books. Skyborne-specific hooks unreported <span class="tag verify">verify</span>.</td></tr>
+      <tr><td>Scholomance / Stratholme</td><td class="mono">58–60</td><td>Plaguelands</td><td>The Skeleton Key chain, Barov Family Fortune, Kirtonos the Herald, Dawn's Gambit; Stratholme Live and Undead from Light's Hope and Caer Darrow.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="logistics">
+  <div class="sec-head"><h2>Ironforge and Stormwind logistics</h2></div>
+  <div class="two prose">
+    <div>
+      <h4>Getting around Ironforge</h4>
+      <ul>
+        <li><b>The Commons</b> (inside the front gate): the Stonefire Tavern (Innkeeper Firebrew), bank and auction house. Bind here at 12.</li>
+        <li><b>The Great Forge</b> (centre): Gryth Thurden the gryphon master <span class="c">55,48</span>, the Physician for First Aid <span class="c">55,58</span>, Tormus Deepforge for the warrior weapon chain <span class="tag verify">verify</span>.</li>
+        <li><b>Military Ward</b> (south-east): the Hall of Arms with the warrior trainers and Muren Stormpike <span class="c">66,89</span>, the hunter trainers and Belia Thundergranite the pet trainer <span class="c">71,85</span>, Timberline Arms weapon masters.</li>
+        <li><b>Forlorn Cavern</b> (north): rogue trainers and Hulfdan Blackbeard <span class="c">52,15</span>.</li>
+        <li><b>Mystic Ward</b> (north-west): the Hall of Mysteries with the mage trainers and Bink <span class="c">27,8</span>, Talvash del Kissel for the Uldaman necklace.</li>
+        <li><b>Hall of Explorers</b> (east): Prospector Stormpike, Historian Karnik, Librarian Mae Paledust, Roetten Stonehammer: the Loch Modan, Uldaman, Monastery and Desolace turn-ins. <b>Tinker Town</b> beside it: the Deeprun Tram and the Gnomeregan quests. No druid trainer in the city; Darnassus' Cenarion Enclave is yours.</li>
+      </ul>
+      <h4>Stormwind, the tram and the boats</h4>
+      <ul>
+        <li>The Deeprun Tram (Tinker Town ↔ Dwarven District) is free and takes a minute. Stormwind holds the rogue and mage quest givers: SI:7 in Old Town <span class="c">76,60</span>, the Wizard's Sanctum and the Blue Recluse in the Mage Quarter, Larson Clothiers. Flight master Dungar Longdrink in the Trade District.</li>
+        <li>Menethil Harbor has both Kalimdor boats: <b>Auberdine</b> (Darkshore, for Ashenvale, Stonetalon and Desolace) and <b>Theramore</b> (Dustwallow, for Tabetha and Gadgetzan's flight net). Auberdine ↔ Rut'theran links to Darnassus.</li>
+        <li>Booty Bay ↔ Ratchet is the neutral boat: Fray Island for warriors, the Barrens for druids' Islen Waterseer, and a back door into Horde Kalimdor.</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Flight points to collect, in route order</h4>
+      <p class="mono" style="font-size:.85rem;line-height:1.7">Eastern Kingdoms: Southshore · Ironforge · Thelsamar · Menethil · Stormwind · Darkshire · Sentinel Hill · Lakeshire · Booty Bay · Refuge Pointe · Nethergarde · Aerie Peak · Thorium Point · Morgan's Vigil · Chillwind · Light's Hope</p>
+      <p class="mono" style="font-size:.85rem;line-height:1.7">Kalimdor: Auberdine · Astranaar · Stonetalon Peak · Thalanaar · Gadgetzan · Theramore · Nijel's Point · Feathermoon · Marshal's Refuge · Talonbranch · Talrendis · Everlook · Cenarion Hold</p>
+      <h4>Class quest stops</h4>
+      <ul>
+        <li><b>Level 10</b>: hunter pet chain on the isle; druid Heeding the Call to Moonglade and the Darkshore Moonkin Stone; warrior Muren Stormpike, rogue Hulfdan Blackbeard and mage Bink in Ironforge, all assumed <span class="tag verify">verify</span>.</li>
+        <li><b>Levels 14 and 16</b>: druid Cure Poison and Aquatic Form through Bearwalker, Moonglade and Darkshore; mage Manaweave Robe from Jennea in Stormwind with the gems in Silver Stream Mine; rogue Alther's Mill in Redridge.</li>
+        <li><b>Level 20</b>: rogue Poisons from Mathias Shaw and Klaven's Tower in Westfall.</li>
+        <li><b>Level 26–28</b>: mage Astral Knot Garment (Andromath, the Tower of Ilgalar); warrior Fire Hardened armor, optional.</li>
+        <li><b>Level 30</b>: warrior The Islander (Fray Island) then the Whirlwind chain from Bath'rah in Alterac; mage Journey to the Marsh (Tabetha) and Hidden Secrets (Shimmering Flats), finishing with Items of Power in Arathi at 40.</li>
+        <li><b>Level 50</b>: every class has a Sunken Temple chain: warrior Fallen Hero (Swamp of Sorrows), hunter Ogtinc (Azshara), mage Xylem (Azshara), rogue Ravenholdt (Hillsbrad) then Xylem, druid Torwa Pathfinder (Un'Goro).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="mount">
+  <div class="sec-head"><h2>Mount and gold</h2></div>
+  <div class="prose">
+    <ul>
+      <li>The Skyborne racial mount family is the <b>Galestrider</b>: Empyrean, Regal, Stormy and Umber at the level-40 60% tier, Swift versions at 60. They are listed as reputation rewards in the beta data, presumably High Order reputation for the Alliance variant; no vendor, price or reputation rank has been found <span class="tag verify">verify</span>. Riding is TBC-style: Apprentice at 40, epic at 60.</li>
+      <li>If the Galestrider is not buyable at 40, the Classic rule applies: any Alliance race's mount at Exalted with that race's city. Ironforge is the reputation this route feeds (Loch Modan, Wetlands, the Badlands and Searing Gorge dwarves), so Veron Amberstill's rams at Amberstill Ranch in Dun Morogh are the fallback, with Ultham Ironhorn next to him for riding. 100 gold total.</li>
+      <li>Druids have Travel Form at 30, which lets them spend the 100 gold on weapons first and buy the mount at 43–45 when the money is easy. Everyone else wants the mount the day they hit 40.</li>
+      <li>The Cerulean Prideclaw, the ground mount in the Skyborne packs, is usable by all races; whether it needs riding skill at 40 or is a free mount is unreported <span class="tag verify">verify</span>.</li>
+      <li>Realistic gold by 40 on this route with Herbalism plus Skinning and nothing bought but weapons: 130–170. Without gathering: 70–90, which is why the 38–40 bracket sits in Dustwallow and Stranglethorn, where the Missing Diplomat pays and the beast tiers drop vendor greens.</li>
+      <li>Epic mount at 60: 1,000 gold, 900 at Exalted with whichever reputation sells it.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="forever">
+  <div class="sec-head"><h2>WoW Forever watchlist</h2><span class="eyebrow">Confirmed as of Sep 19, 2026</span></div>
+  <div class="prose">
+    <p>World of Warcraft: Forever is Blizzard's permanent Classic+ ruleset: the original continents with new zones, dungeons, raids and quests, a talent rework, and a level cap that stays at 60. Beta runs Sep 17 to Oct 21, 2026 (level 20 cap, rising to 30); launch is Nov 4, 2026. For a Skyborne everything on this page is Forever, so the table below lists what is most likely to move.</p>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>Change</th><th>What is known</th><th>Effect on this route</th></tr></thead>
+    <tbody>
+      <tr><td>Zephras Isle quest list</td><td>Zone 16593, level 1–12, four settlements, two public quest names, no coordinates. Testers finish at 13–14.</td><td>The four isle brackets are story order, not quest order. Rewrite them the first time you play through with the quest log open.</td></tr>
+      <tr><td>The Alliance landing</td><td>Inferred to be Dalaran from the Kirin Tor flag on the High Order dock; nobody has posted the arrival. Dalaran is 28–33 content.</td><td>The whole 12–20 leg depends on it. If the airship lands somewhere else, or Dalaran hands out a breadcrumb to a new 12–20 area, the Loch Modan bracket is replaced.</td></tr>
+      <tr><td>Skyborne racials</td><td>Walk on Air, Read Ley Line, Wind Blessed, Elemental Insight; ley lines give Read Ley Line 15 minutes.</td><td>Map the ley lines on the mainland; a mage or druid standing near one never drinks. Dalaran is the obvious first place to look.</td></tr>
+      <tr><td>Class quests</td><td>Hunter pet chain on the isle; druid Moonglade chain confirmed working for an Alliance Skyborne; no Skyborne-only chain seen. Which race's level-10 breadcrumbs (warrior, rogue, mage) a Skyborne gets is unknown.</td><td>This page assumes Ironforge's. If your trainer names Stormwind or Darnassus, the same reward waits there; the tram or the Auberdine boat gets you to it.</td></tr>
+      <tr><td>Galestrider mounts</td><td>Eight datamined names at the 40 and 60 tiers, reputation-based, vendor unknown.</td><td>The 40 mount purchase may need High Order rep you stopped earning at 12. Watch the druid enclave's repeatable.</td></tr>
+      <tr><td>Wetlands expansion</td><td>New Alliance content north of Menethil, level range unpublished.</td><td>Sits on the 20–25 and 28–29 legs; if it is dense it replaces the Ashenvale boat trip.</td></tr>
+      <tr><td>Dalaran</td><td>Rebuilt, grounded Kirin Tor city in Alterac with quests and the 28–33 City of Dalaran dungeon. A Skyborne district behind the Violet Citadel is a forum claim only.</td><td>Your race's city on the mainland, most likely. Replaces the Hillsbrad leg at 30–35 if it is dense; Bath'rah's warrior chains are a ride away.</td></tr>
+      <tr><td>Shen'Dralas</td><td>New zone of Highborne ruins between Mulgore and Desolace, entered from the Valley of Bones. Level range unpublished.</td><td>Your ancestors' story, on the Alliance side reached from Nijel's Point. If it is 30–35 it joins the Desolace leg.</td></tr>
+      <tr><td>Riverdale</td><td>New 35–45 zone east of Burning Steppes and the Badlands.</td><td>Replaces Dustwallow and possibly Swamp of Sorrows.</td></tr>
+      <tr><td>Class talents</td><td>Every tree reworked to replace passive stat talents with active abilities.</td><td>Class ranking above may reshuffle. Class quest chains were not mentioned as changed; verify each at the level it appears.</td></tr>
+      <tr><td>Mount Hyjal, 1,000+ new quests</td><td>60 zone; new quests spread across all level ranges, existing zones "expanded or reworked".</td><td>Endgame only, and every bracket gets re-scoped. Keep this page's structure; swap the step lists.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="sources" class="foot">
+  <div class="sec-head"><h2>Sources and verification</h2></div>
+  <p>Zephras Isle content comes from Blizzard's panel recaps, the Wowhead Forever database (zone 16593, races 95 and 96, factions 2778 and 2779, the racial spell tooltips), Warcraft Wiki's subzone list from the beta map, Blizzard Watch's hands-on, and beta tester reports on the MMO-Champion megathread and the Blizzard forums; the Alliance airship destination is an inference from those reports, not an observation. Loch Modan and the Ironforge class chains were checked against Joana's Dun Morogh chapter, Sage Guide, Maw's and Caelestis' wow-pro guides and Warcraft Wiki. The 20–60 brackets follow Boston's 20–30 and Jame's Alliance Chapters I to III with their TBC-only content (Forest Song, Nat Pagle, Alcaz Island, Mudsprocket, the Rebel Camp flight point) removed after checking against the wiki's Classic zone quest lists; hub coordinates in that range are the least certain on the page and carry the <span class="tag verify">verify</span> tag where a source gave a post-Cataclysm position. Class quests were checked quest by quest against Warcraft Wiki, Wowhead Classic and Icy Veins; the assumption that a Skyborne gets Ironforge's race-specific chains is tagged wherever it matters.</p>
+  <ul>
+    <li>Skyborne and Zephras: <a href="https://news.blizzard.com/en-us/article/24303862/world-of-warcraft-forever-whats-next-panel-recap">Blizzard: What's Next panel recap</a> · <a href="https://news.blizzard.com/en-us/article/24304071/world-of-warcraft-forever-found-photos-panel-recap">Found Photos panel recap</a> · <a href="https://www.wowhead.com/forever/guide/skyborne-race-overview">Wowhead: Skyborne race overview</a> · <a href="https://www.wowhead.com/forever/zone=16593/zephras-isle">Wowhead: Zephras Isle</a> · <a href="https://www.wowhead.com/forever/race=95/high-order-skyborne">High Order Skyborne</a> · <a href="https://www.wowhead.com/forever/faction=2779/high-order">High Order faction</a> · <a href="https://www.wowhead.com/forever/news/racials-for-skyborne-in-forever-and-racial-changes-to-existing-races-382847">Wowhead: Skyborne racials</a> · <a href="https://www.wowhead.com/forever/spell=1259705/read-ley-line">Read Ley Line</a> · <a href="https://www.wowhead.com/forever/spell=1259416/walk-on-air">Walk on Air</a> · <a href="https://www.wowhead.com/forever/news/skyborne-druid-forms-in-wow-forever-382861">Skyborne druid forms</a> · <a href="https://warcraft.wiki.gg/wiki/Zephras_Isle">Warcraft Wiki: Zephras Isle</a> · <a href="https://warcraft.wiki.gg/wiki/Skyborne">Skyborne</a> · <a href="https://blizzardwatch.com/2026/09/14/skyborne-starting-zone-wow-forever/">Blizzard Watch: starting zone</a> · <a href="https://blizzardwatch.com/2026/09/16/skyborne-classes-factions/">Blizzard Watch: classes and factions</a> · <a href="https://www.icy-veins.com/wow-forever/skyborne-race-guide">Icy Veins: Skyborne</a> · <a href="https://www.method.gg/wow-classic/all-new-racial-abilities-in-world-of-warcraft-forever">Method: all new racials</a> · <a href="https://www.warcrafttavern.com/forever/news/mount-names-datamined-in-wow-forever/">Warcraft Tavern: Galestriders</a> · <a href="https://www.windowscentral.com/gaming/blizzard/why-is-world-of-warcraft-forever-adding-another-elf-race-i-asked-blizzard">Windows Central: dev interview</a></li>
+    <li>Beta reports: <a href="https://www.mmo-champion.com/threads/2669879-World-of-Warcraft-Forever-Megathread/page55">MMO-Champion megathread p.55</a> · <a href="https://www.mmo-champion.com/threads/2669879-World-of-Warcraft-Forever-Megathread/page57">p.57</a> · <a href="https://us.forums.blizzard.com/en/wow/t/skyborne-starting-zone/2352828">Skyborne starting zone</a> · <a href="https://us.forums.blizzard.com/en/wow/t/skybourne-zone-after-starting-zone-is-finished/2349801">Zone after the starting zone</a> · <a href="https://us.forums.blizzard.com/en/wow/t/a-firm-response-unable-to-progress/2353697">A Firm Response bug</a> · <a href="https://eu.forums.blizzard.com/en/wow/t/among-the-faithful-skyborne-quest/629624">Among the Faithful bug</a> · <a href="https://us.forums.blizzard.com/en/wow/t/druid-questline-for-bear-form-broken-for-me/2353628">Bear Form on a Skyborne</a> · <a href="https://us.forums.blizzard.com/en/wow/t/unable-to-train-pet/2353618">Hunter pet training</a></li>
+    <li>Loch Modan and 12–20: <a href="https://www.joanasworld.com/alliance-1-12-dun-morogh.php">Joana's Dun Morogh 1–12</a> · <a href="https://www.sageguide.net/14-17_loch_modan">Sage Guide: Loch Modan</a> · <a href="http://www.wow-pro.com/leveling_guides/maw039s_alliance_leveling_guide_1220">Maw's 12–20</a> · <a href="https://www.wow-pro.com/leveling-caelestiss-alliance-leveling-guide-12-20/">Caelestis' 12–20</a> · <a href="https://warcraft.wiki.gg/wiki/Loch_Modan_quests">Warcraft Wiki: Loch Modan quests</a> · <a href="https://warcraft.wiki.gg/wiki/Ironforge_NPCs">Ironforge NPCs</a> · <a href="https://www.wowhead.com/classic/quest=436/ironbands-excavation">Ironband's Excavation</a></li>
+    <li>20–60: <a href="https://www.wow-pro.com/bostons-alliance-leveling-guide-20-30/">Boston's 20–30</a> · <a href="https://www.wow-pro.com/james-alliance-leveling-guide-chapter-i-30-40/">Jame's Alliance I (30–40)</a> · <a href="https://www.wow-pro.com/james-alliance-leveling-guide-chapter-ii-40-50/">Jame's Alliance II (40–50)</a> · <a href="https://www.wow-pro.com/james-alliance-leveling-guide-chapter-iii-50-60/">Jame's Alliance III (50–60)</a> · <a href="https://warcraft.wiki.gg/wiki/Flight_master">Warcraft Wiki: flight masters</a> · <a href="https://warcraft.wiki.gg/wiki/Boat">boats</a> · <a href="https://warcraft.wiki.gg/wiki/Duskwood_quests">Duskwood quests</a> · <a href="https://warcraft.wiki.gg/wiki/Wetlands_quests">Wetlands quests</a> · <a href="https://warcraft.wiki.gg/wiki/Hillsbrad_Foothills_quests">Hillsbrad quests</a> · <a href="https://warcraft.wiki.gg/wiki/Arathi_Highlands_quests">Arathi quests</a> · <a href="https://warcraft.wiki.gg/wiki/Dustwallow_Marsh_quests">Dustwallow quests</a> · <a href="https://warcraft.wiki.gg/wiki/Onyxia%27s_Lair_attunement">Onyxia attunement</a> · <a href="https://www.icy-veins.com/wow-classic/sunken-temple-quests-guide">Icy Veins: Sunken Temple quests</a></li>
+    <li>Class quests: <a href="https://www.icy-veins.com/wow-classic/warrior-quests-in-wow-classic">Icy Veins warrior</a> · <a href="https://www.icy-veins.com/wow-classic/hunter-quests-in-wow-classic">hunter</a> · <a href="https://www.icy-veins.com/wow-classic/mage-quests-in-wow-classic">mage</a> · <a href="https://www.icy-veins.com/wow-classic/rogue-quests-in-wow-classic">rogue</a> · <a href="https://www.icy-veins.com/wow-classic/druid-quests-in-wow-classic">druid</a> · <a href="https://www.icy-veins.com/wow-classic/sunken-temple-class-quests-guide">Sunken Temple class quests</a> · <a href="https://warcraft.wiki.gg/wiki/Quest:Vejrek">Warcraft Wiki: Vejrek</a> · <a href="https://warcraft.wiki.gg/wiki/Quest:Ironband%27s_Compound">Ironband's Compound</a> · <a href="https://warcraft.wiki.gg/wiki/Quest:Onin%27s_Report">Onin's Report</a> · <a href="https://www.wowhead.com/classic/quest=1920/investigate-the-blue-recluse">Investigate the Blue Recluse</a> · <a href="https://www.wowhead.com/classic/quest=1921/gathering-materials">Gathering Materials</a> · <a href="https://www.wowhead.com/classic/quest=1938/urs-treatise-on-shadow-magic">Ur's Treatise</a> · <a href="https://warcraft.wiki.gg/wiki/Quest:Klaven%27s_Tower">Klaven's Tower</a> · <a href="https://warcraft.wiki.gg/wiki/Quest:Alther%27s_Mill">Alther's Mill</a> · <a href="https://warcraft.wiki.gg/wiki/Quest:Cyclonian">Cyclonian</a> · <a href="https://www.wowhead.com/classic/quest=6001/body-and-heart">Body and Heart</a> · <a href="https://us.millenium.gg/guide/10902.html">Millenium: rogue Sunken Temple</a></li>
+    <li>WoW Forever zones: <a href="https://news.blizzard.com/en-us/article/24303313/world-of-warcraft-forever-deep-dive-panel-recap">Deep Dive recap</a> · <a href="https://www.wowhead.com/forever/guide/new-race-class-combinations">Wowhead: race/class combos</a> · <a href="https://www.wowhead.com/forever/guide/zones-maps-locations-rewards">Wowhead: zones</a> · <a href="https://outputlag.com/news/world-of-warcraft-forever-adds-shendralas-a-new-zone-between-mulgore-and-desolace/">Output Lag: Shen'dralas</a> · <a href="https://lfcarry.com/guides/wow-forever-new-zones">lfcarry: new zones</a></li>
+  </ul>
+</section>
+
+</main>
+</div>
+</div>
+
+<script>
+(function(){
+  var KEY='skyborne-alliance-v1', CKEY='skyborne-alliance-class';
+  var CLASSES=['warrior','hunter','mage','rogue','druid'];
+  var state={};
+  try{state=JSON.parse(localStorage.getItem(KEY)||'{}')||{};}catch(e){state={};}
+  var boxes=document.querySelectorAll('.steps input[type=checkbox]');
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}}
+  function visible(el){return !!(el.offsetWidth||el.offsetHeight||el.getClientRects().length);}
+  function paint(){
+    var done=0,total=0;
+    boxes.forEach(function(b){var li=b.closest('li');li.classList.toggle('done',b.checked);if(visible(li)){total++;if(b.checked)done++;}});
+    var p=document.getElementById('prog');
+    if(p)p.textContent=done+' / '+total+' steps ticked';
+  }
+  boxes.forEach(function(b,i){
+    var sec=b.closest('section');
+    var id=(sec&&sec.id||'x')+'-'+i;
+    b.id='step-'+id;
+    if(state[id])b.checked=true;
+    b.addEventListener('change',function(){state[id]=b.checked?1:0;if(!b.checked)delete state[id];save();paint();});
+  });
+
+  // class filter: URL ?class= wins, then the remembered pick, else show all
+  var pick='';
+  try{pick=localStorage.getItem(CKEY)||'';}catch(e){}
+  var m=/[?&]class=([a-z]+)/i.exec(location.search);
+  if(m&&CLASSES.indexOf(m[1].toLowerCase())>=0)pick=m[1].toLowerCase();
+  if(CLASSES.indexOf(pick)<0)pick='';
+  var buttons=[].slice.call(document.querySelectorAll('.picker button'));
+  var hint=document.getElementById('pick-hint');
+  function applyPick(){
+    if(pick)document.body.setAttribute('data-class',pick);else document.body.removeAttribute('data-class');
+    buttons.forEach(function(bt){bt.classList.toggle('on',bt.getAttribute('data-pick')===pick);bt.setAttribute('aria-pressed',bt.getAttribute('data-pick')===pick?'true':'false');});
+    if(hint)hint.textContent=pick?('Showing '+pick.charAt(0).toUpperCase()+pick.slice(1)+' quests only. Remembered in this browser; the Evergreen addon picks the same from your character.'):'Showing every class quest. Pick one and the other classes\' steps are hidden everywhere on the page; the Evergreen addon does the same in-game from your character\'s class.';
+    paint();
+  }
+  buttons.forEach(function(bt){bt.addEventListener('click',function(){pick=bt.getAttribute('data-pick')||'';try{if(pick)localStorage.setItem(CKEY,pick);else localStorage.removeItem(CKEY);}catch(e){}applyPick();});});
+  applyPick();
+
+  var links=[].slice.call(document.querySelectorAll('nav.toc a'));
+  var map={};
+  links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  if('IntersectionObserver' in window){
+    var current=null;
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          if(current)current.classList.remove('on');
+          current=map[en.target.id];
+          if(current)current.classList.add('on');
+        }
+      });
+    },{rootMargin:'-20% 0px -70% 0px',threshold:0});
+    document.querySelectorAll('main > section').forEach(function(s){io.observe(s);});
+  }
+})();
+</script>
+</body>
+</html>
