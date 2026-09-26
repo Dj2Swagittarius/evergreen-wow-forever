@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pick Your Path</title>
+<meta name="description" content="Choose faction, race and class to open a Classic WoW 1–60 leveling guide with class quests filtered for you. Built for WoW Forever.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#E8E4D9; --surface:#F2EFE7; --sunk:#DBD6C8; --ink:#1E1C18; --muted:#5E5A50; --line:#C6C0B0;
+  --accent:#3E7D34; --accent-ink:#2B5A24; --accent-soft:#D8E6CF;
+  --horde:#9A3B2E; --horde-soft:#F0D9D4; --alliance:#2F5AA8; --alliance-soft:#D6E0F3;
+  --violet:#5A4478; --violet-soft:#E2DAEE; --gold:#8A6B1F;
+  --shadow:0 1px 0 rgba(30,28,24,.06), 0 10px 30px -18px rgba(30,28,24,.45);
+  --display:"Grenze Gotisch","Cinzel",Georgia,serif;
+  --body:"Source Serif 4","Iowan Old Style",Georgia,serif;
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#131411; --surface:#1B1D19; --sunk:#0E0F0D; --ink:#DAD8CC; --muted:#8F8C80; --line:#2F312B;
+    --accent:#7FD35E; --accent-ink:#A6E88E; --accent-soft:#1F3320;
+    --horde:#E08A7A; --horde-soft:#3A2220; --alliance:#8FB0EE; --alliance-soft:#1E2A44;
+    --violet:#A98FD6; --violet-soft:#2A2238; --gold:#D2AE4C;
+    --shadow:0 1px 0 rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.9);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131411; --surface:#1B1D19; --sunk:#0E0F0D; --ink:#DAD8CC; --muted:#8F8C80; --line:#2F312B;
+  --accent:#7FD35E; --accent-ink:#A6E88E; --accent-soft:#1F3320;
+  --horde:#E08A7A; --horde-soft:#3A2220; --alliance:#8FB0EE; --alliance-soft:#1E2A44;
+  --violet:#A98FD6; --violet-soft:#2A2238; --gold:#D2AE4C;
+  --shadow:0 1px 0 rgba(0,0,0,.4), 0 10px 30px -18px rgba(0,0,0,.9);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-family:var(--display);font-weight:500;line-height:1.05;margin:0;text-wrap:balance}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.wrap{max-width:1080px;margin:0 auto;padding:40px clamp(16px,4vw,40px) 80px}
+.mast h1{font-size:clamp(3rem,8vw,5.8rem);font-weight:700;line-height:.92}
+.mast h1 span{color:var(--accent)}
+.mast p{max-width:64ch;font-size:1.08rem;margin:16px 0 0}
+.stamp{font-family:var(--mono);font-size:.76rem;color:var(--muted);margin-top:14px}
+.stamp b{color:var(--ink);font-weight:500}
+
+.stage{margin-top:36px;display:grid;gap:28px}
+.step{display:grid;grid-template-columns:44px 1fr;gap:16px;align-items:start}
+.step .n{font-family:var(--display);font-size:2rem;color:var(--muted);line-height:1;padding-top:4px}
+.step h2{font-size:1.6rem;margin-bottom:10px}
+.step.dim{opacity:.45;pointer-events:none}
+
+.factions{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;max-width:560px}
+.factions button{font:inherit;font-family:var(--display);font-size:1.5rem;padding:18px 20px;border-radius:8px;border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;box-shadow:var(--shadow)}
+.factions button small{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.factions button[data-f="horde"].on{border-color:var(--horde);background:var(--horde-soft)}
+.factions button[data-f="alliance"].on{border-color:var(--alliance);background:var(--alliance-soft)}
+
+.races{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.race{font:inherit;text-align:left;padding:14px 16px;border-radius:8px;border:2px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:grid;gap:4px;box-shadow:var(--shadow)}
+.race .name{font-family:var(--display);font-size:1.45rem;line-height:1}
+.race .title{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.race .hook{font-size:.9rem;color:var(--muted);margin-top:4px}
+.race.on{border-color:var(--accent);background:var(--accent-soft)}
+.race .tag{justify-self:start}
+.race[hidden]{display:none}
+
+.classes{display:flex;flex-wrap:wrap;gap:8px}
+.cls{font:inherit;font-size:.95rem;padding:9px 16px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:inline-flex;gap:8px;align-items:center}
+.cls:hover{border-color:var(--accent)}
+.cls.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.cls.on .tag{background:rgba(255,255,255,.25);color:#fff}
+.tag{display:inline-block;font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:3px;line-height:1.4}
+.tag.forever{background:var(--violet-soft);color:var(--violet)}
+.tag.soon{background:var(--sunk);color:var(--muted)}
+
+.go{display:grid;gap:10px;padding:18px 20px;border-radius:8px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow)}
+.go .summary{font-size:1.05rem}
+.go .summary b{font-weight:600}
+.go .btns{display:flex;flex-wrap:wrap;gap:10px}
+.go a.primary{font:inherit;font-family:var(--display);font-size:1.3rem;padding:12px 22px;border-radius:8px;background:var(--accent);color:#fff;text-decoration:none}
+.go a.primary[aria-disabled="true"]{background:var(--sunk);color:var(--muted);pointer-events:none}
+.go a.secondary{font:inherit;font-size:.95rem;padding:12px 16px;border-radius:8px;border:1px solid var(--line);color:var(--ink);text-decoration:none;background:var(--bg)}
+.go .hint{font-size:.88rem;color:var(--muted);margin:0}
+
+.foot{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);font-size:.9rem;color:var(--muted)}
+.foot ul{padding-left:1.2em;margin:.5em 0 0}
+@media (max-width:600px){.step{grid-template-columns:1fr}.step .n{display:none}}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast">
+  <div class="eyebrow">Classic WoW · WoW Forever · 1–60 leveling guides</div>
+  <h1>Pick <span>your</span> path</h1>
+  <p>Choose a faction, a race and a class. The guide opens with only your class quests showing, and the Evergreen addon picks the same route in-game from the character you log in with.</p>
+  <div class="stamp"><b>Baseline</b> Classic Era 1.15 · <b>WoW Forever</b> beta Sep 17 → Oct 21, 2026, launch Nov 4, 2026 · <b>Revised</b> Sep 19, 2026</div>
+</header>
+
+<div class="stage">
+  <section class="step" id="s1">
+    <div class="n">1</div>
+    <div>
+      <h2>Faction</h2>
+      <div class="factions" role="group" aria-label="Faction">
+        <button type="button" data-f="horde">Horde <small>5 races</small></button>
+        <button type="button" data-f="alliance">Alliance <small>5 races</small></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="step dim" id="s2">
+    <div class="n">2</div>
+    <div>
+      <h2>Race</h2>
+      <div class="races" id="races" role="group" aria-label="Race"></div>
+    </div>
+  </section>
+
+  <section class="step dim" id="s3">
+    <div class="n">3</div>
+    <div>
+      <h2>Class</h2>
+      <div class="classes" id="classes" role="group" aria-label="Class"></div>
+    </div>
+  </section>
+
+  <section class="step dim" id="s4">
+    <div class="n">4</div>
+    <div class="go">
+      <div class="summary" id="summary">Pick a faction to start.</div>
+      <div class="btns">
+        <a class="primary" id="open" href="#" aria-disabled="true">Open the guide</a>
+        <a class="secondary" id="open-all" href="#" hidden>Open with every class shown</a>
+      </div>
+      <p class="hint" id="hint"></p>
+    </div>
+  </section>
+</div>
+
+<footer class="foot">
+  <div class="eyebrow">In-game</div>
+  <p style="margin:.4em 0 0">The <a href="addon/Evergreen.zip">Evergreen</a> addon tracks the same route from your quest log and shows only your class's steps; <a href="addon/Everbuff.zip">Everbuff</a> is the one-click buff button. Install notes are in <a href="addon/README.md">addon/README.md</a>.</p>
+  <ul>
+    <li>Your picks are remembered in this browser. Bookmark the guide URL itself to skip this page.</li>
+    <li>Races marked <span class="tag soon">soon</span> have guides still being written; the link will work once the file exists.</li>
+    <li><span class="tag forever">Forever</span> marks race and class combinations that exist only in WoW Forever.</li>
+  </ul>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var KEY='menu-pick';
+  var C={warrior:'Warrior',paladin:'Paladin',hunter:'Hunter',rogue:'Rogue',priest:'Priest',shaman:'Shaman',mage:'Mage',warlock:'Warlock',druid:'Druid'};
+  var RACES=[
+    {id:'undead',  f:'horde',    name:'Undead',    page:'undead.html',   title:'The Forsaken Road', hook:'Cannibalize, Will of the Forsaken; Eastern Kingdoms hubs.', era:['warrior','rogue','priest','mage','warlock'], forever:['paladin'], ready:true},
+    {id:'tauren',  f:'horde',    name:'Tauren',    page:'tauren.html',   title:'The Long Walk',     hook:'War Stomp, Endurance, Plainsrunning; Kalimdor all the way.', era:['warrior','hunter','shaman','druid'], forever:[], ready:true},
+    {id:'orc',     f:'horde',    name:'Orc',       page:'orc.html',      title:'The Blood Road',    hook:'Blood Fury for melee and casters, Hardiness.', era:['warrior','hunter','rogue','shaman','warlock'], forever:['mage'], ready:true},
+    {id:'troll',   f:'horde',    name:'Troll',     page:'troll.html',    title:"The Loa's Path",    hook:'Berserking, Regeneration, Beast Slaying.', era:['warrior','hunter','rogue','priest','shaman','mage'], forever:['warlock'], ready:true},
+    {id:'skyborne-horde', f:'horde', name:'Skyborne', page:'skyborne-horde.html', title:'The Falling Sky', hook:'Forever only. Zephras Isle 1–12, then the Barrens.', era:[], forever:['warrior','hunter','rogue','druid','shaman'], ready:true, newRace:true},
+    {id:'human',   f:'alliance', name:'Human',     page:'human.html',    title:"The King's Road",   hook:'Sword and mace crit, Perception, Will to Survive.', era:['warrior','paladin','rogue','priest','mage','warlock'], forever:['hunter'], ready:true},
+    {id:'dwarf',   f:'alliance', name:'Dwarf',     page:'dwarf.html',    title:'The Deep Road',     hook:'Stoneform, Find Treasure, mace crit.', era:['warrior','paladin','hunter','rogue','priest'], forever:['shaman'], ready:true},
+    {id:'gnome',   f:'alliance', name:'Gnome',     page:'gnome.html',    title:'The Long Tinker',   hook:'Escape Artist, Expansive Mind, Eureka!', era:['warrior','rogue','mage','warlock'], forever:['priest'], ready:true},
+    {id:'nightelf',f:'alliance', name:'Night Elf', page:'nightelf.html', title:'The Moon Road',     hook:"Shadowmeld, Quickness, Elune's Light.", era:['warrior','hunter','rogue','priest','druid'], forever:[], ready:true},
+    {id:'skyborne-alliance', f:'alliance', name:'Skyborne', page:'skyborne-alliance.html', title:'The Falling Sky', hook:'Forever only. Zephras Isle 1–12, then the Eastern Kingdoms.', era:[], forever:['warrior','hunter','mage','rogue','druid'], ready:true, newRace:true}
+  ];
+  var pick={f:'',r:'',c:''};
+  try{var saved=JSON.parse(localStorage.getItem(KEY)||'{}');if(saved&&typeof saved==='object')pick={f:saved.f||'',r:saved.r||'',c:saved.c||''};}catch(e){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(pick));}catch(e){}}
+  function race(){for(var i=0;i<RACES.length;i++)if(RACES[i].id===pick.r)return RACES[i];return null;}
+  function el(tag,attrs,html){var e=document.createElement(tag);for(var k in attrs)e.setAttribute(k,attrs[k]);if(html!=null)e.innerHTML=html;return e;}
+
+  var fbtns=[].slice.call(document.querySelectorAll('.factions button'));
+  var racesEl=document.getElementById('races'), classesEl=document.getElementById('classes');
+  var s2=document.getElementById('s2'), s3=document.getElementById('s3'), s4=document.getElementById('s4');
+  var summary=document.getElementById('summary'), open=document.getElementById('open'), openAll=document.getElementById('open-all'), hint=document.getElementById('hint');
+
+  function renderRaces(){
+    racesEl.innerHTML='';
+    RACES.forEach(function(r){
+      if(r.f!==pick.f)return;
+      var b=el('button',{type:'button',class:'race'+(r.id===pick.r?' on':''),'data-r':r.id,'aria-pressed':r.id===pick.r?'true':'false'});
+      b.appendChild(el('span',{class:'name'},r.name));
+      b.appendChild(el('span',{class:'title'},r.title));
+      if(r.newRace)b.appendChild(el('span',{class:'tag forever'},'Forever only'));
+      else if(!r.ready)b.appendChild(el('span',{class:'tag soon'},'soon'));
+      b.appendChild(el('span',{class:'hook'},r.hook));
+      b.addEventListener('click',function(){pick.r=r.id;pick.c='';save();render();});
+      racesEl.appendChild(b);
+    });
+  }
+  function renderClasses(){
+    classesEl.innerHTML='';
+    var r=race(); if(!r)return;
+    r.era.forEach(function(c){classesEl.appendChild(chip(c,false));});
+    r.forever.forEach(function(c){classesEl.appendChild(chip(c,true));});
+  }
+  function chip(c,fv){
+    var b=el('button',{type:'button',class:'cls'+(c===pick.c?' on':''),'data-c':c,'aria-pressed':c===pick.c?'true':'false'},C[c]);
+    if(fv)b.appendChild(el('span',{class:'tag forever'},'Forever'));
+    b.addEventListener('click',function(){pick.c=(pick.c===c)?'':c;save();render();});
+    return b;
+  }
+  function render(){
+    fbtns.forEach(function(b){var on=b.getAttribute('data-f')===pick.f;b.classList.toggle('on',on);b.setAttribute('aria-pressed',on?'true':'false');});
+    s2.classList.toggle('dim',!pick.f);
+    renderRaces();
+    var r=race();
+    if(r&&r.f!==pick.f){pick.r='';pick.c='';r=null;}
+    s3.classList.toggle('dim',!r);
+    renderClasses();
+    s4.classList.toggle('dim',!r);
+    if(!pick.f){summary.textContent='Pick a faction to start.';open.setAttribute('aria-disabled','true');open.href='#';openAll.hidden=true;hint.textContent='';return;}
+    if(!r){summary.textContent='Pick a race.';open.setAttribute('aria-disabled','true');open.href='#';openAll.hidden=true;hint.textContent='';return;}
+    var fv=r.forever.indexOf(pick.c)>=0;
+    var url=r.page+(pick.c?('?class='+pick.c):'');
+    summary.innerHTML='<b>'+r.name+(pick.c?' '+C[pick.c]:'')+'</b> · '+r.title+(pick.c?'':' · every class shown');
+    open.removeAttribute('aria-disabled');open.href=url;
+    openAll.hidden=!pick.c;openAll.href=r.page;
+    var h=[];
+    if(!pick.c)h.push('Pick a class to hide the other classes\' quests, or open the guide as is.');
+    if(fv)h.push(C[pick.c]+' '+r.name+' exists only in WoW Forever; its class quests are not public yet, so those steps carry Forever tags.');
+    if(r.newRace)h.push('Skyborne data is from the beta and marked verify throughout.');
+    if(!r.ready&&!r.newRace)h.push('This guide is still being written; the link works once the page exists.');
+    hint.textContent=h.join(' ');
+  }
+  fbtns.forEach(function(b){b.addEventListener('click',function(){var f=b.getAttribute('data-f');if(pick.f!==f){pick.f=f;pick.r='';pick.c='';}save();render();});});
+  render();
+})();
+</script>
+</body>
+</html>

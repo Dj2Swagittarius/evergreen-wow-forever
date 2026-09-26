@@ -1,0 +1,10 @@
+# third-party code we do not own (Zygor Guides is a paid product)
+addon/tools/zygor-forever/
+# old copies and installable zips (build your own from addon/Evergreen)
+addon/_retired/
+*.zip
+# generated working files, rebuilt by addon/tools/rebuild.sh
+addon/tools/forsaken_b1-3.json
+addon/tools/forever_items.json
+__pycache__/
+*.pyc
