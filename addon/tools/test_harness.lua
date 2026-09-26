@@ -176,6 +176,11 @@ if os.getenv("JOURNAL") then
   J.RefreshPins()
   SlashCmdList.EVERGREENJOURNAL("pins"); SlashCmdList.EVERGREENJOURNAL("pins")
   SlashCmdList.EVERGREENJOURNAL("clear")
+  local nb = 0
+  for _ in pairs(ns.Skin.minimapButtons) do nb = nb + 1 end
+  local want = os.getenv("BUFFS") and 3 or 2
+  assert(nb == want, "expected " .. want .. " minimap buttons, got " .. nb)
+  SlashCmdList.EVERGREEN("minimap journal"); SlashCmdList.EVERGREEN("minimap journal")
   io.write(string.format("OK journal: %d instance/tab views drawn, %d chat lines\n", n, #printed))
   for _, m in ipairs(printed) do io.write("  chat: ", m, "\n") end
   os.exit(0)

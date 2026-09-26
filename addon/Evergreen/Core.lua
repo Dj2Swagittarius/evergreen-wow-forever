@@ -1161,37 +1161,18 @@ end
 
 -- ------------------------------------------------------------------ minimap button
 local function BuildMinimap()
-  local btn = CreateFrame("Button", "EvergreenMinimapButton", Minimap)
-  btn:SetSize(31, 31); btn:SetFrameStrata("MEDIUM"); btn:SetFrameLevel(8)
-  btn:RegisterForClicks("LeftButtonUp", "RightButtonUp"); btn:RegisterForDrag("LeftButton")
-  local overlay = btn:CreateTexture(nil, "OVERLAY"); overlay:SetSize(53, 53); overlay:SetPoint("TOPLEFT")
-  overlay:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
-  local icon = btn:CreateTexture(nil, "BACKGROUND"); icon:SetSize(20, 20); icon:SetPoint("TOPLEFT", 7, -5)
-  icon:SetTexture("Interface\\Icons\\INV_Misc_Map_01"); icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-  local function place()
-    local angle = math.rad(DB.minimap.angle or 200)
-    btn:ClearAllPoints()
-    btn:SetPoint("CENTER", Minimap, "CENTER", math.cos(angle) * 80, math.sin(angle) * 80)
-  end
-  btn:SetScript("OnDragStart", function(s) s:SetScript("OnUpdate", function()
-    local mx, my = Minimap:GetCenter(); local cx, cy = GetCursorPosition(); local sc = Minimap:GetEffectiveScale()
-    DB.minimap.angle = math.deg(math.atan2(cy / sc - my, cx / sc - mx)); place()
-  end) end)
-  btn:SetScript("OnDragStop", function(s) s:SetScript("OnUpdate", nil) end)
-  btn:SetScript("OnClick", function(_, b)
-    if b == "RightButton" then DB.arrowShown = not DB.arrowShown; UI.UpdateArrow(true)
-    else if UI.main:IsShown() then UI.main:Hide() else UI.main:Show() end end
-  end)
-  btn:SetScript("OnEnter", function(s)
-    GameTooltip:SetOwner(s, "ANCHOR_LEFT")
-    GameTooltip:AddLine("Evergreen", 0.5, 0.83, 0.37)
-    if ROUTE then GameTooltip:AddLine(ROUTE.name, 0.85, 0.86, 0.81) end
-    GameTooltip:AddLine("Left-click: guide window", 1, 1, 1)
-    GameTooltip:AddLine("Right-click: toggle arrow", 1, 1, 1)
-    GameTooltip:Show()
-  end)
-  btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
-  place()
+  -- one of three Evergreen minimap buttons (guide, journal, buffs); see ns.Skin.MinimapButton
+  ns.Skin.MinimapButton("guide", "Interface\\Icons\\INV_Misc_Map_01", (DB.minimap and DB.minimap.angle) or 200,
+    function(b)
+      if b == "RightButton" then DB.arrowShown = not DB.arrowShown; UI.UpdateArrow(true)
+      else if UI.main:IsShown() then UI.main:Hide() else UI.main:Show() end end
+    end,
+    function(tt)
+      tt:AddLine("Evergreen: leveling guide", 1, 0.82, 0)
+      if ROUTE then tt:AddLine(ROUTE.name, 1, 1, 1) end
+      tt:AddLine("Left-click: guide window", 0.9, 0.9, 0.9)
+      tt:AddLine("Right-click: show / hide the arrow", 0.9, 0.9, 0.9)
+    end)
 end
 
 -- ------------------------------------------------------------------ flight point detection

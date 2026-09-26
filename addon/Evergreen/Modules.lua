@@ -183,6 +183,53 @@ end
 -- Heads-up box (the waypoint arrow, the buff button): tooltip-style dark box with a bronze edge.
 function Skin.Hud(f) plainBackdrop(f, 0.82) end
 
+-- Minimap button in Blizzard's round tracking-button style, draggable around the minimap edge.
+-- Each module has its own (id "guide", "journal", "buffs"); angles live in
+-- EvergreenDB.minimapButtons[id], hidden ones in EvergreenDB.hideMinimap[id] (/eg minimap <id>).
+-- onClick(mouseButton) runs on left / right click; tooltip(tt) fills the tooltip.
+Skin.minimapButtons = {}
+function Skin.MinimapButton(id, icon, defaultAngle, onClick, tooltip)
+  EvergreenDB.minimapButtons = EvergreenDB.minimapButtons or {}
+  EvergreenDB.hideMinimap = EvergreenDB.hideMinimap or {}
+  local store = EvergreenDB.minimapButtons
+  if store[id] == nil then store[id] = defaultAngle end
+  if not Minimap then return nil end
+  local btn = CreateFrame("Button", "EvergreenMinimap_" .. id, Minimap)
+  btn:SetSize(31, 31); btn:SetFrameStrata("MEDIUM"); btn:SetFrameLevel(8)
+  btn:RegisterForClicks("LeftButtonUp", "RightButtonUp"); btn:RegisterForDrag("LeftButton")
+  btn:SetHighlightTexture("Interface\\Minimap\\UI-Minimap-ZoomButton-Highlight")
+  local overlay = btn:CreateTexture(nil, "OVERLAY"); overlay:SetSize(53, 53); overlay:SetPoint("TOPLEFT")
+  overlay:SetTexture("Interface\\Minimap\\MiniMap-TrackingBorder")
+  local bg = btn:CreateTexture(nil, "BACKGROUND"); bg:SetSize(20, 20); bg:SetPoint("TOPLEFT", 7, -5)
+  bg:SetTexture("Interface\\Minimap\\UI-Minimap-Background")
+  local tex = btn:CreateTexture(nil, "ARTWORK"); tex:SetSize(20, 20); tex:SetPoint("TOPLEFT", 7, -5)
+  tex:SetTexture(icon); tex:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+  btn.icon = tex
+  local function place()
+    local angle = math.rad(store[id] or defaultAngle)
+    local r = (Minimap:GetWidth() or 140) / 2 + 10
+    btn:ClearAllPoints()
+    btn:SetPoint("CENTER", Minimap, "CENTER", math.cos(angle) * r, math.sin(angle) * r)
+  end
+  btn:SetScript("OnDragStart", function(s) s:SetScript("OnUpdate", function()
+    local mx, my = Minimap:GetCenter(); local cx, cy = GetCursorPosition(); local sc = Minimap:GetEffectiveScale()
+    store[id] = math.deg(math.atan2(cy / sc - my, cx / sc - mx)); place()
+  end) end)
+  btn:SetScript("OnDragStop", function(s) s:SetScript("OnUpdate", nil) end)
+  btn:SetScript("OnClick", function(_, b) onClick(b) end)
+  btn:SetScript("OnEnter", function(s)
+    GameTooltip:SetOwner(s, "ANCHOR_LEFT")
+    tooltip(GameTooltip)
+    GameTooltip:AddLine("Drag to move around the minimap", 0.6, 0.6, 0.6)
+    GameTooltip:Show()
+  end)
+  btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
+  place()
+  if EvergreenDB.hideMinimap[id] then btn:Hide() end
+  Skin.minimapButtons[id] = btn
+  return btn
+end
+
 -- Row highlight in the quest-log style.
 function Skin.RowHighlight(r)
   local h = r:CreateTexture(nil, "HIGHLIGHT")
@@ -240,6 +287,19 @@ local function wrapSlash()
     elseif cmd == "module" then
       local id, state = rest:match("^(%S+)%s*(%S*)$")
       setModule(id, state)
+    elseif cmd == "minimap" or cmd == "icons" then
+      EvergreenDB.hideMinimap = EvergreenDB.hideMinimap or {}
+      local id = rest ~= "" and rest or nil
+      for bid, btn in pairs(Skin.minimapButtons) do
+        if not id or id == bid or id == "all" then
+          EvergreenDB.hideMinimap[bid] = not EvergreenDB.hideMinimap[bid] or nil
+          btn:SetShown(not EvergreenDB.hideMinimap[bid])
+        end
+      end
+      local st = {}
+      for bid in pairs(Skin.minimapButtons) do st[#st + 1] = bid .. (EvergreenDB.hideMinimap[bid] and " (hidden)" or "") end
+      table.sort(st)
+      print(HEX.green .. "Evergreen:|r minimap buttons: " .. table.concat(st, ", ") .. ". /eg minimap <guide|journal|buffs> toggles one.")
     elseif cmd == "journal" or cmd == "ej" then
       if SlashCmdList.EVERGREENJOURNAL then SlashCmdList.EVERGREENJOURNAL(rest) end
     elseif cmd == "reveal" then

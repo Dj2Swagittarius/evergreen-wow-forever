@@ -689,6 +689,17 @@ ev:SetScript("OnEvent", function(self, event, name)
     Prepare()
   end
   if not DB then return end
+  if event == "PLAYER_LOGIN" then
+    ns.Skin.MinimapButton("journal", "Interface\\Icons\\INV_Misc_Book_09", 225,
+      function(b)
+        if b == "RightButton" then J.Slash("pins") else J.Slash("") end
+      end,
+      function(tt)
+        tt:AddLine("Evergreen: dungeon journal", 1, 0.82, 0)
+        tt:AddLine("Left-click: open the journal", 0.9, 0.9, 0.9)
+        tt:AddLine("Right-click: world map markers on / off", 0.9, 0.9, 0.9)
+      end)
+  end
   if event == "PLAYER_LOGIN" or name == "Blizzard_WorldMap" then HookMap() end
 end)
 

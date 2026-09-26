@@ -415,6 +415,16 @@ EB:SetScript("OnEvent", function(self, event, a1)
     if a1 ~= ADDON then return end
     if not ns.ModuleEnabled("buffs") then self:UnregisterAllEvents(); return end
     InitDB(); Build()
+    ns.Skin.MinimapButton("buffs", "Interface\\Icons\\Spell_Holy_WordFortitude", 250,
+      function(b)
+        if b == "RightButton" then SlashCmdList["EVERBUFF"]("scan") else SlashCmdList["EVERBUFF"]("") end
+      end,
+      function(tt)
+        tt:AddLine("Evergreen: Everbuff", 1, 0.82, 0)
+        tt:AddLine(#queue .. " buff" .. (#queue == 1 and "" or "s") .. " queued", 1, 1, 1)
+        tt:AddLine("Left-click: show / hide the buff button", 0.9, 0.9, 0.9)
+        tt:AddLine("Right-click: rescan and list who needs what", 0.9, 0.9, 0.9)
+      end)
   elseif event == "PLAYER_LOGIN" or event == "PLAYER_ENTERING_WORLD" then
     -- the spellbook can still be empty at PLAYER_LOGIN on the 1.60 client; PLAYER_ENTERING_WORLD
     -- fires after it is filled, and Scan re-reads the book every time anyway
