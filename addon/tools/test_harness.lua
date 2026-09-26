@@ -13,9 +13,14 @@ assert(addonDir, "usage: luajit test_harness.lua <addonDir> <race> <class> [rout
 local timers = {}
 local printed = {}
 local frames = {}
+local CHILD_KEYS = { NineSlice = true, PortraitContainer = true, portrait = true, Inset = true, Bg = true, CloseButton = true,
+  Text = true, Instructions = true, searchIcon = true, Left = true, LeftActive = true, LeftTexture = true, TitleContainer = true,
+  TitleText = true, Tabs = true, numTabs = true, skinned = true, fallbackTitle = true, contentTop = true, portraitW = true, locked = true }
 local function newFrame(name)
-  local f = { _scripts = {}, _events = {}, _shown = true, _name = name }
+  local f = { _scripts = {}, _events = {}, _shown = true, _name = name or false }
   setmetatable(f, { __index = function(t, k)
+    -- template children (parentKey frames) do not exist on stub frames: the addon must fall back
+    if CHILD_KEYS[k] then return nil end
     if k == "SetScript" then return function(self, ev, fn) self._scripts[ev] = fn end end
     if k == "GetScript" then return function(self, ev) return self._scripts[ev] end end
     if k == "HookScript" then return function(self, ev, fn) local o = self._scripts[ev]; self._scripts[ev] = function(...) if o then o(...) end fn(...) end end end
@@ -29,7 +34,7 @@ local function newFrame(name)
     if k == "GetText" then return function(self) return self._text or "" end end
     if k == "GetPoint" then return function() return "CENTER", nil, "CENTER", 0, 0 end end
     if k == "GetCenter" then return function() return 0, 0 end end
-    if k == "GetName" then return function(self) return self._name end end
+    if k == "GetName" then return function(self) return self._name or nil end end
     if k == "GetObjectType" then return function() return "Frame" end end
     if k == "GetEffectiveScale" or k == "GetScale" then return function() return 1 end end
     if k:match("^Create") then return function(self, n) return newFrame(n) end end
@@ -79,6 +84,15 @@ UnitClass = function() return CLASS:sub(1, 1) .. CLASS:sub(2):lower(), CLASS end
 UnitFactionGroup = function() return os.getenv("FACTION") or ((RACE == "Human" or RACE == "Dwarf" or RACE == "Gnome" or RACE == "NightElf") and "Alliance" or "Horde") end
 UnitLevel = function() return state.level end
 UnitName = function() return "Tester" end
+UnitExists = function(u) return u == "player" end
+UnitIsConnected, UnitIsVisible, UnitIsFriend, UnitIsPlayer = function() return true end, function() return true end, function() return true end, function() return true end
+UnitIsDeadOrGhost, UnitCanAssist = function() return false end, function() return true end
+UnitInRange = function() return true end
+IsInRaid, IsInGroup = function() return false end, function() return false end
+UnitAura, UnitBuff = function() return nil end, function() return nil end
+GetCVar, SetCVar = function() return "1" end, function() end
+C_UnitAuras = { GetAuraDataByIndex = function() return nil end }
+IsSpellInRange = function() return 1 end
 GetBindLocation = function() return state.bind end
 C_QuestLog = {
   GetNumQuestLogEntries = function() return #state.log end,
@@ -101,7 +115,11 @@ C_Map = {
 C_SuperTrack = { SetSuperTrackedUserWaypoint = function() end }
 UiMapPoint = { CreateFromCoordinates = function(m, x, y) return { m = m, x = x, y = y } end }
 C_Spell = { GetSpellCooldown = function() return nil end }
-setmetatable(_G, { __index = function(_, k) return nil end })
+setmetatable(_G, { __index = function(_, k)
+  -- any other unit / state query answers "no" (enough for modules that only read them)
+  if type(k) == "string" and (k:match("^Unit%u") or k:match("^Is%u") or k:match("^Get%u")) then return function() return nil end end
+  return nil
+end })
 
 -- ---------------------------------------------------------------- load the addon
 local ns = {}
@@ -124,7 +142,7 @@ local function fire(ev, ...)
   end
   flush()
 end
-EvergreenDB = { modules = { buffs = false, move = false, reveal = false } }  -- guide (+ journal) only
+EvergreenDB = { modules = { buffs = (os.getenv("BUFFS") ~= nil), move = false, reveal = false } }  -- guide (+ journal) only
 bit = require("bit")
 WorldMapFrame = newFrame("WorldMapFrame")
 InCombatLockdown = function() return false end

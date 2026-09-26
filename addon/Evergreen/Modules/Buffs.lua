@@ -11,10 +11,10 @@ local EB = CreateFrame("Frame", "EverbuffEvents")
 BINDING_HEADER_EVERBUFF = "Everbuff"
 _G["BINDING_NAME_CLICK EverbuffButton:LeftButton"] = "Cast next buff"
 
-local HEX = { ink="|cffd9dccf", muted="|cff8f958a", green="|cff7fd35e", gold="|cffd2ae4c", red="|cffe08a7a", white="|cffffffff" }
+local HEX = { ink="|cffe8e4d8", muted="|cffa39e93", green="|cff7fd35e", gold="|cffffd100", red="|cffff4040", white="|cffffffff" }
 local C = {
-  bg={0.07,0.08,0.075,0.95}, panel={0.10,0.12,0.11,1}, line={0.18,0.20,0.18,1},
-  ink={0.85,0.86,0.81}, muted={0.56,0.58,0.54}, green={0.50,0.83,0.37}, gold={0.82,0.68,0.30}, red={0.88,0.54,0.48},
+  bg={0.06,0.05,0.04,0.9}, panel={0.08,0.065,0.05,0.9}, line={0.45,0.37,0.24,1},
+  ink={0.85,0.86,0.81}, muted={0.56,0.58,0.54}, green={1,0.82,0}, gold={1,0.82,0}, red={0.88,0.54,0.48},
 }
 local FONT_DISPLAY = "Fonts\\MORPHEUS.ttf"
 local FONT_BODY = "Fonts\\FRIZQT__.TTF"
@@ -297,7 +297,7 @@ local function Arm()
   end
   list:SetText(table.concat(lines, "\n"))
   sub:SetText(#queue > 0 and (HEX.gold .. #queue .. "|r " .. HEX.muted .. "cast" .. (#queue == 1 and "" or "s") .. " queued, one per click|r") or "")
-  local h = 100 + (#lines > 0 and (#lines * 14 + 10) or 0)
+  local h = 104 + (#lines > 0 and (#lines * 14 + 10) or 0)
   frame:SetHeight(h)
 end
 
@@ -331,46 +331,49 @@ local function MakeText(parent, font, size, color, justify)
 end
 
 local function Build()
-  frame = CreateFrame("Frame", "EverbuffFrame", UIParent, "BackdropTemplate")
-  frame:SetSize(260, 100)
+  -- metal panel from Blizzard's templates (ns.Skin), so it matches the WoW Forever UI
+  frame = ns.Skin.Panel("EverbuffFrame", 270, 112, "Everbuff")
+  frame:SetParent(UIParent)
   frame:SetPoint("CENTER", UIParent, "CENTER", -300, 200)
+  frame:SetFrameStrata("MEDIUM")
   frame:SetMovable(true); frame:EnableMouse(true); frame:SetClampedToScreen(true)
   frame:RegisterForDrag("LeftButton")
   frame:SetScript("OnDragStart", function(s) if not DB.locked then s:StartMoving() end end)
   frame:SetScript("OnDragStop", function(s) s:StopMovingOrSizing(); local p, _, rp, x, y = s:GetPoint(1); DB.pos = { p, rp, x, y } end)
-  Backdrop(frame, C.bg, C.line, 14)
   if DB.pos then frame:ClearAllPoints(); frame:SetPoint(DB.pos[1], UIParent, DB.pos[2], DB.pos[3], DB.pos[4]) end
+  if frame.CloseButton then frame.CloseButton:SetScript("OnClick", function() frame:Hide() end) end
 
-  title = MakeText(frame, FONT_DISPLAY, 16, C.green); title:SetPoint("TOPLEFT", 12, -8); title:SetText("Everbuff")
-  sub = MakeText(frame, FONT_NUM, 10, C.muted, "RIGHT"); sub:SetPoint("TOPRIGHT", -12, -12)
+  title = ns.Skin.Text(frame, "GameFontNormalSmall"); title:Hide()          -- the frame's own title bar says "Everbuff"
+  sub = ns.Skin.Text(frame, "GameFontDisableSmall", "RIGHT"); sub:SetPoint("TOPRIGHT", -12, -30)
 
   -- the one button. Secure: type=macro, macrotext set by Arm() out of combat.
   button = CreateFrame("Button", "EverbuffButton", frame, "SecureActionButtonTemplate,BackdropTemplate")
-  button:SetSize(236, 52)
-  button:SetPoint("TOPLEFT", 12, -30)
+  button:SetSize(246, 46)
+  button:SetPoint("TOPLEFT", 12, -44)
   -- register both phases; the secure template acts on whichever the client uses (key-down on
   -- modern clients, mouse-up on classic ones), so a plain mouse click always casts
   button:RegisterForClicks("AnyDown", "AnyUp")
   button:SetAttribute("type", "macro")
   button:SetAttribute("macrotext", "")
   Backdrop(button, C.panel, C.line, 12)
-  button.icon = button:CreateTexture(nil, "ARTWORK"); button.icon:SetSize(40, 40); button.icon:SetPoint("LEFT", 6, 0)
-  button.hint = MakeText(button, FONT_NUM, 9, C.muted, "RIGHT"); button.hint:SetPoint("BOTTOMRIGHT", -8, 5); button.hint:SetText("click to cast")
-  button.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-  button.label = MakeText(button, FONT_BODY, 13, C.ink); button.label:SetPoint("TOPLEFT", button.icon, "TOPRIGHT", 10, -2); button.label:SetPoint("RIGHT", -8, 0); button.label:SetWordWrap(false)
-  button.who = MakeText(button, FONT_BODY, 11, C.muted); button.who:SetPoint("TOPLEFT", button.label, "BOTTOMLEFT", 0, -2); button.who:SetPoint("RIGHT", -8, 0); button.who:SetWordWrap(false)
+  button.icon = button:CreateTexture(nil, "ARTWORK"); button.icon:SetSize(36, 36); button.icon:SetPoint("LEFT", 5, 0)
+  local iconFrame = button:CreateTexture(nil, "OVERLAY"); iconFrame:SetTexture("Interface\\Common\\WhiteIconFrame")
+  iconFrame:SetAllPoints(button.icon); iconFrame:SetVertexColor(1, 0.82, 0, 1)
+  button:SetHighlightTexture("Interface\\QuestFrame\\UI-QuestTitleHighlight", "ADD")
+  button.hint = ns.Skin.Text(button, "GameFontDisableSmall", "RIGHT"); button.hint:SetPoint("BOTTOMRIGHT", -8, 5); button.hint:SetText("click to cast")
+  button.label = ns.Skin.Text(button, "GameFontNormal"); button.label:SetPoint("TOPLEFT", button.icon, "TOPRIGHT", 8, -2); button.label:SetPoint("RIGHT", -8, 0); button.label:SetWordWrap(false)
+  button.who = ns.Skin.Text(button, "GameFontHighlightSmall"); button.who:SetPoint("TOPLEFT", button.label, "BOTTOMLEFT", 0, -3); button.who:SetPoint("RIGHT", -8, 0); button.who:SetWordWrap(false)
   button:SetScript("OnEnter", function(s)
-    s:SetBackdropColor(0.16, 0.20, 0.16, 1)
     GameTooltip:SetOwner(s, "ANCHOR_BOTTOM")
-    GameTooltip:AddLine("Click: cast the buff shown", 1, 1, 1)
+    GameTooltip:AddLine("Click: target them and cast the buff shown", 1, 1, 1)
     GameTooltip:AddLine("Optional: bind it under Key Bindings > AddOns > Everbuff", 0.7, 0.7, 0.7)
     GameTooltip:Show()
   end)
-  button:SetScript("OnLeave", function(s) s:SetBackdropColor(unpack(C.panel)); GameTooltip:Hide() end)
+  button:SetScript("OnLeave", function() GameTooltip:Hide() end)
   -- after a click the cast starts; rescan shortly after so the button re-arms with the next one
   button:HookScript("PostClick", function() C_Timer.After(0.6, Refresh); C_Timer.After(2.0, Refresh) end)
 
-  list = MakeText(frame, FONT_BODY, 11, C.ink); list:SetPoint("TOPLEFT", button, "BOTTOMLEFT", 2, -8); list:SetPoint("RIGHT", -12, 0)
+  list = ns.Skin.Text(frame, "GameFontHighlightSmall"); list:SetPoint("TOPLEFT", button, "BOTTOMLEFT", 2, -8); list:SetPoint("RIGHT", -12, 0)
   list:SetSpacing(2)
 
   frame:SetScript("OnMouseUp", function(_, btn) if btn == "RightButton" then frame:Hide() end end)

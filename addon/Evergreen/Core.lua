@@ -7,23 +7,26 @@ local FR = CreateFrame("Frame", "EvergreenEvents")
 ns.FR = FR
 
 -- ------------------------------------------------------------------ palette / fonts
+-- Colours follow Blizzard's UI (the WoW Forever skin): gold headings, white titles, warm grey
+-- secondary text. Green stays for "done" and the chat prefix.
 local C = {
-  bg      = {0.07, 0.08, 0.075, 0.96},
-  panel   = {0.10, 0.12, 0.11, 1},
-  line    = {0.18, 0.20, 0.18, 1},
-  ink     = {0.85, 0.86, 0.81},
-  muted   = {0.56, 0.58, 0.54},
-  green   = {0.50, 0.83, 0.37},
-  gold    = {0.82, 0.68, 0.30},
-  violet  = {0.66, 0.56, 0.84},
-  red     = {0.88, 0.54, 0.48},
+  bg      = {0.06, 0.05, 0.04, 0.90},
+  panel   = {0.10, 0.08, 0.06, 1},
+  line    = {0.35, 0.29, 0.20, 1},
+  ink     = {0.91, 0.89, 0.85},
+  white   = {1, 1, 1},
+  muted   = {0.64, 0.62, 0.58},
+  green   = {0.25, 0.75, 0.25},
+  gold    = {1, 0.82, 0},
+  violet  = {0.71, 0.55, 1},
+  red     = {1, 0.25, 0.25},
 }
 local HEX = {
-  ink="|cffd9dccf", muted="|cff8f958a", green="|cff7fd35e", gold="|cffd2ae4c", violet="|cffa98fd6", red="|cffe08a7a", white="|cffffffff",
+  ink="|cffe8e4d8", muted="|cffa39e93", green="|cff7fd35e", gold="|cffffd100", violet="|cffb48cff", red="|cffff4040", white="|cffffffff",
 }
-local FONT_DISPLAY = "Fonts\\MORPHEUS.ttf"
+local FONT_DISPLAY = "Fonts\\FRIZQT__.TTF"
 local FONT_BODY    = "Fonts\\FRIZQT__.TTF"
-local FONT_NUM     = "Fonts\\ARIALN.TTF"
+local FONT_NUM     = "Fonts\\FRIZQT__.TTF"
 
 local MAP_NAMES = ns.MAP_NAMES
 local ROUTE, BRACKETS          -- active route and its bracket list; set by SelectRoute()
@@ -499,9 +502,12 @@ ns.UI = UI
 local rows = {}
 local ROW_GAP = 4
 
+local function Skin_RowHighlight(f) if ns.Skin and ns.Skin.RowHighlight then return ns.Skin.RowHighlight(f) end end
+
 local function Backdrop(f, bg, border, edge)
+  if not f.SetBackdrop then return end
   f:SetBackdrop({
-    bgFile = "Interface\\Buttons\\WHITE8x8",
+    bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
     edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", edgeSize = edge or 14,
     insets = { left = 3, right = 3, top = 3, bottom = 3 },
   })
@@ -509,53 +515,41 @@ local function Backdrop(f, bg, border, edge)
   f:SetBackdropBorderColor(unpack(border))
 end
 
+-- Text in the client's own UI face (Friz Quadrata) with the usual drop shadow.
 local function MakeText(parent, font, size, color, justify)
-  local fs = parent:CreateFontString(nil, "OVERLAY")
+  local fs = parent:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
   fs:SetFont(font, size, "")
+  fs:SetShadowOffset(1, -1)
+  fs:SetShadowColor(0, 0, 0, 1)
   fs:SetTextColor(unpack(color))
   fs:SetJustifyH(justify or "LEFT")
   fs:SetJustifyV("TOP")
   return fs
 end
 
+-- Blizzard push button (red on WoW Forever); b.text is kept for code that sets the label.
 local function MakeButton(parent, w, h, text)
-  local b = CreateFrame("Button", nil, parent, "BackdropTemplate")
-  b:SetSize(w, h)
-  Backdrop(b, C.panel, C.line, 10)
-  b.text = MakeText(b, FONT_BODY, 11, C.ink, "CENTER")
-  b.text:SetPoint("CENTER")
-  b.text:SetText(text)
-  b:SetScript("OnEnter", function(s) s:SetBackdropBorderColor(unpack(C.green)) end)
-  b:SetScript("OnLeave", function(s) s:SetBackdropBorderColor(unpack(C.line)) end)
+  local b = ns.Skin.Button(parent, text, w, h)
+  if b.text and b.text.SetText then
+    local orig = b.text.SetText
+    b.text.SetText = function(fs, s) if b.SetText and b.GetFontString and b:GetFontString() == fs then b:SetText(s) else orig(fs, s) end end
+  end
   return b
 end
 
 local function BuildMain()
-  local f = CreateFrame("Frame", "EvergreenFrame", UIParent, "BackdropTemplate")
-  f:SetSize(420, 520)
+  local f = ns.Skin.Window("EvergreenFrame", 420, 540, "Evergreen", "Interface\\Icons\\Spell_Nature_NatureTouchGrow", function() UI.SavePos() end)
   f:SetPoint("CENTER", UIParent, "CENTER", 260, 40)
-  f:SetMovable(true); f:SetResizable(true); f:EnableMouse(true); f:SetClampedToScreen(true)
-  if f.SetResizeBounds then f:SetResizeBounds(340, 300) elseif f.SetMinResize then f:SetMinResize(340, 300) end
+  f:SetResizable(true)
+  if f.SetResizeBounds then f:SetResizeBounds(360, 360) elseif f.SetMinResize then f:SetMinResize(360, 360) end
   f:SetFrameStrata("MEDIUM")
-  Backdrop(f, C.bg, C.line, 14)
-  tinsert(UISpecialFrames, "EvergreenFrame")
+  f:SetScript("OnDragStart", function(s) if not DB.locked then s:StartMoving() end end)
   UI.main = f
+  local left = f.portraitW + 4
 
-  -- title bar
-  local title = CreateFrame("Frame", nil, f)
-  title:SetPoint("TOPLEFT", 8, -8); title:SetPoint("TOPRIGHT", -8, -8); title:SetHeight(34)
-  title:EnableMouse(true)
-  title:SetScript("OnMouseDown", function() if not DB.locked then f:StartMoving() end end)
-  title:SetScript("OnMouseUp", function() f:StopMovingOrSizing(); UI.SavePos() end)
-  local icon = title:CreateTexture(nil, "ARTWORK")
-  icon:SetSize(26, 26); icon:SetPoint("LEFT", 4, 0)
-  icon:SetTexture("Interface\\Icons\\Spell_Nature_NatureTouchGrow")
-  icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-  local t = MakeText(title, FONT_DISPLAY, 20, C.green)
-  t:SetPoint("LEFT", icon, "RIGHT", 8, 0); t:SetText("Evergreen")
-  UI.titleText = t
-  local rt = CreateFrame("Button", nil, title)
-  rt:SetPoint("LEFT", t, "RIGHT", 10, -2); rt:SetPoint("RIGHT", title, "RIGHT", -28, 0); rt:SetHeight(20)
+  -- route line under the title bar (click to cycle routes)
+  local rt = CreateFrame("Button", nil, f)
+  rt:SetPoint("TOPLEFT", left, f.contentTop - 4); rt:SetPoint("TOPRIGHT", -12, f.contentTop - 4); rt:SetHeight(16)
   rt.text = MakeText(rt, FONT_BODY, 10, C.muted); rt.text:SetPoint("LEFT"); rt.text:SetPoint("RIGHT"); rt.text:SetWordWrap(false)
   rt:SetScript("OnClick", function()
     -- cycle routes
@@ -566,7 +560,7 @@ local function BuildMain()
   end)
   rt:SetScript("OnEnter", function(s)
     GameTooltip:SetOwner(s, "ANCHOR_BOTTOM")
-    GameTooltip:AddLine("Route", 0.5, 0.83, 0.37)
+    GameTooltip:AddLine("Route", 1, 0.82, 0)
     for _, r in ipairs(ns.ROUTES) do
       GameTooltip:AddLine((r == ROUTE and "> " or "   ") .. r.name .. "  (" .. r.faction .. ")", 1, 1, 1)
     end
@@ -575,42 +569,38 @@ local function BuildMain()
   end)
   rt:SetScript("OnLeave", function() GameTooltip:Hide() end)
   UI.routeText = rt.text
-  local rule = title:CreateTexture(nil, "ARTWORK")
-  rule:SetColorTexture(C.violet[1], C.violet[2], C.violet[3], 0.8)
-  rule:SetPoint("BOTTOMLEFT", 2, 0); rule:SetPoint("BOTTOMRIGHT", -2, 0); rule:SetHeight(1)
+  UI.titleText = rt.text
 
-  local close = CreateFrame("Button", nil, title, "UIPanelCloseButton")
-  close:SetPoint("RIGHT", 6, 0); close:SetScript("OnClick", function() f:Hide() end)
-
-  -- bracket selector
+  -- bracket selector: < > Auto, level range, zone name, hub line
   local sel = CreateFrame("Frame", nil, f)
-  sel:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -6); sel:SetPoint("TOPRIGHT", title, "BOTTOMRIGHT", 0, -6); sel:SetHeight(44)
-  local prev = MakeButton(sel, 24, 22, "<"); prev:SetPoint("LEFT", 0, 6)
-  local nxt  = MakeButton(sel, 24, 22, ">"); nxt:SetPoint("LEFT", prev, "RIGHT", 4, 0)
-  local auto = MakeButton(sel, 44, 22, "Auto"); auto:SetPoint("LEFT", nxt, "RIGHT", 4, 0)
+  sel:SetPoint("TOPLEFT", left, f.contentTop - 22); sel:SetPoint("TOPRIGHT", -12, f.contentTop - 22); sel:SetHeight(40)
+  local prev = MakeButton(sel, 26, 22, "<"); prev:SetPoint("TOPLEFT", 0, 0)
+  local nxt  = MakeButton(sel, 26, 22, ">"); nxt:SetPoint("LEFT", prev, "RIGHT", 2, 0)
+  local auto = MakeButton(sel, 50, 22, "Auto"); auto:SetPoint("LEFT", nxt, "RIGHT", 2, 0)
   UI.autoBtn = auto
   prev:SetScript("OnClick", function() CDB.bracket = math.max(1, currentIndex - 1); UI.Refresh() end)
   nxt:SetScript("OnClick", function() CDB.bracket = math.min(#BRACKETS, currentIndex + 1); UI.Refresh() end)
   auto:SetScript("OnClick", function() CDB.bracket = nil; UI.Refresh() end)
-  local lv = MakeText(sel, FONT_NUM, 14, C.gold); lv:SetPoint("LEFT", auto, "RIGHT", 10, 6)
+  local lv = MakeText(sel, FONT_BODY, 13, C.gold); lv:SetPoint("LEFT", auto, "RIGHT", 8, 0)
   UI.lvText = lv
-  local zn = MakeText(sel, FONT_DISPLAY, 17, C.ink); zn:SetPoint("LEFT", lv, "RIGHT", 8, 0)
-  zn:SetPoint("RIGHT", sel, "RIGHT", -4, 0); zn:SetWordWrap(false)
+  local zn = MakeText(sel, FONT_BODY, 13, C.ink); zn:SetPoint("LEFT", lv, "RIGHT", 6, 0)
+  zn:SetPoint("RIGHT", sel, "RIGHT", 0, 0); zn:SetWordWrap(false)
   UI.zoneText = zn
-  local meta = MakeText(sel, FONT_BODY, 10, C.muted); meta:SetPoint("TOPLEFT", prev, "BOTTOMLEFT", 0, -4)
-  meta:SetPoint("RIGHT", sel, "RIGHT", -4, 0); meta:SetWordWrap(false)
+  local meta = MakeText(sel, FONT_BODY, 10, C.muted); meta:SetPoint("TOPLEFT", prev, "BOTTOMLEFT", 0, -3)
+  meta:SetPoint("RIGHT", sel, "RIGHT", 0, 0); meta:SetWordWrap(false)
   UI.metaText = meta
 
-  -- "now" panel
-  local now = CreateFrame("Button", nil, f, "BackdropTemplate")
-  now:SetPoint("TOPLEFT", sel, "BOTTOMLEFT", 0, -6); now:SetPoint("TOPRIGHT", sel, "BOTTOMRIGHT", 0, -6); now:SetHeight(64)
-  Backdrop(now, C.panel, C.green, 12)
+  -- "now" panel: what to do next, in an inset
+  local now = CreateFrame("Button", nil, f)
+  now:SetPoint("TOPLEFT", 10, f.contentTop - 70); now:SetPoint("TOPRIGHT", -10, f.contentTop - 70); now:SetHeight(64)
+  local nowBg = ns.Skin.Inset(now); nowBg:SetAllPoints()
+  Skin_RowHighlight(now)
   now:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-  local nowLabel = MakeText(now, FONT_BODY, 9, C.green); nowLabel:SetPoint("TOPLEFT", 10, -7); nowLabel:SetText("NOW")
-  local nowTitle = MakeText(now, FONT_BODY, 13, C.ink); nowTitle:SetPoint("TOPLEFT", 10, -19); nowTitle:SetPoint("RIGHT", -10, 0); nowTitle:SetWordWrap(false)
+  local nowLabel = MakeText(now, FONT_BODY, 9, C.gold); nowLabel:SetPoint("TOPLEFT", 10, -7); nowLabel:SetText("NEXT STEP")
+  local nowTitle = MakeText(now, FONT_BODY, 13, C.white); nowTitle:SetPoint("TOPLEFT", 10, -19); nowTitle:SetPoint("RIGHT", -10, 0); nowTitle:SetWordWrap(false)
   local nowBody = MakeText(now, FONT_BODY, 11, C.ink); nowBody:SetPoint("TOPLEFT", nowTitle, "BOTTOMLEFT", 0, -3); nowBody:SetPoint("RIGHT", -10, 0); nowBody:SetWordWrap(true)
   nowBody:SetMaxLines(2)
-  local nowDist = MakeText(now, FONT_NUM, 11, C.gold, "RIGHT"); nowDist:SetPoint("TOPRIGHT", -10, -7)
+  local nowDist = MakeText(now, FONT_BODY, 11, C.gold, "RIGHT"); nowDist:SetPoint("TOPRIGHT", -10, -7)
   UI.now, UI.nowTitle, UI.nowBody, UI.nowDist = now, nowTitle, nowBody, nowDist
   now:SetScript("OnClick", function(_, btn)
     if btn == "RightButton" then
@@ -628,47 +618,50 @@ local function BuildMain()
   end)
   now:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
-  -- scroll list
-  local scroll = CreateFrame("ScrollFrame", "EvergreenScroll", f, "UIPanelScrollFrameTemplate")
-  scroll:SetPoint("TOPLEFT", now, "BOTTOMLEFT", 0, -8)
-  scroll:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -30, 44)
+  -- step list in an inset, like the quest log
+  local listBg = ns.Skin.Inset(f)
+  listBg:SetPoint("TOPLEFT", now, "BOTTOMLEFT", 0, -6)
+  listBg:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", -10, 46)
+  local scroll = CreateFrame("ScrollFrame", "EvergreenScroll", listBg, "UIPanelScrollFrameTemplate")
+  scroll:SetPoint("TOPLEFT", 6, -6)
+  scroll:SetPoint("BOTTOMRIGHT", -28, 6)
   local content = CreateFrame("Frame", nil, scroll)
   content:SetSize(1, 1)
   scroll:SetScrollChild(content)
   UI.scroll, UI.content = scroll, content
   scroll:SetScript("OnSizeChanged", function() UI.Layout() end)
 
-  -- footer
+  -- footer: bracket progress, racial cooldowns, Forever notes toggle
   local foot = CreateFrame("Frame", nil, f)
-  foot:SetPoint("BOTTOMLEFT", 8, 8); foot:SetPoint("BOTTOMRIGHT", -8, 8); foot:SetHeight(30)
+  foot:SetPoint("BOTTOMLEFT", 14, 10); foot:SetPoint("BOTTOMRIGHT", -14, 10); foot:SetHeight(32)
   local bar = CreateFrame("StatusBar", nil, foot)
-  bar:SetPoint("TOPLEFT", 0, 0); bar:SetPoint("TOPRIGHT", -80, 0); bar:SetHeight(6)
-  bar:SetStatusBarTexture("Interface\\Buttons\\WHITE8x8")
-  bar:SetStatusBarColor(unpack(C.green))
-  local barBG = bar:CreateTexture(nil, "BACKGROUND"); barBG:SetAllPoints(); barBG:SetColorTexture(C.line[1], C.line[2], C.line[3], 1)
+  bar:SetPoint("TOPLEFT", 0, 0); bar:SetPoint("TOPRIGHT", -120, 0); bar:SetHeight(10)
+  bar:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+  bar:SetStatusBarColor(0.85, 0.62, 0.12)
+  local barBG = bar:CreateTexture(nil, "BACKGROUND"); barBG:SetAllPoints(); barBG:SetColorTexture(0, 0, 0, 0.6)
   bar:SetMinMaxValues(0, 1); bar:SetValue(0)
   UI.bar = bar
-  local prog = MakeText(foot, FONT_NUM, 11, C.muted); prog:SetPoint("TOPLEFT", bar, "BOTTOMLEFT", 0, -4)
+  local prog = MakeText(foot, FONT_BODY, 10, C.muted); prog:SetPoint("TOPLEFT", bar, "BOTTOMLEFT", 0, -4)
   UI.progText = prog
-  local cd = MakeText(foot, FONT_NUM, 11, C.muted, "RIGHT"); cd:SetPoint("TOPRIGHT", bar, "BOTTOMRIGHT", 0, -4)
+  local cd = MakeText(foot, FONT_BODY, 10, C.muted, "RIGHT"); cd:SetPoint("TOPRIGHT", bar, "BOTTOMRIGHT", 0, -4)
   cd:SetPoint("LEFT", prog, "RIGHT", 6, 0)
   UI.cdText = cd
-  local fev = CreateFrame("CheckButton", nil, foot)
-  fev:SetSize(16, 16); fev:SetPoint("TOPRIGHT", foot, "TOPRIGHT", -2, 2)
-  fev:SetNormalTexture("Interface\\Buttons\\UI-CheckBox-Up"); fev:SetPushedTexture("Interface\\Buttons\\UI-CheckBox-Down")
-  fev:SetHighlightTexture("Interface\\Buttons\\UI-CheckBox-Highlight"); fev:SetCheckedTexture("Interface\\Buttons\\UI-CheckBox-Check")
+  local fev = CreateFrame("CheckButton", nil, foot, "UICheckButtonTemplate")
+  fev:SetSize(22, 22); fev:SetPoint("TOPRIGHT", foot, "TOPRIGHT", 0, 6)
   fev:SetChecked(DB.showForever)
   fev:SetScript("OnClick", function(s) DB.showForever = s:GetChecked() and true or false; UI.Refresh() end)
-  local fevT = MakeText(foot, FONT_BODY, 10, C.violet, "RIGHT"); fevT:SetPoint("RIGHT", fev, "LEFT", -2, 0); fevT:SetText("Forever notes")
+  local fevT = MakeText(foot, FONT_BODY, 10, C.violet, "RIGHT"); fevT:SetPoint("RIGHT", fev, "LEFT", 0, 0); fevT:SetText("Forever notes")
 
   -- resize grip
   local grip = CreateFrame("Button", nil, f)
   grip:SetSize(16, 16); grip:SetPoint("BOTTOMRIGHT", -4, 4)
+  grip:SetFrameLevel(f:GetFrameLevel() + 20)
   grip:SetNormalTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Up")
   grip:SetHighlightTexture("Interface\\ChatFrame\\UI-ChatIM-SizeGrabber-Highlight")
   grip:SetScript("OnMouseDown", function() f:StartSizing("BOTTOMRIGHT") end)
   grip:SetScript("OnMouseUp", function() f:StopMovingOrSizing(); UI.SavePos(); UI.Layout() end)
 
+  if f.CloseButton then f.CloseButton:SetScript("OnClick", function() f:Hide() end) end
   f:SetScript("OnShow", function() UI.Refresh() end)
   f:Hide()
 end
@@ -691,12 +684,11 @@ end
 -- rows ----------------------------------------------------------------
 local function GetRow(i)
   if rows[i] then return rows[i] end
-  local r = CreateFrame("Button", nil, UI.content, "BackdropTemplate")
+  local r = CreateFrame("Button", nil, UI.content)
   r:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-  r:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8x8" })
-  r:SetBackdropColor(0, 0, 0, 0)
+  Skin_RowHighlight(r)
   r.icon = r:CreateTexture(nil, "ARTWORK"); r.icon:SetSize(14, 14); r.icon:SetPoint("TOPLEFT", 6, -5)
-  r.who = MakeText(r, FONT_DISPLAY, 13, C.green); r.who:SetPoint("TOPLEFT", 8, -4)
+  r.who = MakeText(r, FONT_DISPLAY, 12, C.gold); r.who:SetPoint("TOPLEFT", 8, -4)
   r.title = MakeText(r, FONT_BODY, 12, C.ink); r.title:SetPoint("TOPLEFT", 26, -4); r.title:SetPoint("RIGHT", -6, 0); r.title:SetWordWrap(true)
   r.body = MakeText(r, FONT_BODY, 11, C.ink); r.body:SetPoint("TOPLEFT", r.title, "BOTTOMLEFT", 0, -2); r.body:SetPoint("RIGHT", -6, 0); r.body:SetWordWrap(true)
   r.stripe = r:CreateTexture(nil, "BACKGROUND"); r.stripe:SetWidth(2); r.stripe:SetPoint("TOPLEFT", 0, -2); r.stripe:SetPoint("BOTTOMLEFT", 0, 2)
@@ -724,7 +716,6 @@ local function GetRow(i)
     end
   end)
   r:SetScript("OnEnter", function(s)
-    s:SetBackdropColor(1, 1, 1, 0.04)
     local step = s.step
     if not step or IsInformational(step) then return end
     GameTooltip:SetOwner(s, "ANCHOR_RIGHT")
@@ -744,7 +735,7 @@ local function GetRow(i)
     GameTooltip:AddLine("Shift-right-click: mark this and everything above done", 0.8, 0.8, 0.8)
     GameTooltip:Show()
   end)
-  r:SetScript("OnLeave", function(s) s:SetBackdropColor(0, 0, 0, 0); GameTooltip:Hide() end)
+  r:SetScript("OnLeave", function() GameTooltip:Hide() end)
   rows[i] = r
   return r
 end
@@ -799,7 +790,7 @@ function UI.Refresh()
     UI.routeText:SetText(HEX.muted .. ROUTE.name .. " · " .. ROUTE.faction .. "|r" .. joined)
   end
   UI.metaText:SetText(HEX.muted .. "Hearth: " .. HEX.ink .. (b.hearth or "-") .. HEX.muted .. "   FP: " .. HEX.ink .. (b.fp or "-") .. "|r")
-  UI.autoBtn.text:SetText(CDB.bracket and "Auto" or HEX.green .. "Auto|r")
+  UI.autoBtn.text:SetText(CDB.bracket and "Auto" or HEX.gold .. "Auto|r")
 
   -- now panel
   if cur then
@@ -824,7 +815,7 @@ function UI.Refresh()
       if step.note or step.forever then
         r.icon:Hide(); r.title:SetText("")
         r.who:Show(); r.who:SetText(step.note or "Forever")
-        r.who:SetTextColor(unpack(step.forever and C.violet or C.green))
+        r.who:SetTextColor(unpack(step.forever and C.violet or C.gold))
         r.body:ClearAllPoints(); r.body:SetPoint("TOPLEFT", r.who, "BOTTOMLEFT", 0, -2); r.body:SetPoint("RIGHT", -6, 0)
         r.body:SetText((step.forever and HEX.violet or HEX.muted) .. step.t .. "|r")
         r.stripe:SetColorTexture(step.forever and C.violet[1] or C.line[1], step.forever and C.violet[2] or C.line[2], step.forever and C.violet[3] or C.line[3], 0.7)
@@ -846,7 +837,7 @@ function UI.Refresh()
         else
           if isCur then
             r.icon:SetTexture(CDB.focus == step.key and ICON_FOCUS or ICON_CURRENT); r.icon:SetVertexColor(1, 1, 1)
-            r.stripe:SetColorTexture(C.green[1], C.green[2], C.green[3], 1)
+            r.stripe:SetColorTexture(C.gold[1], C.gold[2], C.gold[3], 1)
           else
             r.icon:SetTexture(ICON_PENDING); r.icon:SetVertexColor(0.6, 0.6, 0.6)
             r.stripe:SetColorTexture(C.line[1], C.line[2], C.line[3], (step.opt and not step.onQuest) and 0.3 or 0.7)

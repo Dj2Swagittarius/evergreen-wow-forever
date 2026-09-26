@@ -47,7 +47,7 @@ for c in WARRIOR PALADIN HUNTER ROGUE PRIEST SHAMAN; do run Dwarf $c auto; done
 for c in WARRIOR ROGUE MAGE WARLOCK PRIEST; do run Gnome $c auto; done
 for c in WARRIOR HUNTER ROGUE PRIEST DRUID; do run NightElf $c auto; done
 for c in WARRIOR HUNTER ROGUE DRUID MAGE; do run Skyborne $c auto Alliance; done
-runs=$((runs+1)); if ! JOURNAL=1 $LJ test_harness.lua ../Evergreen Scourge PALADIN | grep -q "^OK journal"; then fails=$((fails+1)); echo "FAIL journal"; fi
+runs=$((runs+1)); if ! BUFFS=1 JOURNAL=1 $LJ test_harness.lua ../Evergreen Scourge PALADIN | grep -q "^OK journal"; then fails=$((fails+1)); echo "FAIL journal"; fi
 echo "test runs: $runs, failures: $fails"
 [ "$fails" = 0 ] || exit 1
 

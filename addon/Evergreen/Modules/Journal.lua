@@ -11,13 +11,13 @@
 
 local ADDON, ns = ...
 
-local HEX = { ink = "|cffd9dccf", muted = "|cff8f958a", green = "|cff7fd35e", gold = "|cffd2ae4c", red = "|cffe08a7a", white = "|cffffffff", violet = "|cffb48cff" }
+local HEX = { ink = "|cffe8e4d8", muted = "|cffa39e93", green = "|cff40c040", gold = "|cffffd100", red = "|cffff4040", white = "|cffffffff", violet = "|cffb48cff" }
 local C = {
   bg = { 0.07, 0.08, 0.075, 0.96 }, panel = { 0.10, 0.12, 0.11, 1 }, line = { 0.20, 0.22, 0.20, 1 },
   sel = { 0.50, 0.83, 0.37, 0.18 }, hover = { 1, 1, 1, 0.06 },
 }
-local FONT_DISPLAY, FONT_BODY = "Fonts\\MORPHEUS.ttf", "Fonts\\FRIZQT__.TTF"
-local W, H, LIST_W = 820, 540, 230
+local FONT_DISPLAY, FONT_BODY = "Fonts\\FRIZQT__.TTF", "Fonts\\FRIZQT__.TTF"
+local W, H, LIST_W = 840, 560, 240
 
 -- Forever-only dungeon quests that the Classic sources do not know (Wowhead Forever database).
 local FOREVER_EXTRA = {
@@ -51,20 +51,14 @@ local J = {}          -- widgets and state
 ns.Journal = J
 
 -- ------------------------------------------------------------------ helpers
-local function say(msg) print(HEX.green .. "Evergreen Journal:|r " .. msg) end
-
-local function Backdrop(f, bg, border)
-  if not f.SetBackdrop then return end
-  f:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8x8", edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1 })
-  f:SetBackdropColor(unpack(bg))
-  f:SetBackdropBorderColor(unpack(border or C.line))
-end
+local function say(msg) print("|cff7fd35eEvergreen Journal:|r " .. msg) end
 
 local function Text(parent, size, font, justify)
-  local t = parent:CreateFontString(nil, "OVERLAY")
+  local t = parent:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
   t:SetFont(font or FONT_BODY, size or 12, "")
+  t:SetShadowOffset(1, -1); t:SetShadowColor(0, 0, 0, 1)
   t:SetJustifyH(justify or "LEFT")
-  t:SetTextColor(0.85, 0.86, 0.81)
+  t:SetTextColor(0.91, 0.89, 0.85)
   return t
 end
 
@@ -170,113 +164,92 @@ local function Prepare()
 end
 
 -- ------------------------------------------------------------------ window
+-- Built from Blizzard's templates via ns.Skin (see Modules.lua): on WoW Forever it wears the same
+-- metal frame, portrait, red buttons and bottom tabs as the character sheet and quest log.
 local function MakeButton(parent, text, w)
-  local b = CreateFrame("Button", nil, parent, "BackdropTemplate")
-  b:SetSize(w or 70, 20)
-  Backdrop(b, C.panel)
-  b.text = Text(b, 11)
-  b.text:SetPoint("CENTER")
-  b.text:SetText(text)
-  b:SetScript("OnEnter", function(s) s:SetBackdropBorderColor(0.5, 0.83, 0.37, 1) end)
-  b:SetScript("OnLeave", function(s) s:SetBackdropBorderColor(unpack(C.line)) end)
+  local b = ns.Skin.Button(parent, text, w or 80, 22)
   return b
 end
 
+local TABS = { "Loot", "Quests" }
+
 local function Build()
-  local f = CreateFrame("Frame", "EvergreenJournalFrame", UIParent, "BackdropTemplate")
-  f:SetSize(W, H)
-  f:SetPoint("CENTER")
-  f:SetFrameStrata("HIGH")
-  f:SetMovable(true); f:EnableMouse(true); f:SetClampedToScreen(true)
-  f:RegisterForDrag("LeftButton")
-  f:SetScript("OnDragStart", f.StartMoving)
-  f:SetScript("OnDragStop", function(s) s:StopMovingOrSizing(); local p, _, rp, x, y = s:GetPoint(1); DB.pos = { p, rp, x, y } end)
-  Backdrop(f, C.bg)
+  local f = ns.Skin.Window("EvergreenJournalFrame", W, H, "Dungeon Journal", "Interface\\Icons\\INV_Misc_Book_09",
+    function(s) local p, _, rp, x, y = s:GetPoint(1); DB.pos = { p, rp, x, y } end)
+  if DB.pos then f:ClearAllPoints(); f:SetPoint(DB.pos[1], UIParent, DB.pos[2], DB.pos[3], DB.pos[4]) end
   f:Hide()
-  tinsert(UISpecialFrames, "EvergreenJournalFrame")
   J.frame = f
+  local top = f.contentTop
 
-  local title = Text(f, 18, FONT_DISPLAY)
-  title:SetPoint("TOPLEFT", 14, -10)
-  title:SetText(HEX.green .. "Dungeon Journal|r")
-  local close = CreateFrame("Button", nil, f, "UIPanelCloseButton")
-  close:SetPoint("TOPRIGHT", 2, 2)
-
-  -- search
-  local search = CreateFrame("EditBox", nil, f, "InputBoxTemplate")
-  search:SetSize(LIST_W - 24, 20)
-  search:SetPoint("TOPLEFT", 20, -40)
-  search:SetAutoFocus(false)
-  search:SetScript("OnTextChanged", function(s) J.filter = (s:GetText() or ""):lower(); J.RefreshList() end)
-  search:SetScript("OnEscapePressed", function(s) s:ClearFocus() end)
-  local hint = Text(search, 10); hint:SetPoint("LEFT", 2, 0); hint:SetText(HEX.muted .. "search dungeon, boss or item|r")
-  search:SetScript("OnEditFocusGained", function() hint:Hide() end)
-  search:SetScript("OnEditFocusLost", function(s) if (s:GetText() or "") == "" then hint:Show() end end)
+  -- search, top left beside the portrait
+  local search = ns.Skin.Search(f, LIST_W - f.portraitW + 4, "Search dungeon, boss or item")
+  search:SetPoint("TOPLEFT", f.portraitW + 6, top - 8)
+  search:HookScript("OnTextChanged", function(s) J.filter = (s:GetText() or ""):lower(); J.RefreshList() end)
+  search:HookScript("OnEscapePressed", function(s) s:ClearFocus() end)
   J.search = search
 
-  -- instance list (fixed rows, mouse wheel scrolls)
-  local list = CreateFrame("Frame", nil, f, "BackdropTemplate")
-  list:SetPoint("TOPLEFT", 12, -66)
-  list:SetPoint("BOTTOMLEFT", 12, 12)
+  -- instance list in an inset (fixed rows, mouse wheel scrolls)
+  local list = ns.Skin.Inset(f)
+  list:SetPoint("TOPLEFT", 10, top - 36)
+  list:SetPoint("BOTTOMLEFT", 10, 10)
   list:SetWidth(LIST_W)
-  Backdrop(list, C.panel)
   list:EnableMouseWheel(true)
   list:SetScript("OnMouseWheel", function(_, d) J.listOffset = math.max(0, (J.listOffset or 0) - d * 3); J.RefreshList() end)
   J.list = list
   J.rows = {}
   local ROW_H = 20
-  J.ROWS = math.floor((H - 66 - 12 - 4) / ROW_H)
+  J.ROWS = math.floor((H + top - 36 - 10 - 8) / ROW_H)
   for i = 1, J.ROWS do
     local r = CreateFrame("Button", nil, list)
     r:SetHeight(ROW_H)
-    r:SetPoint("TOPLEFT", 2, -2 - (i - 1) * ROW_H)
-    r:SetPoint("TOPRIGHT", -2, -2 - (i - 1) * ROW_H)
-    r.bg = r:CreateTexture(nil, "BACKGROUND"); r.bg:SetAllPoints(); r.bg:SetColorTexture(0, 0, 0, 0)
-    r.name = Text(r, 12); r.name:SetPoint("LEFT", 6, 0); r.name:SetPoint("RIGHT", -52, 0)
-    r.lv = Text(r, 11, nil, "RIGHT"); r.lv:SetPoint("RIGHT", -6, 0)
+    r:SetPoint("TOPLEFT", 4, -4 - (i - 1) * ROW_H)
+    r:SetPoint("TOPRIGHT", -4, -4 - (i - 1) * ROW_H)
+    r.sel = r:CreateTexture(nil, "BACKGROUND")
+    r.sel:SetTexture("Interface\\QuestFrame\\UI-QuestLogTitleHighlight")
+    r.sel:SetBlendMode("ADD"); r.sel:SetAllPoints(); r.sel:SetVertexColor(1, 0.82, 0, 0.55); r.sel:Hide()
+    ns.Skin.RowHighlight(r)
+    r.name = ns.Skin.Text(r, "GameFontNormal"); r.name:SetPoint("LEFT", 6, 0); r.name:SetPoint("RIGHT", -52, 0); r.name:SetWordWrap(false)
+    r.lv = ns.Skin.Text(r, "GameFontHighlightSmall", "RIGHT"); r.lv:SetPoint("RIGHT", -6, 0)
     r:SetScript("OnClick", function(s) if s.inst then J.Select(s.inst) end end)
-    r:SetScript("OnEnter", function(s) if s.inst and s.inst ~= J.current then s.bg:SetColorTexture(unpack(C.hover)) end end)
-    r:SetScript("OnLeave", function(s) if s.inst ~= J.current then s.bg:SetColorTexture(0, 0, 0, 0) end end)
     J.rows[i] = r
   end
 
   -- right side: header
   local right = CreateFrame("Frame", nil, f)
-  right:SetPoint("TOPLEFT", list, "TOPRIGHT", 12, 26)
-  right:SetPoint("BOTTOMRIGHT", -12, 12)
+  right:SetPoint("TOPLEFT", list, "TOPRIGHT", 10, 30)
+  right:SetPoint("BOTTOMRIGHT", -10, 10)
   J.right = right
-  J.hName = Text(right, 20, FONT_DISPLAY); J.hName:SetPoint("TOPLEFT", 0, 0)
-  J.hSub = Text(right, 11); J.hSub:SetPoint("TOPLEFT", J.hName, "BOTTOMLEFT", 0, -4); J.hSub:SetPoint("RIGHT", right, "RIGHT", -150, 0)
-  J.entranceBtn = MakeButton(right, "Entrance", 80)
-  J.entranceBtn:SetPoint("TOPRIGHT", 0, -2)
+  J.hName = ns.Skin.Text(right, "GameFontNormalLarge"); J.hName:SetPoint("TOPLEFT", 2, -2)
+  J.hSub = ns.Skin.Text(right, "GameFontHighlightSmall"); J.hSub:SetPoint("TOPLEFT", J.hName, "BOTTOMLEFT", 0, -4); J.hSub:SetPoint("RIGHT", right, "RIGHT", -100, 0)
+  J.entranceBtn = MakeButton(right, "Entrance", 90)
+  J.entranceBtn:SetPoint("TOPRIGHT", 0, 0)
   J.entranceBtn:SetScript("OnClick", function()
     local d = J.current
     local e = d and d.entrances and d.entrances[J.entranceIdx or 1]
     if e then Waypoint(e[1], e[2], e[3], d.name .. " entrance") end
     if d and d.entrances and #d.entrances > 1 then J.entranceIdx = ((J.entranceIdx or 1) % #d.entrances) + 1 end
   end)
-
-  -- tabs
-  J.tabs = {}
-  for i, name in ipairs({ "Loot", "Quests" }) do
-    local t = MakeButton(right, name, 80)
-    t:SetPoint("TOPLEFT", (i - 1) * 86, -48)
-    t:SetScript("OnClick", function() J.tab = name; DB.tab = name; J.RefreshContent() end)
-    J.tabs[name] = t
-  end
-  J.optHide = MakeButton(right, "Hide done", 90)
-  J.optHide:SetPoint("TOPRIGHT", 0, -48)
+  J.optHide = MakeButton(right, "Hide done", 100)
+  J.optHide:SetPoint("TOPRIGHT", 0, -44)
   J.optHide:SetScript("OnClick", function() DB.hideDone = not DB.hideDone; J.RefreshContent() end)
-  J.optFac = MakeButton(right, "My faction", 90)
-  J.optFac:SetPoint("RIGHT", J.optHide, "LEFT", -6, 0)
+  J.optFac = MakeButton(right, "My quests", 100)
+  J.optFac:SetPoint("RIGHT", J.optHide, "LEFT", -4, 0)
   J.optFac:SetScript("OnClick", function() DB.allQuests = not DB.allQuests; J.RefreshContent() end)
 
-  -- scrolling content
-  local sf = CreateFrame("ScrollFrame", nil, right, "UIPanelScrollFrameTemplate")
-  sf:SetPoint("TOPLEFT", 0, -76)
-  sf:SetPoint("BOTTOMRIGHT", -24, 0)
+  -- bottom tabs, like the character sheet
+  J.tabs = {}
+  local tabs = ns.Skin.Tabs(f, TABS, function(i) J.tab = TABS[i]; DB.tab = TABS[i]; J.RefreshContent() end)
+  for i, name in ipairs(TABS) do J.tabs[name] = tabs[i] end
+
+  -- scrolling content in an inset
+  local body = ns.Skin.Inset(right)
+  body:SetPoint("TOPLEFT", 0, -70)
+  body:SetPoint("BOTTOMRIGHT", 0, 0)
+  local sf = CreateFrame("ScrollFrame", nil, body, "UIPanelScrollFrameTemplate")
+  sf:SetPoint("TOPLEFT", 6, -6)
+  sf:SetPoint("BOTTOMRIGHT", -28, 6)
   local child = CreateFrame("Frame", nil, sf)
-  child:SetSize(W - LIST_W - 60, 10)
+  child:SetSize(W - LIST_W - 70, 10)
   sf:SetScrollChild(child)
   J.scroll, J.child = sf, child
   J.pool = { text = {}, item = {}, btn = {} }
@@ -323,19 +296,19 @@ function J.RefreshList()
   for i, r in ipairs(J.rows) do
     local e = shown[i + off]
     r.inst = nil
-    r.bg:SetColorTexture(0, 0, 0, 0)
+    r.sel:Hide()
     if not e then
       r:Hide()
     else
       r:Show()
       if e.header then
-        r.name:SetText(HEX.gold .. e.header .. "|r"); r.lv:SetText("")
+        r.name:SetText(HEX.white .. e.header .. "|r"); r.lv:SetText("")
       else
         r.inst = e
         local l = e.levels or {}
-        r.name:SetText((e.forever and HEX.violet or HEX.ink) .. e.name .. "|r")
+        r.name:SetText((e.forever and HEX.violet or HEX.gold) .. e.name .. "|r")
         r.lv:SetText(LevelColor(l[1], l[3]) .. (l[1] and (l[1] .. "-" .. (l[3] or "")) or "") .. "|r")
-        if e == J.current then r.bg:SetColorTexture(unpack(C.sel)) end
+        if e == J.current then r.sel:Show() end
       end
     end
   end
@@ -361,11 +334,13 @@ local function GetItemButton(size)
   J.used.item = J.used.item + 1
   local b = J.pool.item[J.used.item]
   if not b then
-    b = CreateFrame("Button", nil, J.child, "BackdropTemplate")
-    Backdrop(b, { 0, 0, 0, 0.6 })
+    b = CreateFrame("Button", nil, J.child)
     b.icon = b:CreateTexture(nil, "ARTWORK")
-    b.icon:SetPoint("TOPLEFT", 1, -1); b.icon:SetPoint("BOTTOMRIGHT", -1, 1)
-    b.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+    b.icon:SetAllPoints()
+    b.border = b:CreateTexture(nil, "OVERLAY")
+    b.border:SetTexture("Interface\\Common\\WhiteIconFrame")
+    b.border:SetAllPoints()
+    b:SetHighlightTexture("Interface\\Buttons\\ButtonHilight-Square", "ADD")
     b.label = Text(b, 11)
     b.label:SetPoint("LEFT", b, "RIGHT", 6, 0)
     b:SetScript("OnEnter", function(s)
@@ -390,8 +365,8 @@ end
 local function GetSmallButton(text)
   J.used.btn = J.used.btn + 1
   local b = J.pool.btn[J.used.btn]
-  if not b then b = MakeButton(J.child, "", 34); b:SetHeight(16); J.pool.btn[J.used.btn] = b end
-  b.text:SetText(text); b:ClearAllPoints(); b:Show()
+  if not b then b = ns.Skin.Button(J.child, text, 40, 20); J.pool.btn[J.used.btn] = b end
+  b:SetLabel(text); b:ClearAllPoints(); b:Show()
   return b
 end
 
@@ -401,7 +376,7 @@ local function SetItem(b, id, showName)
   b.icon:SetTexture(icon)
   local hex = QUALITY_HEX[quality or 1] or "ffffffff"
   local r, g, bl = tonumber(hex:sub(3, 4), 16) / 255, tonumber(hex:sub(5, 6), 16) / 255, tonumber(hex:sub(7, 8), 16) / 255
-  b:SetBackdropBorderColor(r, g, bl, 1)
+  b.border:SetVertexColor(r, g, bl, 1)
   if showName then b.label:SetText("|c" .. hex .. (name or ("item " .. id)) .. "|r") end
 end
 
@@ -411,7 +386,7 @@ local function DrawLoot(d, y)
   for _, boss in ipairs(d.bosses or {}) do
     local t = GetText()
     t:SetPoint("TOPLEFT", 4, y)
-    t:SetFont(FONT_DISPLAY, 15, "")
+    t:SetFont(FONT_BODY, 14, "")
     t:SetText(HEX.gold .. (boss.name or "?") .. "|r" .. (boss.rare and (HEX.muted .. "  rare|r") or "") .. (boss.level and (HEX.muted .. "  level " .. boss.level .. "|r") or ""))
     y = y - 22
     if boss.desc then
@@ -539,16 +514,16 @@ function J.RefreshContent()
   if not J.frame then return end
   local d = J.current
   ResetPool()
-  for name, t in pairs(J.tabs) do t:SetBackdropColor(unpack(name == J.tab and { 0.20, 0.30, 0.16, 1 } or C.panel)) end
-  J.optHide.text:SetText(DB.hideDone and HEX.green .. "Hide done|r" or "Hide done")
-  J.optFac.text:SetText(DB.allQuests and "All quests" or HEX.green .. "My quests|r")
+  for i, name in ipairs(TABS) do if name == J.tab then ns.Skin.SelectTab(J.frame, i) end end
+  J.optHide:SetLabel(DB.hideDone and "Show done" or "Hide done")
+  J.optFac:SetLabel(DB.allQuests and "All quests" or "My quests")
   J.optHide:SetShown(J.tab == "Quests"); J.optFac:SetShown(J.tab == "Quests")
   if not d then
-    J.hName:SetText(HEX.ink .. "Pick a dungeon|r"); J.hSub:SetText(""); J.entranceBtn:Hide()
+    J.hName:SetText("Pick a dungeon"); J.hSub:SetText(""); J.entranceBtn:Hide()
     return
   end
   local l = d.levels or {}
-  J.hName:SetText(HEX.white .. d.name .. "|r")
+  J.hName:SetText(d.name)
   local ent = d.entrances and d.entrances[1]
   J.hSub:SetText((d.raid and "Raid" or "Dungeon") .. HEX.muted .. "  ·  levels " .. LevelColor(l[1], l[3]) .. (l[1] or "?") .. "-" .. (l[3] or "?") .. "|r"
     .. (l[2] and (HEX.muted .. " (best " .. l[2] .. ")|r") or "")
