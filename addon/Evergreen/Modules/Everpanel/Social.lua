@@ -40,12 +40,21 @@ EP.Add{ id = "friends", label = "Friends", side = "left", icon = "Interface\\Fri
   onClick = function() if ToggleFriendsFrame then ToggleFriendsFrame(1) end end,
 }
 
+-- ask the server for a fresh roster at most every ROSTER_EVERY seconds (GUILD_ROSTER_UPDATE redraws)
+local ROSTER_EVERY, lastRoster = 10, nil
+local function RequestRoster()
+  local now = GetTime()
+  if lastRoster and now - lastRoster < ROSTER_EVERY then return end
+  lastRoster = now
+  if C_GuildInfo and C_GuildInfo.GuildRoster then C_GuildInfo.GuildRoster() elseif GuildRoster then GuildRoster() end
+end
+
 EP.Add{ id = "guild", label = "Guild", side = "left", icon = "Interface\\Icons\\INV_Shirt_GuildTabard_01",
   events = { "GUILD_ROSTER_UPDATE", "PLAYER_GUILD_UPDATE" },
   visible = function() return IsInGuild and IsInGuild() and true or false end,
   text = function() return tostring(#OnlineGuild()) end,
   tooltip = function(tt)
-    if C_GuildInfo and C_GuildInfo.GuildRoster then C_GuildInfo.GuildRoster() elseif GuildRoster then GuildRoster() end
+    RequestRoster()
     Tip(tt, OnlineGuild(), "Nobody online")
   end,
   onClick = function()
