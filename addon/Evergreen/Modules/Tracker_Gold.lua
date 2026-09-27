@@ -13,6 +13,8 @@ local OUT = { "repairs", "training", "purchases", "auction", "other" }
 local MATCH_S = 1        -- seconds within which a chat line / quest event belongs to a money change
 local QUEST_WINDOW = 3   -- seconds a quest's reward money stays claimable before it expires (gold cap,
                           -- a dropped PLAYER_MONEY, ...) so it never reclassifies later unrelated income
+local REPAIR_WINDOW = 2  -- seconds the RepairAllItems hook's flag stays trusted; a guild-bank repair
+                          -- never touches your money, so a flag with no money change must not linger
 
 function G.Reset()
   G.net = T.NewStat()
@@ -23,7 +25,7 @@ function G.Reset()
   -- one-shot pending state only; the merchant/trainer/mail/auction window flags survive a reset
   -- (they track whatever Blizzard frame is actually open right now)
   local c = G.ctx
-  c.questMoney, c.questAt, c.lootAt, c.lootAmount, c.repair = nil, nil, nil, nil, nil
+  c.questMoney, c.questAt, c.lootAt, c.lootAmount, c.repair, c.repairAt = nil, nil, nil, nil, nil, nil
 end
 G.Reset()
 
@@ -75,6 +77,10 @@ end
 function G.Classify(delta, now)
   now = now or GetTime()
   local c = G.ctx
+  -- a guild-bank repair costs nothing, so it never gets the PLAYER_MONEY change that would
+  -- normally clear this flag; forget it once it has been stale for a while rather than let it
+  -- sit around and swallow some unrelated later loss as a "repair"
+  if c.repair and (not c.repairAt or now - c.repairAt > REPAIR_WINDOW) then c.repair, c.repairAt = nil, nil end
   if delta > 0 and (c.questMoney or 0) > 0 then
     if c.questAt and now - c.questAt <= QUEST_WINDOW then
       c.questMoney = math.max(0, c.questMoney - delta)
@@ -88,7 +94,7 @@ function G.Classify(delta, now)
       return "loot"
     end
   end
-  if delta < 0 and c.repair then c.repair = nil; return "repairs" end
+  if delta < 0 and c.repair then c.repair, c.repairAt = nil, nil; return "repairs" end
   if delta < 0 and WindowOpen("trainer") then return "training" end
   if WindowOpen("merchant") then return delta > 0 and "vendor" or "purchases" end
   if delta > 0 and WindowOpen("mail") then return "auction" end
@@ -174,9 +180,22 @@ ev:SetScript("OnEvent", function(self, event, a1, a2, a3)
       pcall(self.RegisterEvent, self, e)
     end
     for e in pairs(CONTEXT) do pcall(self.RegisterEvent, self, e) end
-    if hooksecurefunc and RepairAllItems then hooksecurefunc("RepairAllItems", function() G.ctx.repair = true end) end
+    if hooksecurefunc and RepairAllItems then
+      hooksecurefunc("RepairAllItems", function() G.ctx.repair, G.ctx.repairAt = true, GetTime() end)
+    end
     T.AddSection{ id = "gold", title = "Gold", lines = G.Lines, reset = G.Reset,
-      summary = function() return { money = G.net.total } end }
+      summary = function() return { money = G.net.total } end,
+      -- a /reload, relog, or client restart never loses the session: PLAYER_LOGOUT saves this and
+      -- the next load restores it (T.LoadStat rebases the rolling-window buckets onto the new clock)
+      save = function()
+        return { net = { total = G.net.total, buckets = CopyTable(G.net.buckets) }, inc = CopyTable(G.inc), out = CopyTable(G.out) }
+      end,
+      load = function(d, shift)
+        if not d then return end
+        G.net = T.LoadStat(d.net, shift)
+        if d.inc then G.inc = CopyTable(d.inc) end
+        if d.out then G.out = CopyTable(d.out) end
+      end }
     if ns.Everpanel then
       ns.Everpanel.Add{ id = "gold", label = "Gold", side = "right", icon = "Interface\\Icons\\INV_Misc_Coin_01",
         events = { "PLAYER_MONEY" }, interval = 5, text = G.BarText,
@@ -201,6 +220,6 @@ ev:SetScript("OnEvent", function(self, event, a1, a2, a3)
     G.OnQuestMoney(a3)
   elseif CONTEXT[event] then
     G.ctx[CONTEXT[event][1]] = CONTEXT[event][2]
-    if event == "MERCHANT_CLOSED" then G.ctx.repair = nil end
+    if event == "MERCHANT_CLOSED" then G.ctx.repair, G.ctx.repairAt = nil, nil end
   end
 end)

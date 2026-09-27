@@ -29,13 +29,18 @@ end
 
 -- XP gained since the last update. A level-up wraps the bar: the rest of the old level plus the new
 -- XP. The bar never shrinks otherwise, so a smaller value also means a level-up (event order varies).
+-- On retail, UnitLevel often still reports the old level on the update that drops XP (the level
+-- catches up on a later update). That later update then sees level > lastLevel with rising XP, which
+-- looks like a second wrap unless we already anticipated the level while lastLevel was bumped here.
 -- Limitation: if one update spans 2+ levels (a rare multi-level jump), only the rest of the starting
 -- level plus the final level's XP is counted; the client has no way to know what any skipped level's
 -- max XP was, so that XP is not invented and is simply not counted.
 function X.OnXP(xp, max, level)
   local delta
-  if X.lastXP and ((X.lastLevel and level > X.lastLevel) or xp < X.lastXP) then
+  local wrapped = X.lastXP and ((X.lastLevel and level > X.lastLevel) or xp < X.lastXP)
+  if wrapped then
     delta = (X.lastMax - X.lastXP) + xp
+    if X.lastLevel and level <= X.lastLevel then level = X.lastLevel + 1 end
   else
     delta = xp - (X.lastXP or xp)
   end
@@ -159,7 +164,18 @@ ev:SetScript("OnEvent", function(self, event, a1, a2)
       pcall(self.RegisterEvent, self, e)
     end
     T.AddSection{ id = "xp", title = "Experience", lines = X.Lines, reset = X.Reset,
-      summary = function() return { xp = X.stat.total, levels = X.levels } end }
+      summary = function() return { xp = X.stat.total, levels = X.levels } end,
+      -- a /reload, relog, or client restart never loses the session: PLAYER_LOGOUT saves this and
+      -- the next load restores it (T.LoadStat rebases the rolling-window buckets onto the new clock)
+      save = function()
+        return { stat = { total = X.stat.total, buckets = CopyTable(X.stat.buckets) },
+          kills = X.kills, killXP = X.killXP, quests = X.quests, questXP = X.questXP, levels = X.levels }
+      end,
+      load = function(d, shift)
+        if not d then return end
+        X.stat = T.LoadStat(d.stat, shift)
+        X.kills, X.killXP, X.quests, X.questXP, X.levels = d.kills or 0, d.killXP or 0, d.quests or 0, d.questXP or 0, d.levels or 0
+      end }
     if ns.Everpanel then
       ns.Everpanel.Add{ id = "xp", label = "XP", side = "left", icon = "Interface\\Icons\\INV_Misc_Book_11",
         events = { "PLAYER_XP_UPDATE" }, interval = 5, text = X.BarText,

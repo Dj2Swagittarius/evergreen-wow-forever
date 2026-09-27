@@ -58,6 +58,22 @@ function T.Add(stat, amount, now)
   for k in pairs(stat.buckets) do if k <= m - WINDOW then stat.buckets[k] = nil end end
 end
 
+-- Rebuilds a stat from a section's save() snapshot, shifting its minute buckets by `shift` (minutes)
+-- so a bucket that was "5 minutes ago" when saved is still "5 minutes ago" after a reload/relog,
+-- rather than counting the time spent logged out against the rolling window.
+function T.LoadStat(saved, shift)
+  local stat = T.NewStat()
+  if not saved then return stat end
+  stat.total = saved.total or 0
+  shift = shift or 0
+  local m = math.floor(GetTime() / 60)
+  for k, v in pairs(saved.buckets or {}) do
+    local nk = k + shift
+    if nk > m - WINDOW then stat.buckets[nk] = v end
+  end
+  return stat
+end
+
 function T.SessionRate(stat, now)
   local el = T.Elapsed(now)
   if el < 1 then return 0 end
@@ -81,10 +97,36 @@ end
 -- ------------------------------------------------------------------ sections and history
 function T.AddSection(s)
   T.sections[#T.sections + 1] = s
+  -- a section that registers after T.LoadLive() ran (the normal case: sections register from
+  -- their own ADDON_LOADED handler, after Tracker's) still gets the state a /reload saved
+  if T.pendingLive and s.load and T.pendingLive[s.id] then
+    s.load(T.pendingLive[s.id], T.pendingShift or 0)
+  end
   T.Refresh()
 end
 
 function T.History() return CDB end
+
+-- The session never resets on its own: PLAYER_LOGOUT snapshots it (see the boot handler below) and
+-- this restores it on the next load, whether that's a /reload, a relog, or a client restart. GetTime
+-- keeps counting across a /reload but restarts at 0 across a relog/restart, so the session's start
+-- is rebased from the logged-in seconds saved at logout rather than trusted as an absolute instant.
+function T.LoadLive()
+  local live = CDB and CDB.live
+  if CDB then CDB.live = nil end
+  if live then
+    T.session = { start = GetTime() - (live.elapsed or 0), date = live.date }
+    local shift = math.floor(GetTime() / 60) - math.floor((live.savedAt or GetTime()) / 60)
+    T.pendingLive, T.pendingShift = live, shift
+    for _, s in ipairs(T.sections) do
+      if s.load and live[s.id] then s.load(live[s.id], shift) end
+    end
+  else
+    T.session = { start = GetTime(), date = time and time() or 0 }
+    T.pendingLive, T.pendingShift = nil, nil
+  end
+  T.Refresh()
+end
 
 function T.SaveSession()
   if not CDB or T.Elapsed() < 60 then return end
@@ -195,8 +237,17 @@ boot:SetScript("OnEvent", function(self, event, name)
     EvergreenCharDB = EvergreenCharDB or {}
     EvergreenCharDB.tracker = EvergreenCharDB.tracker or { sessions = {}, levelTimes = {} }
     CDB = EvergreenCharDB.tracker
+    T.LoadLive()
     Build()
   elseif event == "PLAYER_LOGOUT" then
-    T.SaveSession()
+    -- no history entry here any more: the session survives a /reload, a relog, and a client
+    -- restart, and is only ever closed out by T.Reset() (the panel's Reset button, /eg track reset)
+    if CDB then
+      local live = { elapsed = T.Elapsed(), date = T.session.date, savedAt = GetTime() }
+      for _, s in ipairs(T.sections) do
+        if s.save then live[s.id] = s.save() end
+      end
+      CDB.live = live
+    end
   end
 end)

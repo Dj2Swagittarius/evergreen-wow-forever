@@ -110,7 +110,14 @@ its module is disabled.
 ## Trackers
 
 ### Core (`Tracker.lua`)
-- **Session**: starts at login (`PLAYER_LOGIN`) or on Reset. `elapsed` counts wall time while logged in.
+- **Session**: never resets or splits on its own — not on `/reload`, not on logout/relog, not on a
+  client restart. It resets only when the user clicks the panel's Reset button (or `/eg track reset`).
+  `PLAYER_LOGOUT` snapshots the live session (elapsed seconds, date, each section's `save()` state)
+  into `EvergreenCharDB.tracker.live`; the next load always restores it: session start is rebased as
+  `GetTime() - live.elapsed` so time spent logged out is never counted, and each stat's rolling-window
+  buckets are shifted by `floor(GetTime()/60) - floor(live.savedAt/60)` so the 15-minute recent rate
+  picks up where it left off instead of counting the offline gap. `elapsed` counts wall time while
+  logged in.
 - **Rolling window**: 15 one-minute buckets per stat (ring buffer keyed by `floor(GetTime()/60)`).
   Recent rate = sum of buckets / covered minutes (min 1).
 - **Rate choice for estimates**: recent rate if session ≥ 3 min and recent rate > 0, else session rate.
@@ -149,7 +156,9 @@ its module is disabled.
 - Shown: net this session, gold/h session and last 15 min (net), in-breakdown, out-breakdown.
 
 ### History — per character, `EvergreenCharDB.tracker` (existing per-character saved variable)
-- `sessions`: last 20 `{ date, seconds, xp, money, levels }`, written on logout (`PLAYER_LOGOUT`) and on Reset.
+- `sessions`: last 20 `{ date, seconds, xp, money, levels }`, written only on Reset (a live session
+  survives `/reload`, a relog, and a client restart via `EvergreenCharDB.tracker.live`, and is never
+  split into two history entries by any of them).
 - `levelTimes[level] = seconds`.
 - History view (panel toggle / `/eg track history`): session list + level-time list.
 
