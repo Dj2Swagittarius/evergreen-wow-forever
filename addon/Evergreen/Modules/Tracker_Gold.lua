@@ -10,7 +10,9 @@ local G = { ctx = {} }
 T.Gold = G
 local IN = { "loot", "vendor", "quests", "auction", "other" }
 local OUT = { "repairs", "training", "purchases", "auction", "other" }
-local MATCH_S = 1   -- seconds within which a chat line / quest event belongs to a money change
+local MATCH_S = 1        -- seconds within which a chat line / quest event belongs to a money change
+local QUEST_WINDOW = 3   -- seconds a quest's reward money stays claimable before it expires (gold cap,
+                          -- a dropped PLAYER_MONEY, ...) so it never reclassifies later unrelated income
 
 function G.Reset()
   G.net = T.NewStat()
@@ -18,19 +20,79 @@ function G.Reset()
   for _, k in ipairs(IN) do G.inc[k] = 0 end
   for _, k in ipairs(OUT) do G.out[k] = 0 end
   G.lastOther = nil
+  -- one-shot pending state only; the merchant/trainer/mail/auction window flags survive a reset
+  -- (they track whatever Blizzard frame is actually open right now)
+  local c = G.ctx
+  c.questMoney, c.questAt, c.lootAt, c.lootAmount, c.repair = nil, nil, nil, nil, nil
 end
 G.Reset()
+
+-- "%d Gold" (client format string) -> a Lua pattern capturing the amount; falls back to English
+-- when the global isn't available (e.g. headless tests).
+local function AmountPattern(fmt)
+  local p = (fmt or ""):gsub("%%d", "\1")
+  p = p:gsub("([%%%(%)%.%+%-%*%?%[%]%^%$])", "%%%1")
+  return p:gsub("\1", "(%%d+)")
+end
+local GOLD_P = AmountPattern(GOLD_AMOUNT or "%d Gold")
+local SILVER_P = AmountPattern(SILVER_AMOUNT or "%d Silver")
+local COPPER_P = AmountPattern(COPPER_AMOUNT or "%d Copper")
+
+-- Parses copper out of a CHAT_MSG_MONEY line ("You loot 5 Silver, 23 Copper", or in a group "Your
+-- share of the loot is ..." - the same three amount patterns cover both). Returns nil when none of
+-- the patterns match (unrecognized locale), so the caller falls back to timing-only matching.
+local function ParseCopper(msg)
+  if not msg then return nil end
+  local g, s, c = msg:match(GOLD_P), msg:match(SILVER_P), msg:match(COPPER_P)
+  if not (g or s or c) then return nil end
+  return (tonumber(g) or 0) * 10000 + (tonumber(s) or 0) * 100 + (tonumber(c) or 0)
+end
+
+-- A window flag (merchant/trainer/mail/auction) sticks if its *_CLOSED event is missed. Trust it
+-- only while the matching Blizzard frame is actually shown, when that frame exists; if the frame
+-- exists and is hidden, the flag is stale, so clear it. If no such frame global exists, there is
+-- nothing to check against, so keep trusting the event-driven flag.
+local FRAME_NAMES = {
+  merchant = { "MerchantFrame" },
+  trainer = { "ClassTrainerFrame" },
+  mail = { "MailFrame" },
+  auction = { "AuctionHouseFrame", "AuctionFrame" },
+}
+local function WindowOpen(key)
+  local c = G.ctx
+  if not c[key] then return false end
+  for _, name in ipairs(FRAME_NAMES[key] or {}) do
+    local f = _G[name]
+    if f then
+      if f:IsShown() then return true end
+      c[key] = nil
+      return false
+    end
+  end
+  return true
+end
 
 function G.Classify(delta, now)
   now = now or GetTime()
   local c = G.ctx
-  if delta > 0 and (c.questMoney or 0) > 0 then c.questMoney = math.max(0, c.questMoney - delta); return "quests" end
-  if delta > 0 and c.lootAt and now - c.lootAt <= MATCH_S then c.lootAt = nil; return "loot" end
+  if delta > 0 and (c.questMoney or 0) > 0 then
+    if c.questAt and now - c.questAt <= QUEST_WINDOW then
+      c.questMoney = math.max(0, c.questMoney - delta)
+      return "quests"
+    end
+    c.questMoney, c.questAt = nil, nil   -- expired: never claimed by a matching money change
+  end
+  if delta > 0 and c.lootAt and now - c.lootAt <= MATCH_S then
+    if not c.lootAmount or c.lootAmount == delta then
+      c.lootAt, c.lootAmount = nil, nil
+      return "loot"
+    end
+  end
   if delta < 0 and c.repair then c.repair = nil; return "repairs" end
-  if delta < 0 and c.trainer then return "training" end
-  if c.merchant then return delta > 0 and "vendor" or "purchases" end
-  if delta > 0 and c.mail then return "auction" end
-  if delta < 0 and c.auction then return "auction" end
+  if delta < 0 and WindowOpen("trainer") then return "training" end
+  if WindowOpen("merchant") then return delta > 0 and "vendor" or "purchases" end
+  if delta > 0 and WindowOpen("mail") then return "auction" end
+  if delta < 0 and WindowOpen("auction") then return "auction" end
   return "other"
 end
 
@@ -57,16 +119,23 @@ local function Reclaim(cat, amount, now)
   end
 end
 
-function G.OnLootChat(now)
+function G.OnLootChat(msg, now)
   now = now or GetTime()
-  if not Reclaim("loot", nil, now) then G.ctx.lootAt = now end
+  local amount = ParseCopper(msg)
+  if not Reclaim("loot", amount, now) then
+    G.ctx.lootAt = now
+    G.ctx.lootAmount = amount   -- nil when unparsed: Classify then matches on timing alone
+  end
 end
 
 function G.OnQuestMoney(amount, now)
   now = now or GetTime()
   amount = tonumber(amount) or 0
   if amount <= 0 then return end
-  if not Reclaim("quests", amount, now) then G.ctx.questMoney = (G.ctx.questMoney or 0) + amount end
+  if not Reclaim("quests", amount, now) then
+    G.ctx.questMoney = (G.ctx.questMoney or 0) + amount
+    G.ctx.questAt = now
+  end
 end
 
 local function List(t, keys)
@@ -101,7 +170,9 @@ ev:SetScript("OnEvent", function(self, event, a1, a2, a3)
   if event == "ADDON_LOADED" then
     if a1 ~= ADDON then return end
     if not ns.ModuleEnabled("gold") then self:UnregisterAllEvents(); return end
-    for _, e in ipairs({ "PLAYER_LOGIN", "PLAYER_MONEY", "CHAT_MSG_MONEY", "QUEST_TURNED_IN" }) do pcall(self.RegisterEvent, self, e) end
+    for _, e in ipairs({ "PLAYER_LOGIN", "PLAYER_ENTERING_WORLD", "PLAYER_MONEY", "CHAT_MSG_MONEY", "QUEST_TURNED_IN" }) do
+      pcall(self.RegisterEvent, self, e)
+    end
     for e in pairs(CONTEXT) do pcall(self.RegisterEvent, self, e) end
     if hooksecurefunc and RepairAllItems then hooksecurefunc("RepairAllItems", function() G.ctx.repair = true end) end
     T.AddSection{ id = "gold", title = "Gold", lines = G.Lines, reset = G.Reset,
@@ -117,11 +188,15 @@ ev:SetScript("OnEvent", function(self, event, a1, a2, a3)
     end
   elseif event == "PLAYER_LOGIN" then
     G.last = (GetMoney and GetMoney()) or 0
+  elseif event == "PLAYER_ENTERING_WORLD" then
+    -- a missed *_CLOSED event would otherwise strand an open window flag across zone loads
+    local c = G.ctx
+    c.merchant, c.trainer, c.mail, c.auction = nil, nil, nil, nil
   elseif event == "PLAYER_MONEY" then
     G.OnMoney((GetMoney and GetMoney()) or 0)
     T.Refresh()
   elseif event == "CHAT_MSG_MONEY" then
-    G.OnLootChat()
+    G.OnLootChat(a1)
   elseif event == "QUEST_TURNED_IN" then
     G.OnQuestMoney(a3)
   elseif CONTEXT[event] then

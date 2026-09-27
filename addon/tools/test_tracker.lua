@@ -115,13 +115,37 @@ eq(G.net.total - net0, 22000 + 523 + 2000 - 700 - 300 - 50, "net money")
 for _, l in ipairs(G.Lines()) do assert(type(l) == "string", "gold line not a string") end
 assert(type(ns.Everpanel.byId.gold.text()) == "string", "gold plugin text")
 
+-- quest money that never arrives expires: a reward that outlives QUEST_WINDOW no longer reclassifies
+-- a later, unrelated gain as "quests"
+fire("QUEST_TURNED_IN", 126, 0, 500)
+now = now + 10                                          -- past QUEST_WINDOW (3s): the 500 expires
+money = money + 200; fire("PLAYER_MONEY")
+eq(G.inc.quests, 22000, "expired quest money is not claimed")
+eq(G.inc.other, 200, "expired quest money falls to other")
+
+-- a missed MERCHANT_CLOSED sticks the flag; once MerchantFrame exists and is hidden, the flag is
+-- verified against it and ignored
+fire("MERCHANT_SHOW")
+CreateFrame("Frame", "MerchantFrame")
+MerchantFrame:Hide()                                    -- the CLOSED event never fired
+money = money + 100; fire("PLAYER_MONEY")
+eq(G.inc.vendor, 2000, "stuck merchant flag (frame hidden) is not counted as vendor")
+eq(G.inc.other, 300, "gain during a stuck-but-hidden merchant flag falls to other")
+MerchantFrame = nil
+
+-- loot amount: an "other" gain is only reclaimed as loot when the parsed chat amount matches it
+money = money + 300; fire("PLAYER_MONEY")
+fire("CHAT_MSG_MONEY", "You loot 2 Silver")             -- 200 copper: does not match the 300 gain
+eq(G.inc.loot, 523, "unequal loot chat amount does not reclaim an other gain")
+eq(G.inc.other, 600, "mismatched loot amount leaves the gain as other")
+
 -- ---------------------------------------------------------------- history and max level
 now = now + 600
 T.Reset()
 local e = T.History().sessions[1]
 assert(e, "session not saved on reset")
 eq(e.xp, 940, "saved session xp"); eq(e.levels, 1, "saved session levels")
-eq(e.money, 22000 + 523 + 2000 - 700 - 300 - 50 + net0, "saved session money")
+eq(e.money, 22000 + 523 + 2000 - 700 - 300 - 50 + 200 + 100 + 300 + net0, "saved session money")
 eq(X.stat.total, 0, "xp reset"); eq(G.net.total, 0, "gold reset")
 level = 60
 assert(X.Lines()[1]:find("max level", 1, true), "max level line")
