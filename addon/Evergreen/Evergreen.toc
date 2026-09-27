@@ -34,3 +34,4 @@ Modules\Journal_Boss.lua
 Modules\Journal_Map.lua
 Modules\Everpanel.lua
 Modules\Everpanel\Basics.lua
+Modules\Tracker.lua
