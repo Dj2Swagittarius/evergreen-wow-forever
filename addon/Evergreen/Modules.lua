@@ -327,7 +327,7 @@ local function wrapSlash()
     else
       guide(msg)
       if m == "help" or m == "?" then
-        print(HEX.green .. "Modules|r: /eg modules, /eg module <id> on|off, /eg reveal, /ej, /eb, /emove")
+        print(HEX.green .. "Modules|r: /eg modules, /eg module <id> on|off, /eg reveal, /eg panel, /eg track, /ej, /eb, /emove")
       end
     end
   end
