@@ -35,6 +35,7 @@ Modules\Journal_MapData.lua
 Modules\Journal_Map.lua
 Modules\Everpanel.lua
 Modules\Everpanel\Basics.lua
+Modules\Everpanel\Gear.lua
 Modules\Tracker.lua
 Modules\Tracker_XP.lua
 Modules\Tracker_Gold.lua
