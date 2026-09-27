@@ -255,6 +255,9 @@ ns.MODULES = {
   { id = "move",   name = "Move",   slash = "/emove", desc = "Drag the map, character sheet, bags and other windows anywhere" },
   { id = "reveal", name = "Reveal", slash = "/eg reveal", desc = "Shows unexplored areas on the world map (WoW Forever map data)" },
   { id = "journal", name = "Journal", slash = "/ej", desc = "Dungeon journal: bosses, loot, dungeon quests, entrances, map markers" },
+  { id = "everpanel", name = "Everpanel", slash = "/eg panel", desc = "Titan Panel-style info bar across the top of the screen" },
+  { id = "xp",     name = "XP tracker",   slash = "/eg track", desc = "XP per hour, time to level, XP by source, time per level" },
+  { id = "gold",   name = "Gold tracker", slash = "/eg track", desc = "Gold per hour, income and spending by source" },
 }
 
 local byId = {}
@@ -313,6 +316,12 @@ local function wrapSlash()
       if SlashCmdList.EVERGREENJOURNAL then SlashCmdList.EVERGREENJOURNAL(rest) end
     elseif cmd == "reveal" then
       if ns.Reveal then ns.Reveal.Slash(rest) else print(HEX.green .. "Evergreen:|r Reveal module is off. /eg module reveal on, then /reload.") end
+    elseif cmd == "panel" then
+      if ns.Everpanel and not ns.Everpanel.disabled and ns.Everpanel.bar then ns.Everpanel.Slash(rest)
+      else print(HEX.green .. "Evergreen:|r Everpanel module is off. /eg module everpanel on, then /reload.") end
+    elseif cmd == "track" then
+      if ns.Tracker and ns.Tracker.enabled then ns.Tracker.Slash(rest)
+      else print(HEX.green .. "Evergreen:|r XP and gold trackers are off. /eg module xp on (or gold), then /reload.") end
     elseif not ns.ModuleEnabled("guide") then
       print(HEX.green .. "Evergreen:|r guide module is off. /eg modules lists modules; /eg module guide on, then /reload.")
     else

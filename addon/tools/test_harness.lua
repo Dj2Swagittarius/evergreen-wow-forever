@@ -29,6 +29,7 @@ local function newFrame(name)
     if k == "UnregisterAllEvents" then return function(self) self._events = {} end end
     if k == "Show" then return function(self) self._shown = true end end
     if k == "Hide" then return function(self) self._shown = false end end
+    if k == "SetShown" then return function(self, v) self._shown = v and true or false end end
     if k == "IsShown" or k == "IsVisible" then return function(self) return self._shown end end
     if k == "SetText" then return function(self, s) self._text = s end end
     if k == "GetText" then return function(self) return self._text or "" end end
@@ -59,6 +60,7 @@ strsplit = function(sep, s) local t = {} for p in (s .. sep):gmatch("(.-)" .. se
 Mixin = function(o, ...) for i = 1, select("#", ...) do for k, v in pairs(select(i, ...)) do o[k] = v end end return o end
 CreateVector2D = function(x, y) return { x = x, y = y, GetXY = function(s) return s.x, s.y end } end
 GetTime = function() return os.clock() end
+time, date = os.time, os.date
 GetBuildInfo = function() return "1.60.1", "69893", "Sep 2026", 16001 end
 IsShiftKeyDown = function() return false end
 GetCursorPosition = function() return 0, 0 end
@@ -142,7 +144,9 @@ local function fire(ev, ...)
   end
   flush()
 end
-EvergreenDB = { modules = { buffs = (os.getenv("BUFFS") ~= nil), move = false, reveal = false } }  -- guide (+ journal) only
+local TRACK = os.getenv("TRACKER") ~= nil
+EvergreenDB = { modules = { buffs = (os.getenv("BUFFS") ~= nil), move = false, reveal = false,
+  everpanel = (os.getenv("EVERPANEL") ~= nil) or TRACK, xp = TRACK, gold = TRACK } }  -- guide (+ journal) always
 bit = require("bit")
 WorldMapFrame = newFrame("WorldMapFrame")
 InCombatLockdown = function() return false end
@@ -222,6 +226,16 @@ if os.getenv("JOURNAL") then
   io.write(string.format("OK journal: %d instance/tab views drawn, %d chat lines\n", n, #printed))
   for _, m in ipairs(printed) do io.write("  chat: ", m, "\n") end
   os.exit(0)
+end
+
+-- EVERPANEL=1 / TRACKER=1: module tests in their own files, given the loaded addon
+for _, mode in ipairs({ "EVERPANEL", "TRACKER" }) do
+  if os.getenv(mode) then
+    local here = arg[0]:match("^(.*[/\\])") or ""
+    local run = assert(loadfile(here .. "test_" .. mode:lower() .. ".lua"))
+    run(ns, fire, printed)
+    os.exit(0)
+  end
 end
 
 -- ---------------------------------------------------------------- the bot
