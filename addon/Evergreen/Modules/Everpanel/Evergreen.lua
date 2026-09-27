@@ -8,7 +8,8 @@ EP.Add{ id = "guide", label = "Guide", side = "left", icon = "Interface\\Icons\\
   visible = function() return ns.ModuleEnabled("guide") end,
   text = function()
     local s = (ns.GuideStepText and ns.GuideStepText()) or "route done"
-    if #s > 40 then s = s:sub(1, 38) .. "..." end
+    -- cut by bytes, then drop a trailing multi-byte character that the cut may have split
+    if #s > 40 then s = s:sub(1, 38):gsub("[\192-\255][\128-\191]*$", "") .. "..." end
     return s
   end,
   tooltip = function(tt)

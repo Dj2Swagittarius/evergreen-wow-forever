@@ -231,7 +231,11 @@ local function Scan()
 end
 
 -- For Everpanel: how many casts are queued, and the queue itself ({name=, spell=, unit=}, ...).
-function ns.EverbuffInfo() return #queue, queue end
+function ns.EverbuffInfo()
+  local copy = {}
+  for i, q in ipairs(queue) do copy[i] = { name = q.name, spell = q.spell, unit = q.unit } end
+  return #copy, copy
+end
 
 -- ------------------------------------------------------------------ UI
 local frame, button, title, sub, list
