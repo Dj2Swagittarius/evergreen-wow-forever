@@ -197,6 +197,8 @@ if os.getenv("JOURNAL") then
   assert(floors and #floors == 1 and floors[1].name == "Armory" and #floors[1].tiles == 12, "Armory should show its own floor only")
   local brd = J.MapFloors(find("Blackrock Depths"))
   assert(brd and #brd >= 2, "Blackrock Depths should have its floors from Journal_MapData")
+  J.Select(find("The Hall of Thanes"))
+  assert(J.mapCanvas._shown and J.mapCanvas.tiles[1]._shown, "Hall of Thanes fan-made map not drawn")
   J.Select(find("Blackmaw Hold"))
   assert(not J.mapCanvas._shown, "a dungeon without a map must not show the last map")
   SlashCmdList.EVERGREENJOURNAL("maps")

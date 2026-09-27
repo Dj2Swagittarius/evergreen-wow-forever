@@ -44,10 +44,19 @@ end
 -- shipped classic artwork: 4 x 3 tiles of 256 px, 1002 x 668 used
 local SHIPPED_LAYER = { layerWidth = 1002, layerHeight = 668, tileWidth = 256, tileHeight = 256 }
 
--- Floors of a journal dungeon: { {name=, tiles={fileIDs}} or {name=, id=uiMapID}, ... }, or nil
--- when there is no map for it.
+-- New Forever dungeons have no map in the client: fan-made maps shipped as addon textures
+-- (tools/convert_map_images.py). 1024x1024 files with the map in the top w x h pixels.
+local FAN_CREDIT = "Map: recreation by Santiago Reyes, Atlas de Azeroth Forever"
+local SHIPPED_IMAGES = {
+  HallOfThanes = { { name = "Map", file = "Interface\\AddOns\\Evergreen\\Maps\\HallOfThanes", w = 1024, h = 683, credit = FAN_CREDIT } },
+  RuinsOfLordaeron = { { name = "Map", file = "Interface\\AddOns\\Evergreen\\Maps\\RuinsOfLordaeron", w = 1024, h = 683, credit = FAN_CREDIT } },
+}
+local IMAGE_SIZE = 1024
+
+-- Floors of a journal dungeon: { {name=, tiles={fileIDs}} or {name=, file=, w=, h=} or
+-- {name=, id=uiMapID}, ... }, or nil when there is no map for it.
 function J.MapFloors(d)
-  local shipped = ns.DungeonMaps and ns.DungeonMaps[d.key]
+  local shipped = SHIPPED_IMAGES[d.key] or (ns.DungeonMaps and ns.DungeonMaps[d.key])
   if shipped then return shipped end
   if not index then BuildIndex() end
   local base, wing = d.name:match("^(.-) %- (.+)$")
@@ -82,6 +91,18 @@ end
 -- Draw one floor's art tiles scaled to width; returns the drawn height, or nil without art.
 local function DrawFloor(c, floor, width)
   for _, t in ipairs(c.tiles) do t:Hide() end
+  if floor.file then
+    local t = c.tiles[1]
+    if not t then t = c:CreateTexture(nil, "ARTWORK"); c.tiles[1] = t end
+    local h = width * floor.h / floor.w
+    t:SetTexture(floor.file)
+    t:SetTexCoord(0, floor.w / IMAGE_SIZE, 0, floor.h / IMAGE_SIZE)
+    t:SetSize(width, h)
+    t:ClearAllPoints(); t:SetPoint("TOPLEFT", c, "TOPLEFT", 0, 0)
+    t:Show()
+    c:SetSize(width, h)
+    return h
+  end
   local L, tex
   if floor.tiles then
     L, tex = SHIPPED_LAYER, floor.tiles
@@ -142,7 +163,12 @@ function J.DrawMap(d, y)
   c:ClearAllPoints()
   c:SetPoint("TOPLEFT", 4, y)
   c:Show()
-  return y - h - 8
+  y = y - h - 6
+  if floors[idx].credit then
+    local t = J.GetText(); t:SetPoint("TOPLEFT", 4, y); t:SetText(HEX.muted .. floors[idx].credit .. "|r")
+    y = y - 16
+  end
+  return y - 4
 end
 
 -- /ej maps <text>: every map whose name contains <text>, with id and type (to see what the client has)
