@@ -68,6 +68,24 @@ fire("PLAYER_LEVEL_UP", 11); fire("TIME_PLAYED_MSG", 6000, 5)
 eq(T.History().levelTimes[10], 2195, "time spent at level 10")
 eq(X.levels, 1, "levels gained")
 
+-- /played: a reply that never comes times out and un-mutes the chat frame
+local origDisplay = function() end
+ChatFrame_DisplayTimePlayed = origDisplay
+X.RequestPlayed()
+now = now + 11                             -- past the 10s timeout, still no TIME_PLAYED_MSG
+fire("EVERGREEN_TEST_NOOP")               -- flushes the timeout timer
+eq(ChatFrame_DisplayTimePlayed, origDisplay, "/played timeout restores ChatFrame_DisplayTimePlayed")
+
+-- /played: a second request while one is pending is queued, not dropped
+local requests = 0
+RequestTimePlayed = function() requests = requests + 1 end
+X.RequestPlayed()                         -- request 1, pending
+eq(requests, 1, "first RequestTimePlayed call")
+X.RequestPlayed()                         -- overlap: request 2 queued behind request 1
+eq(requests, 1, "no second call while one is pending")
+fire("TIME_PLAYED_MSG", 7000, 10)         -- reply to request 1; request 2 should follow
+eq(requests, 2, "queued request sent after the pending reply")
+
 for _, l in ipairs(X.Lines()) do assert(type(l) == "string", "XP line not a string") end
 assert(ns.Everpanel.byId.xp, "no XP plugin on Everpanel")
 assert(type(ns.Everpanel.byId.xp.text()) == "string", "XP plugin text")

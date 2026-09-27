@@ -29,6 +29,9 @@ end
 
 -- XP gained since the last update. A level-up wraps the bar: the rest of the old level plus the new
 -- XP. The bar never shrinks otherwise, so a smaller value also means a level-up (event order varies).
+-- Limitation: if one update spans 2+ levels (a rare multi-level jump), only the rest of the starting
+-- level plus the final level's XP is counted; the client has no way to know what any skipped level's
+-- max XP was, so that XP is not invented and is simply not counted.
 function X.OnXP(xp, max, level)
   local delta
   if X.lastXP and ((X.lastLevel and level > X.lastLevel) or xp < X.lastXP) then
@@ -54,27 +57,59 @@ end
 
 -- Time per level: /played reports total and this-level seconds, so total - thisLevel is the played
 -- time when the current level began. Ask at login and after each level-up; the chat print is muted.
-local awaiting, levelStart
+-- A request already pending is not duplicated (that would let the first reply consume "awaiting" and
+-- drop the level-up's time); instead "again" remembers that a follow-up is wanted once the pending
+-- reply lands. A reply may never come, so a request also arms a timeout that un-mutes the chat frame
+-- and gives up waiting; a request counter (reqId) keeps a stale timer from cancelling a newer request,
+-- and the timer re-checks the real elapsed time (rather than trusting the callback's own timing) since
+-- a reply that lands almost immediately after the request must win the race, not the timeout.
+local TIMEOUT = 10
+local awaiting, again, levelStart, reqId, sentAt = false, false, nil, 0, nil
+
+local function RestoreDisplay()
+  if X.origDisplay then ChatFrame_DisplayTimePlayed = X.origDisplay; X.origDisplay = nil end
+end
+
 function X.RequestPlayed()
   if not RequestTimePlayed then return end
+  if awaiting then
+    again = true
+    return
+  end
   awaiting = true
+  reqId = reqId + 1
+  local myReq = reqId
+  sentAt = GetTime and GetTime() or 0
   if ChatFrame_DisplayTimePlayed and not X.origDisplay then
     X.origDisplay = ChatFrame_DisplayTimePlayed
     ChatFrame_DisplayTimePlayed = function() end
   end
   RequestTimePlayed()
+  if C_Timer and C_Timer.After then
+    C_Timer.After(TIMEOUT, function()
+      local elapsed = (GetTime and GetTime() or 0) - (sentAt or 0)
+      if awaiting and reqId == myReq and elapsed >= TIMEOUT then
+        awaiting, again = false, false
+        RestoreDisplay()
+      end
+    end)
+  end
 end
 
 function X.OnPlayed(total, thisLevel)
   if not awaiting then return end
   awaiting = false
-  if X.origDisplay then ChatFrame_DisplayTimePlayed = X.origDisplay; X.origDisplay = nil end
+  RestoreDisplay()
   local started = (total or 0) - (thisLevel or 0)
   local H = T.History()
   if H and levelStart and X.pendingLevel and started > levelStart then
     H.levelTimes[X.pendingLevel] = started - levelStart
   end
   levelStart, X.pendingLevel = started, nil
+  if again then
+    again = false
+    X.RequestPlayed()
+  end
 end
 
 local function MaxLevel() return (GetMaxPlayerLevel and GetMaxPlayerLevel()) or MAX_PLAYER_LEVEL or 60 end
