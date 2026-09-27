@@ -483,6 +483,15 @@ local function StepTitle(step)
   return ""
 end
 
+-- For Everpanel: the step the arrow follows, as plain text (nil before the guide has loaded).
+function ns.GuideStepText()
+  if not CDB then return nil end
+  local b = CurrentBracket()
+  local step = b and CurrentStep(b)
+  if not step then return nil end
+  return (StepTitle(step):gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", ""))
+end
+
 local function StepBody(b, step)
   if step.q then
     local s = PhaseText(b, step)

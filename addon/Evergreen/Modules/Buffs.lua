@@ -230,6 +230,9 @@ local function Scan()
   end
 end
 
+-- For Everpanel: how many casts are queued, and the queue itself ({name=, spell=, unit=}, ...).
+function ns.EverbuffInfo() return #queue, queue end
+
 -- ------------------------------------------------------------------ UI
 local frame, button, title, sub, list
 local pendingArm

@@ -4,7 +4,7 @@ local EP = assert(ns.Everpanel, "everpanel module not loaded")
 assert(EP.bar and EP.bar._shown, "bar not built")
 
 -- plugins the addon ships (grown by later tasks)
-local EXPECT = { "clock", "perf", "location", "bags", "durability", "ammo" }
+local EXPECT = { "clock", "perf", "location", "bags", "durability", "ammo", "guide", "everbuff", "journal" }
 for _, id in ipairs(EXPECT) do assert(EP.byId[id], "missing plugin " .. id) end
 -- every plugin has a button and draws a string
 for _, p in ipairs(EP.plugins) do
@@ -79,5 +79,9 @@ GetInventoryItemDurability = function(slot) if slot == 1 then return 30, 100 els
 local dur = EP.byId.durability.text()
 assert(dur == "30%", "durability text: " .. tostring(dur))
 GetInventoryItemDurability = nil
+
+assert(type(ns.GuideStepText) == "function", "Core does not expose GuideStepText")
+assert(type(ns.EverbuffInfo) == "function", "Buffs does not expose EverbuffInfo")
+assert(EP.Visible("journal"), "journal plugin should show when the journal module is on")
 
 io.write(string.format("OK everpanel: %d plugins, %d chat lines\n", #EP.plugins, #printed))
