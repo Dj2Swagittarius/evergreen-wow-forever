@@ -37,3 +37,4 @@ Modules\Everpanel.lua
 Modules\Everpanel\Basics.lua
 Modules\Tracker.lua
 Modules\Tracker_XP.lua
+Modules\Tracker_Gold.lua

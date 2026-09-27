@@ -90,6 +90,43 @@ for _, l in ipairs(X.Lines()) do assert(type(l) == "string", "XP line not a stri
 assert(ns.Everpanel.byId.xp, "no XP plugin on Everpanel")
 assert(type(ns.Everpanel.byId.xp.text()) == "string", "XP plugin text")
 
--- (gold checks are added by Task 5 here)
+-- ---------------------------------------------------------------- gold
+local G = assert(T.Gold, "gold tracker not loaded")
+local money = 50000
+GetMoney = function() return money end
+G.last = money
+local net0 = G.net.total
+fire("QUEST_TURNED_IN", 124, 0, 15000); money = money + 15000; fire("PLAYER_MONEY")   -- quest event first
+now = now + 10
+money = money + 523; fire("PLAYER_MONEY"); fire("CHAT_MSG_MONEY", "You loot 5 Silver, 23 Copper")  -- chat after
+now = now + 10
+money = money + 7000; fire("PLAYER_MONEY"); fire("QUEST_TURNED_IN", 125, 0, 7000)     -- quest event after
+fire("MERCHANT_SHOW")
+money = money + 2000; fire("PLAYER_MONEY")
+G.ctx.repair = true                                   -- what the RepairAllItems hook sets
+money = money - 700; fire("PLAYER_MONEY")
+money = money - 300; fire("PLAYER_MONEY")
+fire("MERCHANT_CLOSED")
+money = money - 50; fire("PLAYER_MONEY")
+eq(G.inc.quests, 22000, "quest money"); eq(G.inc.loot, 523, "loot"); eq(G.inc.vendor, 2000, "vendor")
+eq(G.inc.other, 0, "nothing left in other income")
+eq(G.out.repairs, 700, "repairs"); eq(G.out.purchases, 300, "purchases"); eq(G.out.other, 50, "other spending")
+eq(G.net.total - net0, 22000 + 523 + 2000 - 700 - 300 - 50, "net money")
+for _, l in ipairs(G.Lines()) do assert(type(l) == "string", "gold line not a string") end
+assert(type(ns.Everpanel.byId.gold.text()) == "string", "gold plugin text")
+
+-- ---------------------------------------------------------------- history and max level
+now = now + 600
+T.Reset()
+local e = T.History().sessions[1]
+assert(e, "session not saved on reset")
+eq(e.xp, 940, "saved session xp"); eq(e.levels, 1, "saved session levels")
+eq(e.money, 22000 + 523 + 2000 - 700 - 300 - 50 + net0, "saved session money")
+eq(X.stat.total, 0, "xp reset"); eq(G.net.total, 0, "gold reset")
+level = 60
+assert(X.Lines()[1]:find("max level", 1, true), "max level line")
+assert(not ns.Everpanel.Visible("xp"), "XP plugin should hide at max level")
+T.showHistory = true; T.Refresh()
+assert(T.panel.body:GetText():find("level 10", 1, true), "history shows level times")
 
 io.write(string.format("OK tracker: %d sections, %d chat lines\n", #T.sections, #printed))
