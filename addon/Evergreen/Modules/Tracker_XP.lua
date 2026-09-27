@@ -91,6 +91,9 @@ function X.RequestPlayed()
       if awaiting and reqId == myReq and elapsed >= TIMEOUT then
         awaiting, again = false, false
         RestoreDisplay()
+        -- /played replies carry no request id, so a late reply could answer a later request.
+        -- Drop the baseline: the next reply then only re-baselines and never records a level time.
+        levelStart, X.pendingLevel = nil, nil
       end
     end)
   end
