@@ -1,8 +1,9 @@
 -- Journal map: the Map tab of the dungeon journal (Journal.lua).
 --
--- Draws the dungeon's own interior map (the client's dungeon uiMaps and their art tiles) inside the
--- journal, with a button per floor. Maps are found at runtime by name; /ej maps reports which
--- journal dungeons found one, so missing names can be added to ALIASES.
+-- Draws the dungeon's interior map inside the journal, with a button per floor. The WoW Forever
+-- client has no dungeon uiMaps, but it still ships the classic map artwork: Journal_MapData.lua
+-- (tools/build_maps.py) lists those tiles per dungeon. Clients that do have dungeon uiMaps are
+-- looked up at runtime by name as a fallback. /ej maps reports which dungeons have a map.
 
 local ADDON, ns = ...
 local J = ns.Journal
@@ -40,8 +41,14 @@ local function BuildIndex()
   end
 end
 
--- Floors of a journal dungeon: { {id=, name=}, ... } or nil when the client has no map for it.
+-- shipped classic artwork: 4 x 3 tiles of 256 px, 1002 x 668 used
+local SHIPPED_LAYER = { layerWidth = 1002, layerHeight = 668, tileWidth = 256, tileHeight = 256 }
+
+-- Floors of a journal dungeon: { {name=, tiles={fileIDs}} or {name=, id=uiMapID}, ... }, or nil
+-- when there is no map for it.
 function J.MapFloors(d)
+  local shipped = ns.DungeonMaps and ns.DungeonMaps[d.key]
+  if shipped then return shipped end
   if not index then BuildIndex() end
   local base, wing = d.name:match("^(.-) %- (.+)$")
   local key = norm(ALIASES[d.name] or base or d.name)
@@ -73,11 +80,16 @@ local function Canvas()
 end
 
 -- Draw one floor's art tiles scaled to width; returns the drawn height, or nil without art.
-local function DrawFloor(c, mapID, width)
+local function DrawFloor(c, floor, width)
   for _, t in ipairs(c.tiles) do t:Hide() end
-  local layers = C_Map.GetMapArtLayers and C_Map.GetMapArtLayers(mapID)
-  local L = layers and layers[1]
-  local tex = L and C_Map.GetMapArtLayerTextures and C_Map.GetMapArtLayerTextures(mapID, 1)
+  local L, tex
+  if floor.tiles then
+    L, tex = SHIPPED_LAYER, floor.tiles
+  else
+    local layers = C_Map.GetMapArtLayers and C_Map.GetMapArtLayers(floor.id)
+    L = layers and layers[1]
+    tex = L and C_Map.GetMapArtLayerTextures and C_Map.GetMapArtLayerTextures(floor.id, 1)
+  end
   if not (L and tex and #tex > 0 and L.layerWidth and L.layerWidth > 0) then return nil end
   local cols = math.ceil(L.layerWidth / L.tileWidth)
   local scale = width / L.layerWidth
@@ -85,8 +97,12 @@ local function DrawFloor(c, mapID, width)
     local t = c.tiles[i]
     if not t then t = c:CreateTexture(nil, "ARTWORK"); c.tiles[i] = t end
     local col, row = (i - 1) % cols, math.floor((i - 1) / cols)
+    -- edge tiles are only partly used: crop them to the layer size
+    local tw = math.min(L.tileWidth, L.layerWidth - col * L.tileWidth)
+    local th = math.min(L.tileHeight, L.layerHeight - row * L.tileHeight)
     t:SetTexture(fid)
-    t:SetSize(L.tileWidth * scale, L.tileHeight * scale)
+    t:SetTexCoord(0, tw / L.tileWidth, 0, th / L.tileHeight)
+    t:SetSize(tw * scale, th * scale)
     t:ClearAllPoints()
     t:SetPoint("TOPLEFT", c, "TOPLEFT", col * L.tileWidth * scale, -row * L.tileHeight * scale)
     t:Show()
@@ -121,7 +137,7 @@ function J.DrawMap(d, y)
   local c = Canvas()
   local width = J.child:GetWidth() - 8
   if width <= 0 then width = 520 end
-  local h = DrawFloor(c, floors[idx].id, width)
+  local h = DrawFloor(c, floors[idx], width)
   if not h then return note("This map has no artwork in this client.") end
   c:ClearAllPoints()
   c:SetPoint("TOPLEFT", 4, y)

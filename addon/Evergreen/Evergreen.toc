@@ -31,6 +31,7 @@ Modules\Reveal.lua
 Modules\Journal_Data.lua
 Modules\Journal.lua
 Modules\Journal_Boss.lua
+Modules\Journal_MapData.lua
 Modules\Journal_Map.lua
 Modules\Everpanel.lua
 Modules\Everpanel\Basics.lua

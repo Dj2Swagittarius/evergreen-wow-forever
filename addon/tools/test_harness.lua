@@ -194,7 +194,9 @@ if os.getenv("JOURNAL") then
   for _, t in ipairs(J.mapCanvas.tiles) do if t._shown then tiles = tiles + 1 end end
   assert(tiles == 12, "Deadmines map: expected 12 tiles, got " .. tiles)
   local floors = J.MapFloors(find("Scarlet Monastery - Armory"))
-  assert(floors and #floors == 1 and floors[1].id == 304, "Armory should show its own floor only")
+  assert(floors and #floors == 1 and floors[1].name == "Armory" and #floors[1].tiles == 12, "Armory should show its own floor only")
+  local brd = J.MapFloors(find("Blackrock Depths"))
+  assert(brd and #brd >= 2, "Blackrock Depths should have its floors from Journal_MapData")
   J.Select(find("Blackmaw Hold"))
   assert(not J.mapCanvas._shown, "a dungeon without a map must not show the last map")
   SlashCmdList.EVERGREENJOURNAL("maps")
