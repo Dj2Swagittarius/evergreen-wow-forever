@@ -155,16 +155,54 @@ local UI = ns.UI
 -- JOURNAL=1: exercise the Dungeon Journal module instead of playing a route
 if os.getenv("JOURNAL") then
   local J = assert(ns.Journal, "journal module not loaded")
+  -- dungeon maps: a one-floor Deadmines, and a Scarlet Monastery group whose floors are the wings
+  local DUNGEON_MAPS = { [291] = "The Deadmines", [302] = "Scarlet Monastery", [303] = "Scarlet Monastery",
+    [304] = "Scarlet Monastery", [305] = "Scarlet Monastery" }
+  local zoneInfo = C_Map.GetMapInfo
+  C_Map.GetMapInfo = function(id)
+    if DUNGEON_MAPS[id] then return { mapID = id, name = DUNGEON_MAPS[id], mapType = 4, parentMapID = 0 } end
+    return zoneInfo(id)
+  end
+  C_Map.GetMapGroupID = function(id) return (id >= 302 and id <= 305) and 7 or nil end
+  C_Map.GetMapGroupMembersInfo = function(g)
+    if g ~= 7 then return nil end
+    return { { mapID = 305, name = "Cathedral", relativeHeightIndex = 4 }, { mapID = 302, name = "Graveyard", relativeHeightIndex = 1 },
+             { mapID = 303, name = "Library", relativeHeightIndex = 2 }, { mapID = 304, name = "Armory", relativeHeightIndex = 3 } }
+  end
+  C_Map.GetMapArtLayers = function() return { { layerWidth = 1002, layerHeight = 668, tileWidth = 256, tileHeight = 256 } } end
+  C_Map.GetMapArtLayerTextures = function(id) local t = {} for i = 1, 12 do t[i] = id * 100 + i end return t end
+
   SlashCmdList.EVERGREENJOURNAL("")
   assert(J.frame and J.frame._shown, "journal did not open")
   local n = 0
   for _, d in ipairs(ns.JournalData) do
-    for _, tab in ipairs({ "Loot", "Quests" }) do
+    for _, tab in ipairs({ "Bosses", "Quests", "Map" }) do
       J.tab = tab
       J.Select(d)
       n = n + 1
     end
   end
+  local function find(name) for _, d in ipairs(ns.JournalData) do if d.name == name then return d end end end
+  -- Map tab
+  J.tab = "Map"; J.Select(find("The Deadmines"))
+  assert(J.mapCanvas and J.mapCanvas._shown, "Deadmines map not drawn")
+  local tiles = 0
+  for _, t in ipairs(J.mapCanvas.tiles) do if t._shown then tiles = tiles + 1 end end
+  assert(tiles == 12, "Deadmines map: expected 12 tiles, got " .. tiles)
+  local floors = J.MapFloors(find("Scarlet Monastery - Armory"))
+  assert(floors and #floors == 1 and floors[1].id == 304, "Armory should show its own floor only")
+  J.Select(find("Blackmaw Hold"))
+  assert(not J.mapCanvas._shown, "a dungeon without a map must not show the last map")
+  SlashCmdList.EVERGREENJOURNAL("maps")
+  -- Bosses tab: model follows the selected boss
+  J.tab = "Bosses"; local dm = find("The Deadmines"); J.Select(dm)
+  assert(J.model and J.model._shown, "boss model not shown")
+  assert(J.model.npc == dm.bosses[1].npc, "model should show the first boss")
+  assert(J.bossButtons[2], "no button for the second boss")
+  J.bossButtons[2]._scripts.OnClick(J.bossButtons[2])
+  assert(J.model.npc == dm.bosses[2].npc, "model did not switch to the second boss")
+  J.tab = "Quests"; J.Select(dm)
+  assert(not J.model._shown, "model must hide on the Quests tab")
   SlashCmdList.EVERGREENJOURNAL("dead")
   assert(J.current and J.current.name == "The Deadmines", "search did not open The Deadmines")
   J.entranceBtn._scripts.OnClick(J.entranceBtn)

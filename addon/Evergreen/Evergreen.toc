@@ -30,3 +30,5 @@ Modules\Reveal_Data.lua
 Modules\Reveal.lua
 Modules\Journal_Data.lua
 Modules\Journal.lua
+Modules\Journal_Boss.lua
+Modules\Journal_Map.lua

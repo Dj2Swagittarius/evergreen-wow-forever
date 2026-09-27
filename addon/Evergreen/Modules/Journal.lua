@@ -8,6 +8,7 @@
 --
 -- Data: Modules/Journal_Data.lua (generated from AtlasLootClassic + Questie, see tools/build_journal.lua).
 -- /ej opens it; /ej <name> jumps to a dungeon; /ej pins toggles the world map markers.
+-- Tabs: Bosses (3D model + info + loot, Journal_Boss.lua), Quests, Map (dungeon map, Journal_Map.lua).
 
 local ADDON, ns = ...
 
@@ -171,7 +172,7 @@ local function MakeButton(parent, text, w)
   return b
 end
 
-local TABS = { "Loot", "Quests" }
+local TABS = { "Bosses", "Quests", "Map" }
 
 local function Build()
   local f = ns.Skin.Window("EvergreenJournalFrame", W, H, "Dungeon Journal", "Interface\\Icons\\INV_Misc_Book_09",
@@ -380,43 +381,32 @@ local function SetItem(b, id, showName)
   if showName then b.label:SetText("|c" .. hex .. (name or ("item " .. id)) .. "|r") end
 end
 
-local function DrawLoot(d, y)
+-- one boss's loot as a two-column grid of item buttons (faction-filtered)
+local function DrawItems(d, boss, y)
   local fac = PlayerFaction()
   local colW = (J.child:GetWidth() - 8) / 2
-  for _, boss in ipairs(d.bosses or {}) do
-    local t = GetText()
-    t:SetPoint("TOPLEFT", 4, y)
-    t:SetFont(FONT_BODY, 14, "")
-    t:SetText(HEX.gold .. (boss.name or "?") .. "|r" .. (boss.rare and (HEX.muted .. "  rare|r") or "") .. (boss.level and (HEX.muted .. "  level " .. boss.level .. "|r") or ""))
-    y = y - 22
-    if boss.desc then
-      local dsc = GetText()
-      dsc:SetPoint("TOPLEFT", 4, y)
-      dsc:SetFont(FONT_BODY, 11, "")
-      dsc:SetText(HEX.muted .. boss.desc .. "|r")
-      y = y - dsc:GetStringHeight() - 4
+  local col, shown = 0, 0
+  for _, it in ipairs(boss.items or {}) do
+    if not it[2] or not fac or it[2] == fac then
+      local b = GetItemButton(24)
+      b:SetPoint("TOPLEFT", 4 + col * colW, y)
+      SetItem(b, it[1], true)
+      b.label:SetWidth(colW - 36)
+      col = col + 1
+      shown = shown + 1
+      if col == 2 then col = 0; y = y - 28 end
     end
-    local col = 0
-    local shown = 0
-    for _, it in ipairs(boss.items) do
-      if not it[2] or not fac or it[2] == fac then
-        local b = GetItemButton(24)
-        b:SetPoint("TOPLEFT", 4 + col * colW, y)
-        SetItem(b, it[1], true)
-        b.label:SetWidth(colW - 36)
-        col = col + 1
-        shown = shown + 1
-        if col == 2 then col = 0; y = y - 28 end
-      end
-    end
-    if col ~= 0 then y = y - 28 end
-    if shown == 0 then
-      local n = GetText(); n:SetPoint("TOPLEFT", 4, y); n:SetText(HEX.muted .. (d.forever and "Loot not known yet." or "No loot listed.") .. "|r"); y = y - 18
-    end
-    y = y - 8
+  end
+  if col ~= 0 then y = y - 28 end
+  if shown == 0 then
+    local n = GetText(); n:SetPoint("TOPLEFT", 4, y); n:SetText(HEX.muted .. (d.forever and "Loot not known yet." or "No loot listed.") .. "|r"); y = y - 18
   end
   return y
 end
+
+-- shared with Journal_Boss.lua / Journal_Map.lua
+J.GetText, J.GetSmallButton, J.DrawItems, J.HEX = GetText, GetSmallButton, DrawItems, HEX
+J.extras = {}   -- persistent frames (boss model, map canvas) hidden before every redraw
 
 local function StatusOf(q)
   if QuestDone(q.id) then return "done" end
@@ -514,6 +504,7 @@ function J.RefreshContent()
   if not J.frame then return end
   local d = J.current
   ResetPool()
+  for _, f in ipairs(J.extras) do f:Hide() end
   for i, name in ipairs(TABS) do if name == J.tab then ns.Skin.SelectTab(J.frame, i) end end
   J.optHide:SetLabel(DB.hideDone and "Show done" or "Hide done")
   J.optFac:SetLabel(DB.allQuests and "All quests" or "My quests")
@@ -536,11 +527,14 @@ function J.RefreshContent()
     t:SetText(HEX.violet .. "WoW Forever|r" .. HEX.muted .. (d.note and ("  " .. d.note) or "  new in Forever; data from the beta, check in game") .. "|r")
     y = y - t:GetStringHeight() - 8
   end
-  if J.tab == "Quests" then y = DrawQuests(d, y) else y = DrawLoot(d, y) end
+  if J.tab == "Quests" then y = DrawQuests(d, y)
+  elseif J.tab == "Map" and J.DrawMap then y = J.DrawMap(d, y)
+  elseif J.DrawBosses then y = J.DrawBosses(d, y) end
   J.child:SetHeight(math.max(10, -y + 10))
 end
 
 function J.Select(d)
+  if J.current ~= d then J.bossIdx, J.floorIdx = 1, 1 end
   J.current = d
   J.entranceIdx = 1
   DB.last = d.key
@@ -622,7 +616,7 @@ local function RefreshPins()
         local l = d.levels or {}
         p.title = d.name
         p.lines = { (d.raid and "Raid" or "Dungeon") .. ", levels " .. (l[1] or "?") .. "-" .. (l[3] or "?"), (d.quests and #d.quests or 0) .. " quests, " .. #(d.bosses or {}) .. " bosses" }
-        p.inst, p.tab = d, "Loot"
+        p.inst, p.tab = d, "Bosses"
         p:SetFrameLevel(canvas:GetFrameLevel() + 20)
         p:Show()
       end
@@ -683,9 +677,10 @@ ev:RegisterEvent("PLAYER_LOGIN")
 ev:SetScript("OnEvent", function(self, event, name)
   if event == "ADDON_LOADED" and name == ADDON then
     if not ns.ModuleEnabled("journal") then ns.Journal = nil; self:UnregisterAllEvents(); return end
-    EvergreenDB.journal = EvergreenDB.journal or { pins = true, tab = "Loot" }
+    EvergreenDB.journal = EvergreenDB.journal or { pins = true, tab = "Bosses" }
     DB = EvergreenDB.journal
-    J.tab = DB.tab or "Loot"
+    if DB.tab == "Loot" then DB.tab = "Bosses" end   -- the Loot tab became Bosses
+    J.tab = DB.tab or "Bosses"
     Prepare()
   end
   if not DB then return end
@@ -714,8 +709,11 @@ function J.Slash(rest)
     if ns.ClearExternalTarget then ns.ClearExternalTarget() end
     say("waypoint cleared; the arrow follows the guide again.")
     return
+  elseif rest == "maps" then
+    if J.ReportMaps then J.ReportMaps(instances, say) end
+    return
   elseif rest == "help" then
-    say("/ej (toggle), /ej <dungeon> (open it), /ej pins (world map markers), /ej clear (drop the journal waypoint)")
+    say("/ej (toggle), /ej <dungeon> (open it), /ej pins (world map markers), /ej clear (drop the journal waypoint), /ej maps (which dungeons have a map)")
     return
   end
   if not J.frame then Build() end
