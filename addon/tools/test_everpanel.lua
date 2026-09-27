@@ -4,7 +4,7 @@ local EP = assert(ns.Everpanel, "everpanel module not loaded")
 assert(EP.bar and EP.bar._shown, "bar not built")
 
 -- plugins the addon ships (grown by later tasks)
-local EXPECT = { "clock", "perf", "location", "bags", "durability", "ammo", "guide", "everbuff", "journal" }
+local EXPECT = { "clock", "perf", "location", "bags", "durability", "ammo", "guide", "everbuff", "journal", "friends", "guild" }
 for _, id in ipairs(EXPECT) do assert(EP.byId[id], "missing plugin " .. id) end
 -- every plugin has a button and draws a string
 for _, p in ipairs(EP.plugins) do
@@ -83,5 +83,11 @@ GetInventoryItemDurability = nil
 assert(type(ns.GuideStepText) == "function", "Core does not expose GuideStepText")
 assert(type(ns.EverbuffInfo) == "function", "Buffs does not expose EverbuffInfo")
 assert(EP.Visible("journal"), "journal plugin should show when the journal module is on")
+
+C_FriendList = { GetNumFriends = function() return 2 end,
+  GetFriendInfoByIndex = function(i) return { name = "F" .. i, level = 20, area = "Barrens", connected = i == 1 } end }
+assert(EP.byId.friends.text() == "1", "friends online: " .. tostring(EP.byId.friends.text()))
+C_FriendList = nil
+assert(not EP.Visible("guild"), "guild plugin should hide without a guild")
 
 io.write(string.format("OK everpanel: %d plugins, %d chat lines\n", #EP.plugins, #printed))

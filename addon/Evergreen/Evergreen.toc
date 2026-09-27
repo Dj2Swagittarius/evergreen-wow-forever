@@ -40,3 +40,4 @@ Modules\Tracker.lua
 Modules\Tracker_XP.lua
 Modules\Tracker_Gold.lua
 Modules\Everpanel\Evergreen.lua
+Modules\Everpanel\Social.lua
