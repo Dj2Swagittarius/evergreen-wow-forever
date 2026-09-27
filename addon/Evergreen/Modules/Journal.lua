@@ -712,6 +712,9 @@ function J.Slash(rest)
   elseif rest == "maps" then
     if J.ReportMaps then J.ReportMaps(instances, say) end
     return
+  elseif rest:match("^maps ") then
+    if J.ProbeMaps then J.ProbeMaps(rest:sub(6), say) end
+    return
   elseif rest == "help" then
     say("/ej (toggle), /ej <dungeon> (open it), /ej pins (world map markers), /ej clear (drop the journal waypoint), /ej maps (which dungeons have a map)")
     return

@@ -9,7 +9,10 @@ local J = ns.Journal
 if not J then return end
 
 local DUNGEON_TYPE = (Enum and Enum.UIMapType and Enum.UIMapType.Dungeon) or 4
-local MAX_MAP_ID = 3000
+local MAX_MAP_ID = 5000
+-- UIMapType: 0 cosmic, 1 world, 2 continent, 3 zone, 4 dungeon, 5 micro, 6 orphan. Dungeon floors are
+-- normally type 4, but accept micro/orphan maps too when no dungeon-type map carries the name.
+local FALLBACK_TYPES = { [5] = true, [6] = true }
 
 -- journal name -> map name, where they differ
 local ALIASES = {
@@ -20,16 +23,19 @@ local ALIASES = {
 
 local function norm(s) return ((s or ""):lower():gsub("^the ", ""):gsub("[^%w]", "")) end
 
-local index   -- normalised map name -> { mapID, ... }
+local index, fallback   -- normalised map name -> { mapID, ... } (dungeon maps; micro / orphan maps)
 local function BuildIndex()
-  index = {}
+  index, fallback = {}, {}
   if not (C_Map and C_Map.GetMapInfo) then return end
   for id = 1, MAX_MAP_ID do
     local info = C_Map.GetMapInfo(id)
-    if info and info.name and info.mapType == DUNGEON_TYPE then
-      local k = norm(info.name)
-      index[k] = index[k] or {}
-      table.insert(index[k], id)
+    if info and info.name then
+      local t = info.mapType == DUNGEON_TYPE and index or FALLBACK_TYPES[info.mapType] and fallback
+      if t then
+        local k = norm(info.name)
+        t[k] = t[k] or {}
+        table.insert(t[k], id)
+      end
     end
   end
 end
@@ -38,7 +44,8 @@ end
 function J.MapFloors(d)
   if not index then BuildIndex() end
   local base, wing = d.name:match("^(.-) %- (.+)$")
-  local ids = index[norm(ALIASES[d.name] or base or d.name)]
+  local key = norm(ALIASES[d.name] or base or d.name)
+  local ids = index[key] or fallback[key]
   if not ids then return nil end
   local floors = {}
   local g = C_Map.GetMapGroupID and C_Map.GetMapGroupID(ids[1])
@@ -120,6 +127,20 @@ function J.DrawMap(d, y)
   c:SetPoint("TOPLEFT", 4, y)
   c:Show()
   return y - h - 8
+end
+
+-- /ej maps <text>: every map whose name contains <text>, with id and type (to see what the client has)
+function J.ProbeMaps(text, say)
+  text = text:lower()
+  local hits, n = {}, 0
+  for id = 1, MAX_MAP_ID do
+    local info = C_Map.GetMapInfo and C_Map.GetMapInfo(id)
+    if info and info.name and info.name:lower():find(text, 1, true) then
+      n = n + 1
+      if n <= 20 then hits[#hits + 1] = id .. "=" .. info.name .. " (type " .. tostring(info.mapType) .. ")" end
+    end
+  end
+  say(n .. " maps match '" .. text .. "'" .. (n > 0 and (": " .. table.concat(hits, ", ")) or "") .. (n > 20 and " ..." or ""))
 end
 
 -- /ej maps: which journal dungeons found a map (to fix ALIASES after checking in game)
