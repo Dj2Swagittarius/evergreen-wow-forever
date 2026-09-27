@@ -58,16 +58,36 @@ click(nil, "Unlock plugin order")
 
 -- top-anchored Blizzard frames move down under the bar, and back when it hides
 local pf = CreateFrame("Frame", "PlayerFrame")
-local placedY
-pf.GetPoint = function() return "TOPLEFT", nil, "TOPLEFT", 10, -4 end
-pf.SetPoint = function(_, _, _, _, _, y) placedY = y end
+local pfPoint = { "TOPLEFT", nil, "TOPLEFT", 10, -4 }
+pf.GetPoint = function() return pfPoint[1], pfPoint[2], pfPoint[3], pfPoint[4], pfPoint[5] end
+pf.SetPoint = function(_, p, rel, rp, x, y) pfPoint = { p, rel, rp, x, y } end
 EP.ApplyOffset()
-assert(placedY == -24, "PlayerFrame not pushed down: " .. tostring(placedY))
+assert(pfPoint[5] == -24, "PlayerFrame not pushed down: " .. tostring(pfPoint[5]))
 EP.SetShown(false)
 assert(not EP.bar._shown, "bar did not hide")
-assert(placedY == -4, "PlayerFrame not restored: " .. tostring(placedY))
+assert(pfPoint[5] == -4, "PlayerFrame not restored: " .. tostring(pfPoint[5]))
 SlashCmdList.EVERGREEN("panel")
 assert(EP.bar._shown, "/eg panel did not show the bar")
+
+-- I4: a frame something else repositioned after the shift must not be snapped back
+EP.ApplyOffset()
+assert(pfPoint[5] == -24, "PlayerFrame not re-pushed down: " .. tostring(pfPoint[5]))
+pfPoint = { "TOPLEFT", nil, "TOPLEFT", 10, -100 }   -- another addon/user repositioned it
+EP.SetShown(false)
+assert(pfPoint[5] == -100, "a moved frame should not be snapped back on hide")
+SlashCmdList.EVERGREEN("panel")
+
+-- I3: another bar addon on screen disables the offset entirely
+local tf = CreateFrame("Frame", "TargetFrame")
+local tfPoint = { "TOPLEFT", nil, "TOPLEFT", 0, -4 }
+tf.GetPoint = function() return tfPoint[1], tfPoint[2], tfPoint[3], tfPoint[4], tfPoint[5] end
+tf.SetPoint = function(_, p, rel, rp, x, y) tfPoint = { p, rel, rp, x, y } end
+_G.TitanPanelBarButton = CreateFrame("Frame")
+EP.ApplyOffset()
+assert(tfPoint[5] == -4, "TargetFrame should not move when another bar addon is loaded")
+_G.TitanPanelBarButton = nil
+EP.ApplyOffset()
+assert(tfPoint[5] == -24, "TargetFrame should shift once the other bar addon is gone")
 
 -- clock click switches between local and server time
 local was = EP.db.clockServer

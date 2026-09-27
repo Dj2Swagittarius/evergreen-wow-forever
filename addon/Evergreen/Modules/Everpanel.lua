@@ -36,9 +36,12 @@ function EP.Visible(id)
   return true
 end
 
+-- Returns true when the button's width changed, so callers that redraw on frequent events (a
+-- plugin's own events, the interval ticker) only pay for a full EP.Layout() when it can matter.
+local lastWidth = {}
 local function Draw(id)
   local p, b = EP.byId[id], EP.buttons[id]
-  if not (p and b) then return end
+  if not (p and b) then return false end
   local txt = ""
   if p.text then txt = safe(id, p.text); if txt == nil then txt = "?" end end
   local showIcon = DB.icons and p.icon ~= nil
@@ -46,7 +49,11 @@ local function Draw(id)
   b.text:ClearAllPoints()
   if showIcon then b.text:SetPoint("LEFT", b.icon, "RIGHT", 3, 0) else b.text:SetPoint("LEFT", b, "LEFT", 0, 0) end
   b.text:SetText(((DB.labels and p.label) and (HEX.gold .. p.label .. ":|r ") or "") .. tostring(txt))
-  b:SetWidth(math.max(16, (b.text:GetStringWidth() or 0) + (showIcon and 17 or 0)))
+  local w = math.max(16, (b.text:GetStringWidth() or 0) + (showIcon and 17 or 0))
+  b:SetWidth(w)
+  local changed = lastWidth[id] ~= w
+  lastWidth[id] = w
+  return changed
 end
 
 -- right group from the right edge; left group from the left edge, hidden where it would overlap
@@ -86,8 +93,9 @@ end
 local evFrame = CreateFrame("Frame")
 local evMap = {}
 evFrame:SetScript("OnEvent", function(_, ev)
-  for id in pairs(evMap[ev] or {}) do Draw(id) end
-  EP.Layout()
+  local changed = false
+  for id in pairs(evMap[ev] or {}) do if Draw(id) then changed = true end end
+  if changed then EP.Layout() end
 end)
 
 local function MakeButton(p)
@@ -101,7 +109,7 @@ local function MakeButton(p)
     GameTooltip:Hide()
     if btn == "RightButton" and not p.rightClick then EP.OpenMenu(s, p.id); return end
     if p.onClick then safe(p.id, p.onClick, btn) end
-    Draw(p.id); EP.Layout()
+    if Draw(p.id) then EP.Layout() end
   end)
   b:SetScript("OnEnter", function(s)
     if not p.tooltip then return end
@@ -138,14 +146,14 @@ end
 local nextAt = {}
 function EP.Tick(now)
   now = now or GetTime()
-  local any = false
+  local changed = false
   for _, p in ipairs(EP.plugins) do
     if p.interval and EP.buttons[p.id] and now >= (nextAt[p.id] or 0) then
       nextAt[p.id] = now + p.interval
-      Draw(p.id); any = true
+      if Draw(p.id) then changed = true end
     end
   end
-  if any then EP.Layout() end
+  if changed then EP.Layout() end
 end
 
 -- ------------------------------------------------------------------ plugin order
@@ -208,6 +216,7 @@ function EP.OpenMenu(anchor, id)
     ns.Skin.Hud(menu)
     menu:SetFrameStrata("DIALOG")
     menu:EnableMouse(true)
+    menu:SetClampedToScreen(true)
     menu.rows = {}
     tinsert(UISpecialFrames, "EverpanelMenu")
     EP.menu = menu
@@ -237,12 +246,28 @@ end
 -- Top-anchored Blizzard frames move down by the bar height so the bar covers nothing. Only out of
 -- combat; re-applied after loading screens (Blizzard may re-anchor them).
 local SHIFT = { "MinimapCluster", "BuffFrame", "PlayerFrame", "TargetFrame" }
+local OTHER_BARS = { "Titan", "ElvUI", "Bazooka" }
+
+-- Another bar addon (Titan Panel, ElvUI, Bazooka) already pushes the screen around; Everpanel
+-- stays out of the way entirely rather than fight it (and Edit Mode) for the same real estate.
+local function OtherBarAddon()
+  if _G.TitanPanelBarButton or _G.ElvUI or _G.Bazooka then return true end
+  local isLoaded = (_G.C_AddOns and _G.C_AddOns.IsAddOnLoaded) or _G.IsAddOnLoaded
+  if isLoaded then
+    for _, name in ipairs(OTHER_BARS) do
+      local ok, loaded = pcall(isLoaded, name)
+      if ok and loaded then return true end
+    end
+  end
+  return false
+end
+
 local shifted, pendingOffset = {}, false
 function EP.ApplyOffset()
   if not DB then return end
   if InCombatLockdown() then pendingOffset = true; return end
   pendingOffset = false
-  local want = DB.shown and DB.offset
+  local want = DB.shown and DB.offset and not OtherBarAddon()
   for _, name in ipairs(SHIFT) do
     local f = _G[name]
     if f and f.GetPoint then
@@ -257,7 +282,11 @@ function EP.ApplyOffset()
         end
       elseif s then
         shifted[f] = nil
-        f:ClearAllPoints(); f:SetPoint(s[1], UIParent, s[2], s[3], s[4])
+        -- restore only if nothing else has since moved the frame away from where we put it;
+        -- otherwise leave it alone rather than snap it back to a stale position
+        if p and math.abs((y or 0) - (s[4] - BAR_H)) < 0.5 then
+          f:ClearAllPoints(); f:SetPoint(s[1], UIParent, s[2], s[3], s[4])
+        end
       end
     end
   end
@@ -298,6 +327,7 @@ boot:RegisterEvent("ADDON_LOADED")
 boot:RegisterEvent("PLAYER_ENTERING_WORLD")
 boot:RegisterEvent("PLAYER_REGEN_ENABLED")
 boot:RegisterEvent("UI_SCALE_CHANGED")
+pcall(boot.RegisterEvent, boot, "EDIT_MODE_LAYOUTS_UPDATED")   -- may not exist on every client
 boot:SetScript("OnEvent", function(self, event, name)
   if event == "ADDON_LOADED" then
     if name ~= ADDON then return end
