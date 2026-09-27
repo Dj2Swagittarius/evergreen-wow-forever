@@ -44,7 +44,7 @@ all after `Modules.lua` and `Core.lua`. Tracker plugins register with Everpanel 
 - Plugins laid out in two groups, left and right, in saved order; each plugin is a button:
   optional 14 px icon + optional label + text. Spacing 12 px. Text truncates if the bar overflows
   (right group wins; overflowing left plugins hide).
-- Hide/show: `/eg panel` (and right-click menu). Lock prevents reordering by drag.
+- Hide/show: `/eg panel` (and right-click menu). Plugins are reordered from the menu only; Lock hides the move entries.
 
 ### Plugin API
 ```lua
@@ -64,7 +64,8 @@ ns.Everpanel.Update(id)                          -- a plugin asks for a redraw
 - `text()` errors are caught (pcall); the plugin shows `?` and the error is printed once.
 
 ### Right-click menu (on empty bar or any plugin with no own right-click)
-Show/hide each plugin; move left/right; move earlier/later; show icons; show labels; lock bar; hide bar.
+Show/hide each plugin; move to the other side; move left/right; show icons; show labels; lock plugin order;
+push down / overlap Blizzard frames; show other addons' (LDB) plugins; hide bar.
 Uses a simple skinned dropdown built from buttons (not `UIDropDownMenu`, to avoid taint).
 
 ### LibDataBroker (optional, off by default)
@@ -135,8 +136,8 @@ its module is disabled.
 ### Gold (`Tracker_Gold.lua`)
 - Change: on `PLAYER_MONEY`, `delta = GetMoney() - lastMoney`.
 - Context flags set by events: `MERCHANT_SHOW/CLOSED`, `TRAINER_SHOW/CLOSED`, `MAIL_SHOW/CLOSED`,
-  `AUCTION_HOUSE_SHOW/CLOSED`; repair flag set by hooking `RepairAllItems` (and repairing single items
-  via the merchant cursor) for the next money change.
+  `AUCTION_HOUSE_SHOW/CLOSED`; repair flag set by hooking `RepairAllItems` for the next money change
+  (single-item repairs count as merchant purchases).
 - Classification (first match):
   1. pending quest money from `QUEST_TURNED_IN` → quests
   2. `CHAT_MSG_MONEY` within 1 s ("You loot ...") → loot
