@@ -242,18 +242,20 @@ end
 
 -- Every cast on someone else first TARGETS that person, then casts on the target only:
 --   /target party1            (group members, by unit id)
---   /targetexact Name-Realm   (strangers from nameplates, whose slot numbers shift as people move)
+--   /tar Name                 (strangers from nameplates or mouseover, by plain name; neither
+--                              /targetexact Name-Realm nor /target nameplateN picked them up
+--                              on the Forever client)
 --   /cast [@target,help,nodead] Spell
 -- The explicit [@target] matters: a bare /cast after a target that did not stick falls back to
--- self-cast, which is how buffs used to land on you. Now a missed target is a visible error
--- instead. The person stays selected afterwards so you can see who got it.
+-- self-cast, which is how buffs used to land on you. Now a missed target casts nothing.
+-- The person stays selected afterwards so you can see who got it.
 local function MacroFor(q)
   if q.unit == "player" then return "/cast [@player] " .. q.spell end
   local tar
   if q.unit:match("^party%d") or q.unit:match("^raid%d") then
     tar = "/target " .. q.unit
   elseif q.unit ~= "target" then
-    tar = "/targetexact " .. (q.fullName or q.name or "")
+    tar = "/tar " .. (q.name or "")
   end
   return (tar and (tar .. "\n") or "") .. "/cast [@target,help,nodead] " .. q.spell
 end
@@ -372,6 +374,15 @@ local function Build()
   button:SetScript("OnLeave", function() GameTooltip:Hide() end)
   -- after a click the cast starts; rescan shortly after so the button re-arms with the next one
   button:HookScript("PostClick", function() C_Timer.After(0.6, Refresh); C_Timer.After(2.0, Refresh) end)
+  -- the window's metal border (template NineSlice) sits at frame level 500 and cannot be lowered
+  -- on the Forever client; keep the button above it so clicks land on the button
+  if frame.NineSlice and frame.NineSlice.GetFrameLevel then button:SetFrameLevel(frame.NineSlice:GetFrameLevel() + 5) end
+  -- /eb debug also traces clicks: shows the click arrived and which macro it ran
+  button:HookScript("PreClick", function(_, btn, down)
+    if DB.traceClicks then
+      print(HEX.green .. "Everbuff click|r " .. tostring(btn) .. (down and " down" or " up") .. "  macro: " .. tostring(button:GetAttribute("macrotext")):gsub("\n", " | "))
+    end
+  end)
 
   list = ns.Skin.Text(frame, "GameFontHighlightSmall"); list:SetPoint("TOPLEFT", button, "BOTTOMLEFT", 2, -8); list:SetPoint("RIGHT", -12, 0)
   list:SetSpacing(2)
@@ -460,6 +471,8 @@ SlashCmdList["EVERBUFF"] = function(msg)
     Refresh(); print(HEX.green .. "Everbuff:|r " .. #queue .. " casts queued")
     for _, q in ipairs(queue) do print("  " .. tostring(q.name) .. " needs " .. q.spell) end
   elseif msg == "debug" then
+    DB.traceClicks = not DB.traceClicks
+    print(HEX.green .. "Everbuff:|r click trace " .. (DB.traceClicks and "on" or "off"))
     local plates, players, friendly = 0, 0, 0
     for i = 1, 40 do
       local u = "nameplate" .. i

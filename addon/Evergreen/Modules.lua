@@ -36,7 +36,16 @@ local BUILT = {
 local function make(ftype, name, parent, templates)
   for _, t in ipairs(templates) do
     local ok, f = pcall(CreateFrame, ftype, name, parent, t)
-    if ok and f and (not BUILT[t] or BUILT[t](f)) then return f, t end
+    if ok and f and (not BUILT[t] or BUILT[t](f)) then
+      -- the template's border (NineSlice) sits at frame level 500 over the whole frame and, on
+      -- the Forever client, takes the mouse: every button inside the window went dead under it.
+      -- Drop it to the frame's own level so content (level +1) sits above it, and no mouse.
+      if f.NineSlice then
+        if f.NineSlice.EnableMouse then f.NineSlice:EnableMouse(false) end
+        if f.NineSlice.SetFrameLevel and f.GetFrameLevel then f.NineSlice:SetFrameLevel(f:GetFrameLevel()) end
+      end
+      return f, t
+    end
     if ok and f then f:Hide(); name = nil end   -- a half-built named frame: do not reuse its name
   end
   return CreateFrame(ftype, name, parent), nil
