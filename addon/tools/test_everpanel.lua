@@ -4,7 +4,7 @@ local EP = assert(ns.Everpanel, "everpanel module not loaded")
 assert(EP.bar and EP.bar._shown, "bar not built")
 
 -- plugins the addon ships (grown by later tasks)
-local EXPECT = {}
+local EXPECT = { "clock", "perf", "location", "bags" }
 for _, id in ipairs(EXPECT) do assert(EP.byId[id], "missing plugin " .. id) end
 -- every plugin has a button and draws a string
 for _, p in ipairs(EP.plugins) do
@@ -68,5 +68,10 @@ assert(not EP.bar._shown, "bar did not hide")
 assert(placedY == -4, "PlayerFrame not restored: " .. tostring(placedY))
 SlashCmdList.EVERGREEN("panel")
 assert(EP.bar._shown, "/eg panel did not show the bar")
+
+-- clock click switches between local and server time
+local was = EP.db.clockServer
+EP.byId.clock.onClick("LeftButton")
+assert(EP.db.clockServer == not was, "clock click did not toggle server time")
 
 io.write(string.format("OK everpanel: %d plugins, %d chat lines\n", #EP.plugins, #printed))
