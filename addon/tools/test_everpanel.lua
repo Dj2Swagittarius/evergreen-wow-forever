@@ -90,4 +90,17 @@ assert(EP.byId.friends.text() == "1", "friends online: " .. tostring(EP.byId.fri
 C_FriendList = nil
 assert(not EP.Visible("guild"), "guild plugin should hide without a guild")
 
+-- other addons' LibDataBroker plugins, only when switched on
+local objs = { Fake = { type = "data source", text = "42", label = "Fake" } }
+LibStub = function(name) if name == "LibDataBroker-1.1" then
+  return { DataObjectIterator = function() return pairs(objs) end, RegisterCallback = function() end } end end
+EP.db.ldb = false
+assert(EP.ScanLDB, "no LDB bridge")
+EP.ScanLDB()
+assert(EP.buttons["ldb:Fake"], "LDB plugin not added")
+assert(not EP.Visible("ldb:Fake"), "LDB plugin must stay hidden while switched off")
+EP.db.ldb = true; EP.Update()
+assert(EP.Visible("ldb:Fake") and EP.buttons["ldb:Fake"].text:GetText() == "42", "LDB plugin not shown")
+LibStub = nil
+
 io.write(string.format("OK everpanel: %d plugins, %d chat lines\n", #EP.plugins, #printed))
