@@ -31,6 +31,47 @@ near(T.BestRate(s), T.SessionRate(s), "best rate falls back to the session rate"
 SlashCmdList.EVERGREEN("track")
 assert(T.panel._shown, "/eg track did not open the panel")
 
--- (XP and gold checks are added by Tasks 4 and 5 here)
+-- ---------------------------------------------------------------- XP
+local X = assert(T.XP, "XP tracker not loaded")
+local xp, max, level = 100, 1000, 10
+UnitXP = function() return xp end
+UnitXPMax = function() return max end
+UnitLevel = function() return level end
+GetXPExhaustion = function() return 300 end
+RequestTimePlayed = function() end
+now = 5000; T.Reset(); X.Snapshot()
+
+local _, amt = ("Gnoll dies, you gain 120 experience."):match(X.KILL)
+eq(amt, "120", "kill pattern")
+_, amt = ("Gnoll dies, you gain 180 experience. (+60 exp Rested bonus)"):match(X.KILL)
+eq(amt, "180", "kill pattern with rested bonus")
+
+for _ = 1, 3 do                           -- three kills of 100, a minute apart
+  now = now + 60
+  fire("CHAT_MSG_COMBAT_XP_GAIN", "Kobold dies, you gain 100 experience.")
+  xp = xp + 100; fire("PLAYER_XP_UPDATE", "player")
+end
+eq(X.kills, 3, "kills"); eq(X.killXP, 300, "kill xp"); eq(X.stat.total, 300, "xp total")
+now = now + 30
+fire("QUEST_TURNED_IN", 123, 250, 0)      -- 250 xp, no money (gold is checked in Task 5)
+xp = xp + 250; fire("PLAYER_XP_UPDATE", "player")
+eq(X.questXP, 250, "quest xp")
+now = now + 70                            -- level-up: 350 finishes level 10, 40 into level 11
+level, xp, max = 11, 40, 1200
+fire("PLAYER_XP_UPDATE", "player")
+eq(X.stat.total, 300 + 250 + 350 + 40, "xp across a level-up")
+near(T.SessionRate(X.stat), 940 / 280 * 3600, "xp per hour")
+
+-- time per level from /played
+X.RequestPlayed(); fire("TIME_PLAYED_MSG", 5000, 1200)   -- level 10 began at 3800 s played
+fire("PLAYER_LEVEL_UP", 11); fire("TIME_PLAYED_MSG", 6000, 5)
+eq(T.History().levelTimes[10], 2195, "time spent at level 10")
+eq(X.levels, 1, "levels gained")
+
+for _, l in ipairs(X.Lines()) do assert(type(l) == "string", "XP line not a string") end
+assert(ns.Everpanel.byId.xp, "no XP plugin on Everpanel")
+assert(type(ns.Everpanel.byId.xp.text()) == "string", "XP plugin text")
+
+-- (gold checks are added by Task 5 here)
 
 io.write(string.format("OK tracker: %d sections, %d chat lines\n", #T.sections, #printed))
