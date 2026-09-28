@@ -133,6 +133,7 @@ do
   _G.tinsert = table.insert
   _G.wipe = function(t) for k in pairs(t) do t[k] = nil end return t end
   _G.time = os.time
+  _G.C_Timer = { NewTicker = function(_, fn) for _ = 1, 6 do fn() end return { Cancel = function() end } end, After = function(_, fn) fn() end }
   _G.GameTooltip = fake()
   _G.ChatFontNormal = {}
   local cvars = { scriptErrors = "1" }
@@ -182,6 +183,15 @@ do
   check(cvars.scriptErrors == "1" and not sns.db.popupOff, "/err popup restores Blizzard popup")
   SlashCmdList.EVERROR("clear")
   check(#s.errors == 0 and shown[_G.EverrorButton] == false, "/err clear empties and hides button")
+end
+
+-- WoW's Lua has no os/io libraries (only the date/time globals); the tests run where they exist,
+-- so check the source instead.
+for _, f in ipairs({ "Core.lua", "Capture.lua", "UI.lua" }) do
+  local src = io.open("../!Everror/" .. f):read("*a")
+  local bad = src:gsub("%-%-[^\n]*", ""):gsub("date or os%.date", ""):match("[^%w_]os%.%w+") or
+    src:match("[^%w_]io%.%w+")
+  check(not bad, f .. " uses " .. tostring(bad) .. ", which WoW doesn't have")
 end
 
 print(("Everror tests: %d passed, %d failed"):format(passes, fails))

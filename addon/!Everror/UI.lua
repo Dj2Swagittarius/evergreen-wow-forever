@@ -137,13 +137,6 @@ local function buildButton()
   end)
   btn:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
-  local pulse = btn:CreateAnimationGroup()
-  local a = pulse:CreateAnimation("Alpha")
-  a:SetFromAlpha(1); a:SetToAlpha(0.25); a:SetDuration(0.25)
-  local b = pulse:CreateAnimation("Alpha")
-  b:SetFromAlpha(0.25); b:SetToAlpha(1); b:SetDuration(0.25); b:SetOrder(2)
-  pulse:SetLoops("REPEAT")
-  btn.pulse = pulse
 end
 
 function ns.UpdateButton()
@@ -156,17 +149,24 @@ end
 ---------------------------------------------------------------------------
 -- Hooks from Capture.lua
 ---------------------------------------------------------------------------
-local pulseStop
+-- Blink the button a few times on a new error (timer-driven; no animation API needed).
+local blinking = false
+local function blink()
+  if blinking or not C_Timer then return end
+  blinking = true
+  local n = 0
+  local ticker
+  ticker = C_Timer.NewTicker(0.2, function()
+    n = n + 1
+    btn:SetAlpha(n % 2 == 1 and 0.3 or 1)
+    if n >= 6 then ticker:Cancel(); btn:SetAlpha(1); blinking = false end
+  end)
+end
+
 function ns.OnNewError()
   if not btn then return end
   ns.UpdateButton()
-  if btn.pulse and not btn.pulse:IsPlaying() then
-    btn.pulse:Play()
-    if C_Timer then
-      if pulseStop then pulseStop:Cancel() end
-      pulseStop = C_Timer.NewTimer(1.5, function() btn.pulse:Stop(); btn:SetAlpha(1) end)
-    end
-  end
+  blink()
   refresh()
 end
 

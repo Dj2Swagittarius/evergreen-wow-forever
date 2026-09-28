@@ -72,6 +72,7 @@ function C.AddonOf(msg, stack)
       if name ~= SELF then return name end
     end
   end
+  if (msg or ""):find(SELF, 1, true) then return SELF end
   return "?"
 end
 
@@ -128,7 +129,9 @@ end
 ---------------------------------------------------------------------------
 -- Text
 ---------------------------------------------------------------------------
-local function clock(t) return t and os.date("%H:%M:%S", t) or "?" end
+-- WoW has no os library; its date() is the same as os.date (the tests run under plain Lua).
+local date = date or os.date
+local function clock(t) return t and date("%H:%M:%S", t) or "?" end
 
 function C.FormatEntry(e)
   local when = clock(e.first) .. (e.last ~= e.first and ("-" .. clock(e.last)) or "")
@@ -142,7 +145,7 @@ end
 function C.FormatSession(s)
   if not s then return "No earlier session." end
   local n = #s.errors
-  local out = { ("== Session #%d  %s  %s  (%d error%s) =="):format(s.id, os.date("%m-%d %H:%M", s.start or 0),
+  local out = { ("== Session #%d  %s  %s  (%d error%s) =="):format(s.id, date("%m-%d %H:%M", s.start or 0),
     s.kind, n, n == 1 and "" or "s") }
   if n == 0 then out[#out + 1] = "No errors." end
   for _, e in ipairs(s.errors) do out[#out + 1] = C.FormatEntry(e) end

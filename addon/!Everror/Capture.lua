@@ -17,6 +17,9 @@ local function errorData()
   end
   local stack = debugstack and debugstack(level) or ""
   local locals = debuglocals and debuglocals(level, true) or ""
+  -- errors in a file's main chunk (while addons load) can leave that level past the end of the
+  -- stack; take the whole stack instead (our own frames are trimmed later)
+  if stack == "" and debugstack then stack = debugstack(2) or "" end
   return stack, locals
 end
 
