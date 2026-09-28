@@ -17,8 +17,15 @@ local TINT = { 0.55, 0.75, 1.0 }   -- unexplored overlays, when tint is on
 local DB
 local hookedPins = {}
 
+-- Refreshing before the map has set up its zoom levels errors inside
+-- Blizzard's MapCanvas (ipairs on nil zoomLevels), so wait until it has.
+local function mapReady()
+  local sc = WorldMapFrame and WorldMapFrame.ScrollContainer
+  return sc and sc.zoomLevels ~= nil
+end
+
 local function refreshAll()
-  if not WorldMapFrame or not WorldMapFrame.EnumeratePinsByTemplate then return end
+  if not WorldMapFrame or not WorldMapFrame.EnumeratePinsByTemplate or not mapReady() then return end
   for pin in WorldMapFrame:EnumeratePinsByTemplate("MapExplorationPinTemplate") do
     pin:RefreshOverlays(true)
   end
@@ -117,7 +124,7 @@ local function setup()
     hookedPins.map = true
     hooksecurefunc(WorldMapFrame, "OnMapChanged", function()
       for pin in WorldMapFrame:EnumeratePinsByTemplate("MapExplorationPinTemplate") do
-        if not hookedPins[pin] then hookPin(pin); pin:RefreshOverlays(true) end
+        if not hookedPins[pin] then hookPin(pin); if mapReady() then pin:RefreshOverlays(true) end end
       end
     end)
   end
