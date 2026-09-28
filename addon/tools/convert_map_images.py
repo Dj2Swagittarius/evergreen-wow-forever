@@ -1,6 +1,8 @@
 """Convert the fan-made maps of the new WoW Forever dungeons (tools/map_sources/<JournalKey>.jpg) into
-textures the game can load from the addon folder: Evergreen/Maps/<JournalKey>.blp, 1024x1024 (WoW
+textures the game can load from the addon folder: Evergreen/Maps/<JournalKey>.tga, 1024x1024 (WoW
 textures must be power-of-two), the map scaled to 1024 wide at the top, the rest left black.
+32-bit TGA, not BLP: Pillow writes palettized BLP2 without mipmaps, and the Forever client asserts
+on those (StaticImage.cpp) and crashes when the journal shows the map.
 Prints the used width/height for Journal_Map.lua's SHIPPED_IMAGES. Run: python convert_map_images.py
 
 Maps: recreations by Santiago Reyes, Atlas de Azeroth Forever (wowhead.com screenshots)."""
@@ -16,6 +18,9 @@ for src in sorted(glob.glob(os.path.join(HERE, "map_sources", "*.jpg"))):
     w, h = SIZE, round(im.height * SIZE / im.width)
     canvas = Image.new("RGB", (SIZE, SIZE))
     canvas.paste(im.resize((w, h), Image.LANCZOS), (0, 0))
-    out = os.path.join(OUT, key + ".blp")
-    canvas.quantize(256, method=Image.Quantize.MEDIANCUT).save(out)
+    out = os.path.join(OUT, key + ".tga")
+    canvas.convert("RGBA").save(out)
+    old = os.path.join(OUT, key + ".blp")
+    if os.path.exists(old):
+        os.remove(old)  # the game would load the .blp first
     print(key, "used", w, h, "->", out, os.path.getsize(out), "bytes")
