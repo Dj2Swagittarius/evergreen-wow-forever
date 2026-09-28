@@ -91,7 +91,8 @@ end
 function C.TrimLocals(locals)
   local out, extra = {}, 0
   for _, l in ipairs(lines(locals)) do
-    if l ~= "" and not l:find("^%s") and not l:find("^}") then
+    -- skip nested table contents and Lua's internal slots ("(*temporary)", "(for state)"...)
+    if l ~= "" and not l:find("^%s") and not l:find("^}") and not l:find("^%(") then
       local name = l:match("^(.-)%s*=%s*<table>")
       if name then l = name .. " = <table>" end
       if #out < MAX_LOCAL_LINES then out[#out + 1] = cap(l) else extra = extra + 1 end

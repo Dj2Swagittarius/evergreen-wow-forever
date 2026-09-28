@@ -55,6 +55,7 @@ local long = {}
 for i = 1, 60 do long[i] = "[Interface/AddOns/X/x.lua]:" .. i .. ": in function 'f'" end
 check(select(2, C.TrimStack(table.concat(long, "\n")):gsub("\n", "")) == 19 + 1, "stack capped at 20 lines (+ note)")
 check(#C.TrimLocals("x = \"" .. string.rep("a", 400) .. "\"") <= 163, "local line capped")
+check(C.TrimLocals("i=1\n(*temporary)=nil\n(for state) = <table>\nmsg=\"x\"") == "i=1\nmsg=\"x\"", "internal slots dropped")
 
 -- addon attribution
 check(C.AddonOf("Interface/AddOns/Everbid/Craft.lua:31: attempt", "") == "Everbid", "addon from message")
