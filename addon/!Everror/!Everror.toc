@@ -1,0 +1,10 @@
+## Interface: 16001, 11509
+## Title: |cffff5555!|rEverror
+## Notes: Lua errors grouped per login/reload, one-click copy, and saved for Claude to read. /err
+## Author: DJ
+## Version: 0.1.0
+## SavedVariables: EverrorDB
+
+Core.lua
+Capture.lua
+UI.lua

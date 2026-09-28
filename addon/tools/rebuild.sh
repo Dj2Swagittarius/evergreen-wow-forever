@@ -50,6 +50,7 @@ for c in WARRIOR HUNTER ROGUE DRUID MAGE; do run Skyborne $c auto Alliance; done
 runs=$((runs+1)); if ! BUFFS=1 JOURNAL=1 $LJ test_harness.lua ../Evergreen Scourge PALADIN | grep -q "^OK journal"; then fails=$((fails+1)); echo "FAIL journal"; fi
 runs=$((runs+1)); if ! BUFFS=1 EVERPANEL=1 $LJ test_harness.lua ../Evergreen Scourge PALADIN | grep -q "^OK everpanel"; then fails=$((fails+1)); echo "FAIL everpanel"; fi
 runs=$((runs+1)); if ! TRACKER=1 $LJ test_harness.lua ../Evergreen Scourge PALADIN | grep -q "^OK tracker"; then fails=$((fails+1)); echo "FAIL tracker"; fi
+runs=$((runs+1)); if ! $LJ test_everror.lua | grep -q "0 failed"; then fails=$((fails+1)); echo "FAIL everror"; fi
 echo "test runs: $runs, failures: $fails"
 [ "$fails" = 0 ] || exit 1
 
@@ -57,4 +58,6 @@ if [ "$1" = "--deploy" ]; then
   if tasklist 2>/dev/null | grep -qi "WowB.exe"; then echo "== deploy: beta client is running; files copied, restart the game to load new files"; fi
   cp -r ../Evergreen/. "$BETA/"
   echo "== deployed to $BETA"
+  mkdir -p "$BETA/../!Everror" && cp ../'!Everror'/*.toc ../'!Everror'/*.lua "$BETA/../!Everror/"
+  echo "== deployed !Everror"
 fi
