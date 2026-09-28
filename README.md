@@ -28,8 +28,8 @@ Copy `addon/Evergreen` into `World of Warcraft\_classic_beta_\Interface\AddOns\`
 
 The 20–60 halves are shared per faction (Horde pages reuse the Tauren brackets, Alliance pages the Human ones) with the travel and hearth lines rewritten per race. Anything not re-checked against a source carries a `verify` tag; the Skyborne pages and every Forever-only class are beta or unpublished data and say so.
 - `docs/research/` — raw research notes per race/class that the pages were built from.
-- `addon/Evergreen/` — in-game companion addon (WoW Forever beta + Classic Era). Race-agnostic engine with a route registry; one route per race in `Routes_<Race>.lua` (Undead, Tauren, Orc, Troll, Human, Dwarf, Gnome, Night Elf, Skyborne Horde and Alliance), picked by race then faction. Steps may be class-gated (`cls="DRUID"`); the engine shows only the player's class. Tracks quests from your log, shows the next step, sets an in-world waypoint. See `addon/README.md`.
-- `addon/Evergreen/Modules/` — the other modules in the same addon: Buffs (formerly Everbuff), Move (formerly EverMove), Reveal (world map) and Journal (dungeon journal).
+- `addon/Evergreen/` + `addon/Evergreen_*/` — in-game companion addon (WoW Forever beta + Classic Era): a core and one addon per module, listed under Evergreen in the AddOns list. The guide (`Evergreen_Guide`) is a race-agnostic engine with a route registry; one route per race in `Routes_<Race>.lua` (Undead, Tauren, Orc, Troll, Human, Dwarf, Gnome, Night Elf, Skyborne Horde and Alliance), picked by race then faction. Steps may be class-gated (`cls="DRUID"`); the engine shows only the player's class. Tracks quests from your log, shows the next step, sets an in-world waypoint. See `addon/README.md`.
+- `addon/Evergreen_Journal/`, `_Buffs/`, `_Move/`, `_Reveal/`, `_Everpanel/`, `_Trackers/` — the other modules: dungeon journal, buff button (formerly Everbuff), window mover (formerly EverMove), world map reveal, info bar, XP/gold trackers.
 - `addon/tools/` — the data pipeline: route optimizer, route audit against Questie, dungeon journal and map-reveal data builders, and a headless test harness (`rebuild.sh` runs all of it).
 - `docs/superpowers/specs/` — design notes and assumptions.
 
@@ -49,7 +49,7 @@ Quest names use `<span class="q">`, coordinates use `<span class="c">`, and anyt
 Evergreen and the guide pages are released under the **GNU General Public License, version 2 or (at your option) any later version** (`LICENSE`).
 
 Data sources, used with thanks:
-- **AtlasLootClassic** (GPL-2, https://github.com/Hoizame/AtlasLootClassic): boss loot tables in `addon/Evergreen/Modules/Journal_Data.lua`. This is why the project is GPL-2 compatible.
+- **AtlasLootClassic** (GPL-2, https://github.com/Hoizame/AtlasLootClassic): boss loot tables in `addon/Evergreen_Journal/Journal_Data.lua`. This is why the project is GPL-2 compatible.
 - **Questie** (https://github.com/Questie/Questie): quest ids, NPC names and spawn coordinates, dungeon entrances and quest rewards were read from its database to generate `QuestIDs.lua`, `Routes_Questie_Fixes.lua` and the journal's quest lists. No Questie code is included.
 - **WoWDBDefs** (https://github.com/wowdev/WoWDBDefs): DB2 layouts used by `addon/tools/wdc5.py`.
 - The WoW Forever client's own data tables (world map overlays, map positions) and Wowhead's Forever database (new dungeons, Forever quests) for Forever-only content.

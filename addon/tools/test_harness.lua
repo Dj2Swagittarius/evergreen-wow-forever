@@ -124,15 +124,25 @@ setmetatable(_G, { __index = function(_, k)
 end })
 
 -- ---------------------------------------------------------------- load the addon
-local ns = {}
-local toc = assert(io.open(addonDir .. "/Evergreen.toc")):read("*a")
-for line in toc:gmatch("[^\r\n]+") do
-  if line:match("%.lua$") and not line:match("^#") then
-    local path = addonDir .. "/" .. line:gsub("\\", "/")
-    local chunk, err = loadfile(path)
-    assert(chunk, err)
-    local ok, e = pcall(chunk, "Evergreen", ns)
-    if not ok then error("loading " .. line .. ": " .. tostring(e)) end
+-- The core (addonDir, e.g. ../Evergreen) and its module addons beside it, in dependency order
+-- (their TOCs' Dependencies/OptionalDeps). Each addon gets its own private table, as in game.
+local ADDONS = { "Evergreen", "Evergreen_Guide", "Evergreen_Journal", "Evergreen_Buffs", "Evergreen_Move",
+  "Evergreen_Reveal", "Evergreen_Everpanel", "Evergreen_Trackers" }
+local rootDir = addonDir:gsub("[/\\]+$", ""):match("^(.*)[/\\][^/\\]+$") or "."
+local ns
+for _, name in ipairs(ADDONS) do
+  local dir = name == "Evergreen" and addonDir or (rootDir .. "/" .. name)
+  local toc = assert(io.open(dir .. "/" .. name .. ".toc"), "missing " .. dir .. "/" .. name .. ".toc"):read("*a")
+  local private = {}
+  if name == "Evergreen" then ns = private end
+  for line in toc:gmatch("[^\r\n]+") do
+    if line:match("%.lua$") and not line:match("^#") then
+      local path = dir .. "/" .. line:gsub("\\", "/")
+      local chunk, err = loadfile(path)
+      assert(chunk, err)
+      local ok, e = pcall(chunk, name, private)
+      if not ok then error("loading " .. name .. "/" .. line .. ": " .. tostring(e)) end
+    end
   end
 end
 local function fire(ev, ...)
@@ -145,12 +155,12 @@ local function fire(ev, ...)
   flush()
 end
 local TRACK = os.getenv("TRACKER") ~= nil
-EvergreenDB = { modules = { buffs = (os.getenv("BUFFS") ~= nil), move = false, reveal = false,
+EvergreenDB = { split = true, modules = { buffs = (os.getenv("BUFFS") ~= nil), move = false, reveal = false,
   everpanel = (os.getenv("EVERPANEL") ~= nil) or TRACK, xp = TRACK, gold = TRACK } }  -- guide (+ journal) always
 bit = require("bit")
 WorldMapFrame = newFrame("WorldMapFrame")
 InCombatLockdown = function() return false end
-fire("ADDON_LOADED", "Evergreen")
+for _, name in ipairs(ADDONS) do fire("ADDON_LOADED", name) end
 fire("PLAYER_LOGIN")
 fire("PLAYER_ENTERING_WORLD")
 if ROUTE_ID then SlashCmdList.EVERGREEN("route " .. ROUTE_ID) end

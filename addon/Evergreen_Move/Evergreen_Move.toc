@@ -1,0 +1,10 @@
+## Interface: 16001, 11509
+## Title: |cff7fd35eEvergreen|r - Move
+## Notes: Drag the map, character sheet, bags and other windows anywhere. /emove
+## Author: DJ
+## Version: 0.7.0
+## Dependencies: Evergreen
+## Group: Evergreen
+
+Link.lua
+Move.lua

@@ -1,0 +1,11 @@
+## Interface: 16001, 11509
+## Title: |cff7fd35eEvergreen|r - Map Reveal
+## Notes: Shows unexplored areas on the world map. /eg reveal
+## Author: DJ
+## Version: 0.7.0
+## Dependencies: Evergreen
+## Group: Evergreen
+
+Link.lua
+Reveal_Data.lua
+Reveal.lua

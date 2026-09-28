@@ -1,0 +1,10 @@
+## Interface: 16001, 11509
+## Title: |cff7fd35eEvergreen|r - Buffs
+## Notes: Scans nearby players for missing buffs; one button casts the next. /eb
+## Author: DJ
+## Version: 0.7.0
+## Dependencies: Evergreen
+## Group: Evergreen
+
+Link.lua
+Buffs.lua

@@ -2,7 +2,7 @@
 -- docs/research/forever-dungeons.md (Wowhead Forever database + beta guides, 2026-09-26).
 -- Item and NPC ids are datamined; boss -> loot and boss order come from beta guides.
 -- 32 of the item ids were also checked against the beta client's own hotfix item data (all match).
--- Merged into Evergreen/Modules/Journal_Data.lua by build_journal.lua (run rebuild.sh).
+-- Merged into Evergreen_Journal/Journal_Data.lua by build_journal.lua (run rebuild.sh).
 -- Schema: same as a generated instance, plus note = shown in the journal header.
 -- uiMaps: Dun Morogh 1426, Ironforge 1455, Tirisfal 1420, Silverpine 1421, Undercity 1458,
 -- Stormwind 1453, Hillsbrad 1424, Wetlands 1437, Alterac 1416, Stranglethorn 1434,

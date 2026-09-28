@@ -1,9 +1,9 @@
--- Evergreen module registry. Loaded first (see Evergreen.toc).
+-- Evergreen core: the shared skin, the namespace every Evergreen module addon shares, and /eg.
 --
--- Evergreen is one addon made of modules: the leveling guide, Everbuff (buff button),
--- EverMove (window mover) and Reveal (world map fog removal). Each module checks
--- ns.ModuleEnabled(id) when the addon loads and stays dormant when switched off, so
--- turning one on or off takes effect after a /reload. Settings: EvergreenDB.modules.
+-- The modules are separate addons listed under Evergreen in the AddOns list (Evergreen_Guide,
+-- Evergreen_Journal, Evergreen_Buffs, Evergreen_Move, Evergreen_Reveal, Evergreen_Everpanel,
+-- Evergreen_Trackers), each switched on or off there. They share this addon's namespace through
+-- EvergreenNS and its saved variables (EvergreenDB...), which this addon declares.
 
 local ADDON, ns = ...
 
@@ -249,89 +249,106 @@ function Skin.RowHighlight(r)
   return h
 end
 
+-- ------------------------------------------------------------------ modules (child addons)
+-- Each module is its own addon (Evergreen_Guide, Evergreen_Journal...) listed under Evergreen in the
+-- AddOns list, so it is switched on or off there. EvergreenDB.modules can still switch a module off
+-- (the test harness uses it); the first load of the split version clears old flags from the
+-- in-game /eg module toggles so the AddOns list is the only switch players see.
 ns.MODULES = {
-  { id = "guide",  name = "Guide",  slash = "/eg",    desc = "Leveling route, waypoint arrow, quest tracking" },
-  { id = "buffs",  name = "Buffs",  slash = "/eb",    desc = "Scans nearby players for missing buffs; one button casts the next" },
-  { id = "move",   name = "Move",   slash = "/emove", desc = "Drag the map, character sheet, bags and other windows anywhere" },
-  { id = "reveal", name = "Reveal", slash = "/eg reveal", desc = "Shows unexplored areas on the world map (WoW Forever map data)" },
-  { id = "journal", name = "Journal", slash = "/ej", desc = "Dungeon journal: bosses, loot, dungeon quests, entrances, map markers" },
-  { id = "everpanel", name = "Everpanel", slash = "/eg panel", desc = "Titan Panel-style info bar across the top of the screen" },
-  { id = "xp",     name = "XP tracker",   slash = "/eg track", desc = "XP per hour, time to level, XP by source, time per level" },
-  { id = "gold",   name = "Gold tracker", slash = "/eg track", desc = "Gold per hour, income and spending by source" },
+  { id = "guide",     addon = "Evergreen_Guide",     name = "Guide",        slash = "/eg",        desc = "Leveling route, waypoint arrow, quest tracking" },
+  { id = "journal",   addon = "Evergreen_Journal",   name = "Journal",      slash = "/ej",        desc = "Dungeon journal: bosses, loot, dungeon quests, entrances, map markers" },
+  { id = "buffs",     addon = "Evergreen_Buffs",     name = "Buffs",        slash = "/eb",        desc = "Scans nearby players for missing buffs; one button casts the next" },
+  { id = "move",      addon = "Evergreen_Move",      name = "Move",         slash = "/emove",     desc = "Drag the map, character sheet, bags and other windows anywhere" },
+  { id = "reveal",    addon = "Evergreen_Reveal",    name = "Map Reveal",   slash = "/eg reveal", desc = "Shows unexplored areas on the world map (WoW Forever map data)" },
+  { id = "everpanel", addon = "Evergreen_Everpanel", name = "Everpanel",    slash = "/eg panel",  desc = "Titan Panel-style info bar across the top of the screen" },
+  { id = "xp",        addon = "Evergreen_Trackers",  name = "XP tracker",   slash = "/eg track",  desc = "XP per hour, time to level, XP by source, time per level" },
+  { id = "gold",      addon = "Evergreen_Trackers",  name = "Gold tracker", slash = "/eg track",  desc = "Gold per hour, income and spending by source" },
 }
 
 local byId = {}
 for _, m in ipairs(ns.MODULES) do byId[m.id] = m end
 
+-- Loaded (or loading), or enabled for this character and so about to load. Clients without the
+-- C_AddOns API (the test harness) count every module as present.
+local function addonOn(name)
+  local A = _G.C_AddOns
+  if not A then return true end
+  if A.IsAddOnLoaded and A.IsAddOnLoaded(name) then return true end
+  if A.GetAddOnEnableState then
+    local ok, state = pcall(A.GetAddOnEnableState, name, UnitName and UnitName("player") or nil)
+    if ok and state ~= nil then return (tonumber(state) or 0) > 0 end
+  end
+  return true
+end
+
 function ns.ModuleEnabled(id)
   local db = EvergreenDB and EvergreenDB.modules
-  if db and db[id] ~= nil then return db[id] end
-  return true   -- every module is on unless switched off
+  if db and db[id] == false then return false end
+  local m = byId[id]
+  return not m or addonOn(m.addon)
 end
 
 local function listModules()
-  print(HEX.green .. "Evergreen modules:|r")
+  print(HEX.green .. "Evergreen modules|r (turn each on or off in the AddOns list, under Evergreen):")
   for _, m in ipairs(ns.MODULES) do
     local on = ns.ModuleEnabled(m.id)
-    print(string.format("  %s%-6s|r %s  %s%s|r  %s", on and HEX.green or HEX.red, on and "on" or "off",
-      m.id, HEX.muted, m.slash, m.desc))
+    print(string.format("  %s%-3s|r %s  %s%s|r  %s", on and HEX.green or HEX.red, on and "on" or "off",
+      m.name, HEX.muted, m.slash, m.desc))
   end
-  print(HEX.muted .. "  /eg module <id> on|off, then /reload.|r")
 end
 
-local function setModule(id, state)
-  local m = byId[id or ""]
-  if not m then print(HEX.red .. "Evergreen:|r no module '" .. tostring(id) .. "'."); listModules(); return end
-  local on
-  if state == "on" then on = true elseif state == "off" then on = false else on = not ns.ModuleEnabled(id) end
-  EvergreenDB.modules[id] = on
-  print(HEX.green .. "Evergreen:|r " .. m.name .. " module " .. (on and "on" or "off") .. ". " .. HEX.ink .. "/reload|r to apply.")
+local function offMessage(id)
+  local m = byId[id]
+  print(HEX.green .. "Evergreen:|r " .. m.name .. " is off. Turn on \"Evergreen - " ..
+    (m.addon:gsub("^Evergreen_", "")) .. "\" in the AddOns list, then /reload.")
 end
 
--- Wrap the guide's /eg handler so module commands work even when the guide is off.
-local function wrapSlash()
-  local guide = SlashCmdList["EVERGREEN"]
-  SlashCmdList["EVERGREEN"] = function(msg)
-    local m = (msg or ""):lower():gsub("^%s+", ""):gsub("%s+$", "")
-    local cmd, rest = m:match("^(%S+)%s*(.*)$")
-    if cmd == "modules" then
-      listModules()
-    elseif cmd == "module" then
-      local id, state = rest:match("^(%S+)%s*(%S*)$")
-      setModule(id, state)
-    elseif cmd == "minimap" or cmd == "icons" then
-      EvergreenDB.hideMinimap = EvergreenDB.hideMinimap or {}
-      local id = rest ~= "" and rest or nil
-      for bid, btn in pairs(Skin.minimapButtons) do
-        if not id or id == bid or id == "all" then
-          EvergreenDB.hideMinimap[bid] = not EvergreenDB.hideMinimap[bid] or nil
-          btn:SetShown(not EvergreenDB.hideMinimap[bid])
-        end
+-- /eg belongs to the core so module commands work whichever modules are loaded; everything else
+-- goes to the guide (Evergreen_Guide sets ns.GuideSlash).
+SLASH_EVERGREEN1 = "/eg"
+SLASH_EVERGREEN2 = "/evergreen"
+SlashCmdList["EVERGREEN"] = function(msg)
+  local m = (msg or ""):lower():gsub("^%s+", ""):gsub("%s+$", "")
+  local cmd, rest = m:match("^(%S+)%s*(.*)$")
+  if cmd == "modules" then
+    listModules()
+  elseif cmd == "module" then
+    print(HEX.green .. "Evergreen:|r modules are now separate addons: turn them on or off in the AddOns list, under Evergreen.")
+    listModules()
+  elseif cmd == "minimap" or cmd == "icons" then
+    EvergreenDB.hideMinimap = EvergreenDB.hideMinimap or {}
+    local id = rest ~= "" and rest or nil
+    for bid, btn in pairs(Skin.minimapButtons) do
+      if not id or id == bid or id == "all" then
+        EvergreenDB.hideMinimap[bid] = not EvergreenDB.hideMinimap[bid] or nil
+        btn:SetShown(not EvergreenDB.hideMinimap[bid])
       end
-      local st = {}
-      for bid in pairs(Skin.minimapButtons) do st[#st + 1] = bid .. (EvergreenDB.hideMinimap[bid] and " (hidden)" or "") end
-      table.sort(st)
-      print(HEX.green .. "Evergreen:|r minimap buttons: " .. table.concat(st, ", ") .. ". /eg minimap <guide|journal|buffs> toggles one.")
-    elseif cmd == "journal" or cmd == "ej" then
-      if SlashCmdList.EVERGREENJOURNAL then SlashCmdList.EVERGREENJOURNAL(rest) end
-    elseif cmd == "reveal" then
-      if ns.Reveal then ns.Reveal.Slash(rest) else print(HEX.green .. "Evergreen:|r Reveal module is off. /eg module reveal on, then /reload.") end
-    elseif cmd == "panel" then
-      if ns.Everpanel and not ns.Everpanel.disabled and ns.Everpanel.bar then ns.Everpanel.Slash(rest)
-      else print(HEX.green .. "Evergreen:|r Everpanel module is off. /eg module everpanel on, then /reload.") end
-    elseif cmd == "track" then
-      if ns.Tracker and ns.Tracker.enabled then ns.Tracker.Slash(rest)
-      else print(HEX.green .. "Evergreen:|r XP and gold trackers are off. /eg module xp on (or gold), then /reload.") end
-    elseif not ns.ModuleEnabled("guide") then
-      print(HEX.green .. "Evergreen:|r guide module is off. /eg modules lists modules; /eg module guide on, then /reload.")
-    else
-      guide(msg)
-      if m == "help" or m == "?" then
-        print(HEX.green .. "Modules|r: /eg modules, /eg module <id> on|off, /eg reveal, /eg panel, /eg track, /ej, /eb, /emove")
-      end
+    end
+    local st = {}
+    for bid in pairs(Skin.minimapButtons) do st[#st + 1] = bid .. (EvergreenDB.hideMinimap[bid] and " (hidden)" or "") end
+    table.sort(st)
+    print(HEX.green .. "Evergreen:|r minimap buttons: " .. table.concat(st, ", ") .. ". /eg minimap <guide|journal|buffs> toggles one.")
+  elseif cmd == "journal" or cmd == "ej" then
+    if SlashCmdList.EVERGREENJOURNAL then SlashCmdList.EVERGREENJOURNAL(rest) else offMessage("journal") end
+  elseif cmd == "reveal" then
+    if ns.Reveal then ns.Reveal.Slash(rest) else offMessage("reveal") end
+  elseif cmd == "panel" then
+    if ns.Everpanel and not ns.Everpanel.disabled and ns.Everpanel.bar then ns.Everpanel.Slash(rest) else offMessage("everpanel") end
+  elseif cmd == "track" then
+    if ns.Tracker and ns.Tracker.enabled then ns.Tracker.Slash(rest) else offMessage("xp") end
+  elseif not ns.GuideSlash or not ns.ModuleEnabled("guide") then
+    offMessage("guide")
+    print(HEX.muted .. "  /eg modules lists the Evergreen modules.|r")
+  else
+    ns.GuideSlash(msg)
+    if m == "help" or m == "?" then
+      print(HEX.green .. "Modules|r: /eg modules, /eg reveal, /eg panel, /eg track, /ej, /eb, /emove")
     end
   end
 end
+
+-- Child addons reach the core's namespace through this global (see Link.lua in each of them).
+EvergreenNS = ns
 
 local ev = CreateFrame("Frame")
 ev:RegisterEvent("ADDON_LOADED")
@@ -339,6 +356,9 @@ ev:SetScript("OnEvent", function(self, _, name)
   if name ~= ADDON then return end
   self:UnregisterEvent("ADDON_LOADED")
   EvergreenDB = EvergreenDB or {}
+  if not EvergreenDB.split then
+    EvergreenDB.modules = {}   -- old in-game toggles; the AddOns list switches modules now
+    EvergreenDB.split = true
+  end
   EvergreenDB.modules = EvergreenDB.modules or {}
-  wrapSlash()
 end)

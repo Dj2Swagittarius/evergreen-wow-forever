@@ -1,0 +1,15 @@
+## Interface: 16001, 11509
+## Title: |cff7fd35eEvergreen|r - Journal
+## Notes: Dungeon journal: bosses, loot, dungeon quests, entrances, maps. /ej
+## Author: DJ
+## Version: 0.7.0
+## Dependencies: Evergreen
+## Group: Evergreen
+## OptionalDeps: Evergreen_Guide
+
+Link.lua
+Journal_Data.lua
+Journal.lua
+Journal_Boss.lua
+Journal_MapData.lua
+Journal_Map.lua

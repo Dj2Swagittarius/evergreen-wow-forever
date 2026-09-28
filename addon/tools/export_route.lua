@@ -47,7 +47,7 @@ local function objSpawns(id, out) local o = objects[id]; if o then spawnsOf(o[4]
 -- ---------------------------------------------------------------- the route
 local ns = {}
 CopyTable = function(t) return t end
-local toc = assert(io.open(addonDir .. "/Evergreen.toc")):read("*a")
+local toc = assert(io.open(addonDir .. "/Evergreen_Guide.toc")):read("*a")
 for file in toc:gmatch("\n(Routes_[%w_]+%.lua)") do end
 local files = { "Data.lua" }
 for file in toc:gmatch("(Routes_[%w_]+%.lua)") do if not file:match("_Opt%.lua$") then files[#files + 1] = file end end

@@ -1,4 +1,4 @@
--- Build Evergreen/Modules/Journal_Data.lua: every Classic dungeon and raid with its bosses, their loot,
+-- Build Evergreen_Journal/Journal_Data.lua: every Classic dungeon and raid with its bosses, their loot,
 -- and every quest that belongs to it (giver, turn-in, level, prerequisites, rewards).
 --
 -- Sources (both open, both read locally):

@@ -1,4 +1,4 @@
-"""Build Evergreen/Modules/Journal_MapData.lua: the dungeon map tiles the WoW Forever client ships.
+"""Build Evergreen_Journal/Journal_MapData.lua: the dungeon map tiles the WoW Forever client ships.
 
 The Forever client has no dungeon uiMaps (its UiMap table only holds the world, continents and zones),
 but the classic dungeon map artwork is still in its data: interface/worldmap/<folder>/<folder><floor>_<n>.blp,
@@ -11,7 +11,7 @@ sys.path.insert(0, r"E:\Project HearthBreak\tools\forever-port\casc")
 import forever_casc
 
 LISTFILE = r"E:\Project HearthBreak\tools\forever-port\MultiConverter-bin\listfile.csv"
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "Evergreen", "Modules", "Journal_MapData.lua")
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "Evergreen_Journal", "Journal_MapData.lua")
 
 # journal key -> (map folder, floors to show, floor labels). None = every floor the client has.
 # Scarlet Monastery floors are its wings in the classic order (Graveyard, Library, Armory, Cathedral).

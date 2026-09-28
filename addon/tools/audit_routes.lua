@@ -46,7 +46,7 @@ end
 -- ---------------------------------------------------------------- load the addon's routes
 local ns = {}
 CopyTable = function(t) return t end
-local toc = assert(io.open(addonDir .. "/Evergreen.toc")):read("*a")
+local toc = assert(io.open(addonDir .. "/Evergreen_Guide.toc")):read("*a")
 local files = { "Data.lua" }
 for file in toc:gmatch("(Routes_[%w_]+%.lua)") do files[#files + 1] = file end
 files[#files + 1] = "QuestIDs.lua"

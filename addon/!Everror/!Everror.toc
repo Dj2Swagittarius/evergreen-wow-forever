@@ -4,6 +4,7 @@
 ## Author: DJ
 ## Version: 0.1.0
 ## SavedVariables: EverrorDB
+## Group: Evergreen
 
 Core.lua
 Capture.lua

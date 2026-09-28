@@ -1,0 +1,16 @@
+## Interface: 16001, 11509
+## Title: |cff7fd35eEvergreen|r - Everpanel
+## Notes: Info bar across the top of the screen with plugins. /eg panel
+## Author: DJ
+## Version: 0.7.0
+## Dependencies: Evergreen
+## Group: Evergreen
+## OptionalDeps: Evergreen_Guide, Evergreen_Journal, Evergreen_Buffs
+
+Link.lua
+Everpanel.lua
+Plugins\Basics.lua
+Plugins\Gear.lua
+Plugins\Evergreen.lua
+Plugins\Social.lua
+Plugins\LDB.lua

@@ -17,7 +17,7 @@ cheapest insertion into the common order.
 Writes Routes_<Name>_Opt.lua (a separate, selectable route) and prints a comparison with the
 hand-made order under the same model. Usage:
 
-  python route_optimizer.py forsaken_b1-3.json --out ../Evergreen/Routes_Forsaken_Opt.lua
+  python route_optimizer.py forsaken_b1-3.json --out ../Evergreen_Guide/Routes_Forsaken_Opt.lua
 """
 import argparse, json, math, os, random, re, copy
 

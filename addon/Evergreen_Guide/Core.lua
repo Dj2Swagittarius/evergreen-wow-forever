@@ -1269,9 +1269,8 @@ FR:SetScript("OnEvent", function(self, event, a1, a2)
 end)
 
 -- ------------------------------------------------------------------ slash commands
-SLASH_EVERGREEN1 = "/eg"
-SLASH_EVERGREEN2 = "/evergreen"
-SlashCmdList["EVERGREEN"] = function(msg)
+-- /eg itself is registered by the Evergreen core (Modules.lua), which passes guide commands here.
+ns.GuideSlash = function(msg)
   msg = (msg or ""):lower():gsub("^%s+", ""):gsub("%s+$", "")
   if msg == "" or msg == "show" or msg == "toggle" then
     if UI.main:IsShown() then UI.main:Hide() else UI.main:Show() end

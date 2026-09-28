@@ -1,0 +1,25 @@
+## Interface: 16001, 11509
+## Title: |cff7fd35eEvergreen|r - Guide
+## Notes: Leveling route for every Forever race: steps, waypoint arrow, quest tracking. /eg
+## Author: DJ
+## Version: 0.7.0
+## Dependencies: Evergreen
+## Group: Evergreen
+## OptionalDeps: TomTom
+
+Link.lua
+Data.lua
+Routes_Tauren.lua
+Routes_Forsaken_Class.lua
+Routes_Orc.lua
+Routes_Troll.lua
+Routes_Human.lua
+Routes_Dwarf.lua
+Routes_Gnome.lua
+Routes_NightElf.lua
+Routes_Skyborne.lua
+Routes_Forever_Combos.lua
+Routes_Questie_Fixes.lua
+Routes_Forsaken_Opt.lua
+QuestIDs.lua
+Core.lua
