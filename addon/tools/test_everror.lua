@@ -172,6 +172,12 @@ do
   SlashCmdList.EVERROR("")
   check(shown[_G.EverrorFrame] == true, "/err opens the window")
   SlashCmdList.EVERROR("all")
+  cvars.scriptErrors = "1" -- account settings synced from the server turn it back on
+  fire("CVAR_UPDATE", "scriptErrors")
+  check(cvars.scriptErrors == "0", "popup setting re-applied after server sync")
+  cvars.scriptErrors = "1"
+  fire("VARIABLES_LOADED")
+  check(cvars.scriptErrors == "0", "popup setting re-applied at VARIABLES_LOADED")
   SlashCmdList.EVERROR("popup")
   check(cvars.scriptErrors == "1" and not sns.db.popupOff, "/err popup restores Blizzard popup")
   SlashCmdList.EVERROR("clear")

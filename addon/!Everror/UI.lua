@@ -68,7 +68,8 @@ local function buildWindow()
   box:SetMultiLine(true)
   box:SetAutoFocus(false)
   box:SetFontObject(ChatFontNormal)
-  box:SetWidth(660)
+  -- a scroll child with no height is never drawn
+  box:SetSize(660, 380)
   box:SetScript("OnEscapePressed", function() win:Hide() end)
   -- read-only: any typing puts the text back
   box:SetScript("OnTextChanged", function(self, user)
@@ -185,6 +186,17 @@ function ns.OnLoaded()
   applyPopup()
 end
 
+-- scriptErrors is an account setting synced from the server after addons load, which turns the
+-- popup back on; apply again once settings are in and whenever the setting changes.
+local cv = CreateFrame("Frame")
+cv:RegisterEvent("VARIABLES_LOADED")
+cv:RegisterEvent("PLAYER_LOGIN")
+cv:RegisterEvent("CVAR_UPDATE")
+cv:SetScript("OnEvent", function(_, event, name)
+  if not ns.db then return end
+  if event ~= "CVAR_UPDATE" or (type(name) == "string" and name:lower() == "scripterrors") then applyPopup() end
+end)
+
 SLASH_EVERROR1, SLASH_EVERROR2 = "/err", "/everror"
 SlashCmdList.EVERROR = function(msg)
   msg = (msg or ""):lower():match("^%s*(.-)%s*$")
@@ -198,7 +210,8 @@ SlashCmdList.EVERROR = function(msg)
     applyPopup()
     say("Blizzard's error popup " .. (ns.db.popupOff and "off (errors go to the ! button)." or "back on."))
   elseif msg == "test" then
-    error("Everror test error")
+    -- thrown on the next frame: an error inside the chat box's send handler leaves the box stuck open
+    C_Timer.After(0, function() error("Everror test error") end)
   else
     say("/err - copy window  |  /err last, /err all  |  /err clear  |  /err popup (Blizzard popup on/off)  |  /err test")
   end
