@@ -69,6 +69,72 @@ function Skin.Text(parent, fontObject, justify, layer)
   return fs
 end
 
+-- ------------------------------------------------------------------ Evergreen Grove art
+-- Our own painted pieces on top of the Forever frame (art/concepts holds the sources):
+-- the pine medallion in every portrait, a wooden plank sign with pine boughs behind the title,
+-- and dark bark behind the window body and every inset. All power-of-two TGAs in Evergreen\Art.
+local ART = "Interface\\AddOns\\Evergreen\\Art\\"
+Skin.ART = { emblem = ART .. "emblem", plank = ART .. "plank", bark = ART .. "bark" }
+-- painted module icons (minimap buttons), by module id
+Skin.ICONS = {}
+for _, id in ipairs({ "guide", "journal", "buffs", "professions", "farming" }) do Skin.ICONS[id] = ART .. "icon_" .. id end
+-- pine-green accents (headings stay Blizzard gold)
+Skin.HEX.pine = "|cff7fd35e"
+Skin.PINE = { 0.50, 0.83, 0.37 }
+
+-- bark tiled over a region, under the content
+local function barkFill(f, alpha, l, t, r, b)
+  if type(f.CreateTexture) ~= "function" then return end
+  local tex = f:CreateTexture(nil, "BACKGROUND", nil, 1)
+  if type(tex) ~= "table" then return end
+  tex:SetTexture(Skin.ART.bark, "REPEAT", "REPEAT")
+  if tex.SetHorizTile then tex:SetHorizTile(true); tex:SetVertTile(true) end
+  tex:SetPoint("TOPLEFT", l or 3, t or -3)
+  tex:SetPoint("BOTTOMRIGHT", r or -3, b or 3)
+  tex:SetAlpha(alpha or 0.9)
+  return tex
+end
+Skin.BarkFill = barkFill
+
+-- The plank sign: left boughs | plain wood (stretched) | right boughs, cut from the 512x128 art
+-- (content spans x 48..464; plain wood between 210 and 300). Sits over the top edge of the window
+-- with the title written on it.
+local PLANK_H = 34
+local function plankSign(f, title)
+  local sign = CreateFrame("Frame", nil, f)
+  if type(sign) ~= "table" or type(sign.CreateTexture) ~= "function" then return end
+  sign:SetHeight(PLANK_H)
+  sign:SetPoint("TOP", f, "TOP", 10, 12)
+  if sign.SetFrameLevel and f.GetFrameLevel then sign:SetFrameLevel((f:GetFrameLevel() or 1) + 20) end
+  local s = PLANK_H / 128
+  local function part(x0, x1)
+    local t = sign:CreateTexture(nil, "ARTWORK")
+    if type(t) ~= "table" then return nil, 0 end
+    t:SetTexture(Skin.ART.plank)
+    t:SetTexCoord(x0 / 512, x1 / 512, 0, 1)
+    t:SetHeight(PLANK_H)
+    return t, (x1 - x0) * s
+  end
+  local left, lw = part(48, 210)
+  local right, rw = part(300, 464)
+  local mid = part(210, 300)
+  if not (left and right and mid) then return end
+  left:SetPoint("LEFT"); left:SetWidth(lw)
+  right:SetPoint("RIGHT"); right:SetWidth(rw)
+  mid:SetPoint("LEFT", left, "RIGHT"); mid:SetPoint("RIGHT", right, "LEFT")
+  sign.text = Skin.Text(sign, "GameFontNormal", "CENTER", "OVERLAY")
+  sign.text:SetPoint("CENTER", 0, 1)
+  if sign.text.SetShadowOffset then sign.text:SetShadowOffset(1, -1) end
+  function sign.SetTitle(self, t)
+    self.text:SetText(t or "")
+    local tw = (self.text.GetStringWidth and self.text:GetStringWidth()) or 100
+    if type(tw) ~= "number" then tw = 100 end
+    self:SetWidth(math.max(lw + rw + 40, tw + lw + rw - 30))
+  end
+  sign:SetTitle(title)
+  return sign
+end
+
 -- Main window: portrait frame with title bar and close button. Draggable by its title area.
 function Skin.Window(name, w, h, title, icon, onMoved)
   local f, t = make("Frame", name, UIParent, { "PortraitFrameTemplate", "BackdropTemplate" })
@@ -82,8 +148,21 @@ function Skin.Window(name, w, h, title, icon, onMoved)
   f:SetScript("OnDragStop", function(s) s:StopMovingOrSizing(); if onMoved then onMoved(s) end end)
   f.skinned = t == "PortraitFrameTemplate"
   if f.skinned then
-    if f.SetTitle then f:SetTitle(title) end
-    if icon and f.SetPortraitToAsset then f:SetPortraitToAsset(icon) end
+    -- Grove: our pine medallion in the portrait (the module icon only if the art is missing),
+    -- bark under the body, the title on a plank sign instead of the plain title bar text
+    if f.SetPortraitToAsset then
+      if not pcall(f.SetPortraitToAsset, f, Skin.ART.emblem) and icon then f:SetPortraitToAsset(icon) end
+    end
+    barkFill(f, 0.55, 2, -21, -2, 2)
+    local sign = plankSign(f, title)
+    if sign then
+      f.sign = sign
+      local blizzSetTitle = f.SetTitle
+      if blizzSetTitle then pcall(blizzSetTitle, f, "") end
+      f.SetTitle = function(self, s) sign:SetTitle(s) end
+    elseif f.SetTitle then
+      f:SetTitle(title)
+    end
   else
     plainBackdrop(f)
     f.fallbackTitle = Skin.Text(f, "GameFontNormal", "CENTER")
@@ -127,6 +206,7 @@ function Skin.Inset(parent)
     plainBackdrop(f, 0.6)
     if f.SetBackdropBorderColor then f:SetBackdropBorderColor(0.35, 0.29, 0.20, 1) end
   end
+  f.bark = barkFill(f, 0.9)
   return f
 end
 
@@ -212,7 +292,10 @@ function Skin.MinimapButton(id, icon, defaultAngle, onClick, tooltip)
   local bg = btn:CreateTexture(nil, "BACKGROUND"); bg:SetSize(20, 20); bg:SetPoint("TOPLEFT", 7, -5)
   bg:SetTexture("Interface\\Minimap\\UI-Minimap-Background")
   local tex = btn:CreateTexture(nil, "ARTWORK"); tex:SetSize(20, 20); tex:SetPoint("TOPLEFT", 7, -5)
-  tex:SetTexture(icon); tex:SetTexCoord(0.08, 0.92, 0.08, 0.92)
+  -- Grove: our painted module icon when there is one, else the module's game icon
+  local grove = Skin.ICONS[id]
+  if grove then tex:SetTexture(grove); tex:SetTexCoord(0, 1, 0, 1)
+  else tex:SetTexture(icon); tex:SetTexCoord(0.08, 0.92, 0.08, 0.92) end
   btn.icon = tex
   local function place()
     local angle = math.rad(store[id] or defaultAngle)
@@ -246,6 +329,7 @@ function Skin.RowHighlight(r)
   h:SetBlendMode("ADD")
   h:SetAllPoints()
   h:SetAlpha(0.45)
+  if h.SetVertexColor then h:SetVertexColor(Skin.PINE[1], Skin.PINE[2], Skin.PINE[3]) end -- Grove: pine glow
   return h
 end
 
@@ -362,3 +446,20 @@ ev:SetScript("OnEvent", function(self, _, name)
   end
   EvergreenDB.modules = EvergreenDB.modules or {}
 end)
+
+-- ------------------------------------------------------------------ GatherMate2 on Forever
+-- Map pins call SetPassThroughButtons when acquired, which this client only allows Blizzard code
+-- to call: GatherMate2's world map pins got ADDON_ACTION_BLOCKED (hundreds per map open). A pin
+-- doesn't need it; give GatherMate2's pin mixin a no-op before its first pin is created (the
+-- template copies the mixin's functions onto each pin), like retail map addons do.
+local function fixGatherMate2Pins()
+  local mixin = _G.GatherMate2WorldMapPinMixin
+  if type(mixin) == "table" and not mixin.everForever then
+    mixin.SetPassThroughButtons = function() end
+    mixin.everForever = true
+  end
+end
+local gm = CreateFrame("Frame")
+gm:RegisterEvent("ADDON_LOADED")
+gm:SetScript("OnEvent", function(_, _, name) if name == "GatherMate2" then fixGatherMate2Pins() end end)
+fixGatherMate2Pins() -- if GatherMate2 loaded first
