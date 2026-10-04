@@ -245,10 +245,30 @@ end
 -- WoW Forever instances (hand-curated)
 if foreverFile then
   local extra = assert(dofile(foreverFile))
+  local byKey = {}
+  for _, d in ipairs(out) do byKey[d.key] = d end
   for _, d in ipairs(extra) do
-    d.forever = true
-    d.bosses = d.bosses or {}
-    table.insert(out, d)
+    if d.patch then
+      -- Forever-only loot in a classic instance: append items to the matching boss (by npc, else name)
+      local inst = assert(byKey[d.patch], "forever patch: no instance " .. tostring(d.patch))
+      for _, pb in ipairs(d.bosses or {}) do
+        local target
+        for _, b in ipairs(inst.bosses or {}) do
+          if (pb.npc and b.npc == pb.npc) or (not pb.npc and b.name == pb.name) then target = b end
+        end
+        assert(target, "forever patch: no boss " .. tostring(pb.name or pb.npc) .. " in " .. d.patch)
+        target.items = target.items or {}
+        local have = {}
+        for _, it in ipairs(target.items) do have[it[1]] = true end
+        for _, it in ipairs(pb.items or {}) do
+          if not have[it[1]] then table.insert(target.items, 1, it) end -- Forever drops first
+        end
+      end
+    else
+      d.forever = true
+      d.bosses = d.bosses or {}
+      table.insert(out, d)
+    end
   end
 end
 for _, d in ipairs(out) do d.raid = d.raid and true or false end

@@ -11,6 +11,14 @@
 local function items(...) local t = {} for _, id in ipairs({ ... }) do t[#t + 1] = { id } end return t end
 
 return {
+  -- Forever-only drops added to classic instances: { patch = <instance key>, bosses = { { npc|name, items } } }
+  {
+    patch = "ShadowfangKeep",
+    bosses = {
+      -- Blade of Silverlaine: rare 1h sword, ilvl 26, req 21, +28 spell damage, +6 shadow res, ~0.4-0.5% (Wowhead Forever, Oct 3 2026)
+      { name = "Baron Silverlaine", npc = 3887, items = items(273637) },
+    },
+  },
   {
     key = "HallOfThanes", name = "The Hall of Thanes", area = 16919, levels = { 13, 15, 18 },
     entrances = { { 1455, 32.5, 46.0 } },
