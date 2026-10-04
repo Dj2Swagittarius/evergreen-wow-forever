@@ -6,6 +6,7 @@
 ## SavedVariables: EverrorDB
 ## Group: Evergreen
 
+ForeverSkin.lua
 Core.lua
 Capture.lua
 UI.lua

@@ -458,6 +458,72 @@ EB:SetScript("OnEvent", function(self, event, a1)
   end
 end)
 
+-- ------------------------------------------------------------------ /eb diag
+-- Every check above runs inside pcall so one broken API can't break the button; that also hides
+-- WHICH API broke when a client update changes something. /eb diag repeats each check step by
+-- step, keeps every result and error text, and saves it (EverbuffDB.diag) for reading after
+-- /reload.
+local function try(f, ...)
+  local ok, a, b = pcall(f, ...)
+  if not ok then return "ERR " .. tostring(a) end
+  if issecretvalue and (issecretvalue(a) or issecretvalue(b)) then return "SECRET" end
+  if b ~= nil then return tostring(a) .. ", " .. tostring(b) end
+  return tostring(a)
+end
+
+local function Diag()
+  local d = { time = time(), build = select(2, GetBuildInfo()), version = GetBuildInfo(), class = playerClass,
+    inCombat = InCombatLockdown(), spells = {}, units = {}, auras = {}, range = {}, apis = {} }
+  for _, name in ipairs({ "AuraUtil.FindAuraByName", "C_UnitAuras.GetAuraDataByIndex", "UnitBuff",
+    "C_Spell.IsSpellInRange", "IsSpellInRange", "C_SpellBook.IsSpellInSpellBook", "C_Spell.GetSpellInfo",
+    "IsPlayerSpell", "IsSpellKnown", "GetSpellInfo", "issecretvalue" }) do
+    local t, k = name:match("^(.-)%.(.+)$")
+    local v = t and _G[t] and _G[t][k] or (not t and _G[name])
+    d.apis[name] = type(v)
+  end
+  for _, def in ipairs(BUFFS[playerClass] or {}) do
+    local s = def.spell
+    d.spells[s] = {
+      known = tostring(SpellKnown(s)), best = BestSpell(def),
+      inBook = try(function() return C_SpellBook.IsSpellInSpellBook(s, Enum.SpellBookSpellBank.Player) end),
+      info = try(function() local i = C_Spell.GetSpellInfo(s); return i and i.spellID end),
+      classic = try(function() return GetSpellInfo(s) end),
+    }
+  end
+  local units = { "player", "target", "mouseover" }
+  for i = 1, 4 do units[#units + 1] = "party" .. i end
+  for i = 1, 40 do if UnitExists("nameplate" .. i) then units[#units + 1] = "nameplate" .. i end end
+  for _, u in ipairs(units) do
+    if UnitExists(u) then
+      d.units[u] = {
+        name = try(UnitName, u), player = try(UnitIsPlayer, u), friend = try(UnitIsFriend, "player", u),
+        attack = try(UnitCanAttack, "player", u), dead = try(UnitIsDeadOrGhost, u), connected = try(UnitIsConnected, u),
+        class = try(function() return select(2, UnitClass(u)) end), ok = try(UnitOK, u),
+      }
+      local a = {}
+      for _, def in ipairs(BUFFS[playerClass] or {}) do
+        local n = def.satisfiedBy[1]
+        a[n] = {
+          has = tostring(HasAura(u, def.satisfiedBy)),
+          auraUtil = try(function() return AuraUtil.FindAuraByName(n, u) end),
+          unitBuff1 = try(function() return UnitBuff(u, 1) end),
+          auraData1 = try(function() local x = C_UnitAuras.GetAuraDataByIndex(u, 1, "HELPFUL"); return x and x.name end),
+        }
+        d.range[u .. " " .. def.spell] = { inRange = tostring(InRange(def.spell, u)),
+          cspell = try(function() return C_Spell.IsSpellInRange(def.spell, u) end) }
+      end
+      d.auras[u] = a
+    end
+  end
+  Scan()
+  d.queue = {}
+  for i, q in ipairs(queue) do d.queue[i] = tostring(q.name) .. " (" .. q.unit .. ") needs " .. q.spell end
+  d.macro = button and tostring(button:GetAttribute("macrotext")) or "no button"
+  d.shown = frame and tostring(frame:IsShown()) or "no frame"
+  DB.diag = d
+  print(HEX.green .. "Everbuff diag|r saved: " .. #d.queue .. " queued, class " .. tostring(playerClass) .. ". Now /reload so it's written to disk.")
+end
+
 SLASH_EVERBUFF1 = "/eb"
 SLASH_EVERBUFF2 = "/everbuff"
 SlashCmdList["EVERBUFF"] = function(msg)
@@ -497,9 +563,11 @@ SlashCmdList["EVERBUFF"] = function(msg)
     print("  spells known: " .. table.concat(ks, ", "))
     print("  queue: " .. #queue .. "   macro: " .. tostring(button:GetAttribute("macrotext")):gsub("\n", " | "))
     for i, q in ipairs(queue) do if i <= 6 then print("   " .. i .. ". " .. tostring(q.name) .. " (" .. q.unit .. ") needs " .. q.spell) end end
+  elseif msg == "diag" then
+    Diag()
   elseif msg == "reset" then
     DB.pos = nil; frame:ClearAllPoints(); frame:SetPoint("CENTER", UIParent, "CENTER", -300, 200)
   else
-    print(HEX.green .. "Everbuff|r: /eb, /eb scan, /eb debug, /eb optional, /eb plates, /eb lock, /eb reset")
+    print(HEX.green .. "Everbuff|r: /eb, /eb scan, /eb debug, /eb diag, /eb optional, /eb plates, /eb lock, /eb reset")
   end
 end

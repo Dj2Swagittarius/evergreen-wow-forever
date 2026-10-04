@@ -1,5 +1,11 @@
 -- EVERPANEL=1 mode of test_harness.lua: the bar, the plugin API, the menu and the screen offset.
 local ns, fire, printed = ...
+
+-- the buff module's /eb diag records every check without erroring (BUFFS=1 runs load it)
+if SlashCmdList.EVERBUFF then
+  SlashCmdList.EVERBUFF("diag")
+  assert(EverbuffDB and EverbuffDB.diag and EverbuffDB.diag.apis and EverbuffDB.diag.units, "/eb diag saved nothing")
+end
 local EP = assert(ns.Everpanel, "everpanel module not loaded")
 assert(EP.bar and EP.bar._shown, "bar not built")
 
@@ -62,7 +68,7 @@ local pfPoint = { "TOPLEFT", nil, "TOPLEFT", 10, -4 }
 pf.GetPoint = function() return pfPoint[1], pfPoint[2], pfPoint[3], pfPoint[4], pfPoint[5] end
 pf.SetPoint = function(_, p, rel, rp, x, y) pfPoint = { p, rel, rp, x, y } end
 EP.ApplyOffset()
-assert(pfPoint[5] == -24, "PlayerFrame not pushed down: " .. tostring(pfPoint[5]))
+assert(pfPoint[5] == -30, "PlayerFrame not pushed down: " .. tostring(pfPoint[5]))
 EP.SetShown(false)
 assert(not EP.bar._shown, "bar did not hide")
 assert(pfPoint[5] == -4, "PlayerFrame not restored: " .. tostring(pfPoint[5]))
@@ -71,7 +77,7 @@ assert(EP.bar._shown, "/eg panel did not show the bar")
 
 -- I4: a frame something else repositioned after the shift must not be snapped back
 EP.ApplyOffset()
-assert(pfPoint[5] == -24, "PlayerFrame not re-pushed down: " .. tostring(pfPoint[5]))
+assert(pfPoint[5] == -30, "PlayerFrame not re-pushed down: " .. tostring(pfPoint[5]))
 pfPoint = { "TOPLEFT", nil, "TOPLEFT", 10, -100 }   -- another addon/user repositioned it
 EP.SetShown(false)
 assert(pfPoint[5] == -100, "a moved frame should not be snapped back on hide")
@@ -87,7 +93,7 @@ EP.ApplyOffset()
 assert(tfPoint[5] == -4, "TargetFrame should not move when another bar addon is loaded")
 _G.TitanPanelBarButton = nil
 EP.ApplyOffset()
-assert(tfPoint[5] == -24, "TargetFrame should shift once the other bar addon is gone")
+assert(tfPoint[5] == -30, "TargetFrame should shift once the other bar addon is gone")
 
 -- clock click switches between local and server time
 local was = EP.db.clockServer

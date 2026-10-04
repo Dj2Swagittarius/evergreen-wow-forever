@@ -1,0 +1,12 @@
+## Interface: 16001, 11509
+## Title: |cffff7fbfEverblock|r
+## Notes: Hide chat, trades, invites and duels from everyone in guilds you list. /block
+## Author: DJ
+## Version: 0.1.0
+## SavedVariables: EverblockDB
+## Group: Evergreen
+
+ForeverSkin.lua
+Core.lua
+Block.lua
+UI.lua

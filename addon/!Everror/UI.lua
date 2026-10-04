@@ -1,6 +1,7 @@
 -- !Everror UI: the red "! N" button, the copy window, the Blizzard popup switch and /err.
 local ADDON, ns = ...
 local C = ns.Core
+local Skin = ns.Skin
 
 local RED = "|cffff5555"
 local function say(text) print(RED .. "Everror:|r " .. text) end
@@ -30,40 +31,21 @@ local function refresh()
 end
 
 local function button(parent, label, width, onClick)
-  local b = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
-  b:SetSize(width, 22)
-  b:SetText(label)
-  b:SetScript("OnClick", onClick)
-  return b
+  return Skin.Button(parent, label, width, 22, onClick)
 end
 
 local function buildWindow()
-  win = CreateFrame("Frame", "EverrorFrame", UIParent, "BackdropTemplate")
-  win:SetSize(720, 460)
-  win:SetPoint("CENTER")
-  win:SetFrameStrata("DIALOG")
-  win:SetBackdrop({
-    bgFile = "Interface\\Buttons\\WHITE8x8", edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-    edgeSize = 14, insets = { left = 3, right = 3, top = 3, bottom = 3 },
-  })
-  win:SetBackdropColor(0.05, 0.05, 0.07, 0.95)
-  win:SetBackdropBorderColor(0.8, 0.25, 0.25)
-  win:EnableMouse(true)
-  win:SetMovable(true)
-  win:RegisterForDrag("LeftButton")
-  win:SetScript("OnDragStart", win.StartMoving)
-  win:SetScript("OnDragStop", win.StopMovingOrSizing)
-  win:Hide()
-  tinsert(UISpecialFrames, "EverrorFrame")
+  win = Skin.Window("EverrorFrame", 720, 480, "Everror", "Interface\\Icons\\INV_Misc_Note_01")
+  win.Title = Skin.Text(win, "GameFontHighlight")
+  win.Title:SetPoint("TOPLEFT", win.portraitW + 12, win.top - 10)
 
-  win.Title = win:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-  win.Title:SetPoint("TOPLEFT", 12, -10)
-  local close = CreateFrame("Button", nil, win, "UIPanelCloseButton")
-  close:SetPoint("TOPRIGHT", 2, 2)
-
+  -- the text, in a recessed inset below the portrait
+  local inset = Skin.Inset(win)
+  inset:SetPoint("TOPLEFT", 12, win.top - 40)
+  inset:SetPoint("BOTTOMRIGHT", -12, 44)
   local scroll = CreateFrame("ScrollFrame", "EverrorScroll", win, "UIPanelScrollFrameTemplate")
-  scroll:SetPoint("TOPLEFT", 12, -32)
-  scroll:SetPoint("BOTTOMRIGHT", -32, 44)
+  scroll:SetPoint("TOPLEFT", inset, "TOPLEFT", 8, -6)
+  scroll:SetPoint("BOTTOMRIGHT", inset, "BOTTOMRIGHT", -28, 6)
   box = CreateFrame("EditBox", nil, scroll)
   box:SetMultiLine(true)
   box:SetAutoFocus(false)
@@ -78,14 +60,14 @@ local function buildWindow()
   scroll:SetScrollChild(box)
   scroll:SetScript("OnMouseDown", function() box:SetFocus(); box:HighlightText() end)
 
-  local hint = win:CreateFontString(nil, "OVERLAY", "GameFontDisableSmall")
-  hint:SetPoint("BOTTOMLEFT", 14, 16)
+  local hint = Skin.Text(win, "GameFontDisableSmall")
+  hint:SetPoint("BOTTOMLEFT", 16, 18)
   hint:SetText("All text is selected: Ctrl+C to copy.  Or /reload and tell Claude \"check errors\".")
 
   local x = -12
   local function add(label, w, fn)
     local b = button(win, label, w, fn)
-    b:SetPoint("BOTTOMRIGHT", x, 10)
+    b:SetPoint("BOTTOMRIGHT", x, 14)
     x = x - w - 4
   end
   add("Clear", 60, function()
@@ -111,12 +93,11 @@ end
 local btn
 local function buildButton()
   btn = CreateFrame("Button", "EverrorButton", UIParent, "BackdropTemplate")
-  btn:SetSize(48, 20)
+  btn:SetSize(52, 24)
   btn:SetFrameStrata("HIGH")
-  btn:SetBackdrop({ bgFile = "Interface\\Buttons\\WHITE8x8", edgeFile = "Interface\\Buttons\\WHITE8x8", edgeSize = 1 })
-  btn:SetBackdropColor(0.6, 0.05, 0.05, 0.9)
-  btn:SetBackdropBorderColor(1, 0.4, 0.4)
-  btn.Text = btn:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+  -- the Forever heads-up box (dark with a bronze edge), red count
+  Skin.Hud(btn)
+  btn.Text = btn:CreateFontString(nil, "OVERLAY", "GameFontRedSmall")
   btn.Text:SetPoint("CENTER")
   local p = ns.db.button
   if p then btn:SetPoint(p[1], UIParent, p[1], p[2], p[3]) else btn:SetPoint("TOP", UIParent, "TOP", 0, -120) end

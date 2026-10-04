@@ -151,7 +151,7 @@ do
   _G.GetErrorCallstackHeight = function() return 4 end
   _G.EverrorDB = { sessions = {}, nextID = 7 }
   local sns = {}
-  for _, f in ipairs({ "Core.lua", "Capture.lua", "UI.lua" }) do assert(loadfile("../!Everror/" .. f))("!Everror", sns) end
+  for _, f in ipairs({ "ForeverSkin.lua", "Core.lua", "Capture.lua", "UI.lua" }) do assert(loadfile("../!Everror/" .. f))("!Everror", sns) end
   local function fire(...) for _, fr in ipairs(handlers) do if fr._OnEvent then fr._OnEvent(fr, ...) end end end
   -- errors before ADDON_LOADED are buffered
   current("Interface/AddOns/Everbid/Craft.lua:31: attempt to call a nil value")

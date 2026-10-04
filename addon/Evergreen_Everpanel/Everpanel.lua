@@ -6,7 +6,7 @@
 
 local ADDON, ns = ...
 local HEX = ns.Skin.HEX
-local BAR_H, GAP = 20, 12
+local BAR_H, GAP = 26, 12
 
 local EP = { plugins = {}, byId = {}, buttons = {} }
 ns.Everpanel = EP
@@ -102,7 +102,7 @@ local function MakeButton(p)
   local b = CreateFrame("Button", "EverpanelPlugin_" .. p.id:gsub("%W", "_"), EP.bar)
   b:SetHeight(BAR_H)
   b:RegisterForClicks("LeftButtonUp", "RightButtonUp")
-  b.icon = b:CreateTexture(nil, "ARTWORK"); b.icon:SetSize(14, 14); b.icon:SetPoint("LEFT", 0, 0)
+  b.icon = b:CreateTexture(nil, "ARTWORK"); b.icon:SetSize(16, 16); b.icon:SetPoint("LEFT", 0, 0)
   if p.icon then b.icon:SetTexture(p.icon) end
   b.text = ns.Skin.Text(b, "GameFontHighlightSmall"); b.text:SetJustifyV("MIDDLE"); b.text:SetWordWrap(false)
   b:SetScript("OnClick", function(s, btn)

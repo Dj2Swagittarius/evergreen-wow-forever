@@ -1,0 +1,11 @@
+## Interface: 16001, 11509
+## Title: |cffb080ffEvertaxi|r
+## Notes: Warlock summons and mage portals for hire: post your advert to the chats you pick and get alerted when someone wants a summon to where you are or a portal to your cities. /taxi
+## Author: DJ
+## Version: 0.1.0
+## SavedVariables: EvertaxiDB
+## Group: Evergreen
+
+ForeverSkin.lua
+Core.lua
+Taxi.lua
