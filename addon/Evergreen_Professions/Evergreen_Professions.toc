@@ -1,0 +1,13 @@
+## Interface: 16001, 11509
+## Title: |cff7fd35eEvergreen|r - Professions
+## Notes: Profession leveling guides (WoW-Professions.com, WoW Forever): steps for your skill, materials in your bags, trainers, shopping list. /prof, /eg prof
+## Author: DJ
+## Version: 0.7.0
+## Dependencies: Evergreen
+## Group: Evergreen
+## OptionalDeps: Evergreen_Guide, TomTom, Everbid
+
+Link.lua
+Prof_Data.lua
+Professions.lua
+Professions_UI.lua

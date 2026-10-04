@@ -6,3 +6,7 @@ addon/tools/forsaken_b1-3.json
 addon/tools/forever_items.json
 __pycache__/
 *.pyc
+# imported WoW-Professions.com guide content (their text/routes; the repo is public).
+# Regenerate locally with addon/tools/import_wowprof_professions.py / import_wowprof_farming.py
+addon/Evergreen_Professions/Prof_Data.lua
+addon/Evergreen_Farming/Farm_Data.lua

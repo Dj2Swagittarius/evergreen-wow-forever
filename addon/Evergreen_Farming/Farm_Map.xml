@@ -1,0 +1,6 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+  <!-- Farming's own world map pin: one pin the size of the map canvas that draws the active route
+       (lines, points, numbers). Its mixin (Farm_Map.lua) never lets the map set mouse passthrough on it,
+       and it takes no mouse, so the map's own pins and clicks are untouched. -->
+  <Frame name="EvergreenFarmRoutePinTemplate" mixin="EvergreenFarmRoutePinMixin" enableMouse="false" virtual="true"/>
+</Ui>

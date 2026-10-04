@@ -1,0 +1,11 @@
+<Bindings>
+  <Binding name="EVERGREENFARM_NEXT" header="EVERGREENFARM" category="ADDONS">
+    EvergreenFarm_Next()
+  </Binding>
+  <Binding name="EVERGREENFARM_PREV" category="ADDONS">
+    EvergreenFarm_Prev()
+  </Binding>
+  <Binding name="EVERGREENFARM_TOGGLE" category="ADDONS">
+    EvergreenFarm_Toggle()
+  </Binding>
+</Bindings>
