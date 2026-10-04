@@ -316,6 +316,41 @@ io.write(string.format("OK %s %s route=%s: %d guide steps followed, reached leve
   RACE, CLASS, ROUTE_ID or "auto", steps, state.level, (function() local n = 0 for _ in pairs(state.done) do n = n + 1 end return n end)(), #printed))
 for _, m in ipairs(printed) do if m:lower():find("error") then io.write("  chat: ", m, "\n") end end
 
+-- the guide browser: own faction only, race roads only in the starting zones,
+-- shared guides once each, clicking one switches to it
+if os.getenv("BROWSER") then
+  local UI = ns.UI
+  UI.ToggleBrowser()
+  local idx = UI.GuideIndex()
+  local fac = UnitFactionGroup("player")
+  local bad, ids, starts, roads = 0, {}, 0, {}
+  for _, e in ipairs(idx) do
+    if e.route.faction ~= fac then bad = bad + 1 end
+    if ids[e.bracket.id] then bad = bad + 1 end
+    ids[e.bracket.id] = true
+    if e.section == "start" then
+      starts = starts + 1; roads[e.group.id] = true
+      if e.bracket.lv[2] > 12 then bad = bad + 1 end
+    end
+  end
+  local nroads = 0 for _ in pairs(roads) do nroads = nroads + 1 end
+  -- open the 50-60 section and pick its last guide through the row's click handler
+  local target
+  for _, e in ipairs(idx) do if e.section == 50 then target = e end end
+  EvergreenDB.browserOpen = EvergreenDB.browserOpen or {}
+  EvergreenDB.browserOpen["50"] = true
+  UI.RefreshBrowser()
+  local clicked = false
+  for _, r in ipairs(UI.browserRows) do
+    local t = r.text.GetText and r.text:GetText()
+    if type(t) == "string" and target and t:find(target.bracket.name, 1, true) and r.onClick then r.onClick(); clicked = true; break end
+  end
+  local ok = bad == 0 and starts > 0 and nroads >= 1 and #UI.browserRows > 0 and clicked
+    and EvergreenCharDB.bracket == target.index
+  io.write(string.format("%s browser: %d guides, %d starting-zone guides on %d roads, %d rows, clicked=%s, bad=%d\n",
+    ok and "OK" or "FAIL", #idx, starts, nroads, #UI.browserRows, tostring(clicked), bad))
+end
+
 -- quests on the active route (this class) that were never turned in
 if os.getenv("MISSED") then
   local seen = {}

@@ -34,6 +34,8 @@ $LJ export_route.lua "$Q" ../Evergreen_Guide forsaken 1 3 forsaken_b1-3.json
 python route_optimizer.py forsaken_b1-3.json --out ../Evergreen_Guide/Routes_Forsaken_Opt.lua --iters "$ITERS" --seeds 4 | grep -vE "^  seed"
 
 echo "== test"
+# standalone addons carry their own copy of the shared Forever skin
+for d in ../Everblock ../Evertaxi "../!Everror"; do cp ../_shared/ForeverSkin.lua "$d/"; mkdir -p "$d/Art"; cp ../Evergreen/Art/*.tga "$d/Art/"; done
 fails=0; runs=0
 run() { runs=$((runs+1)); out=$(FACTION=$4 MISSED=1 $LJ test_harness.lua ../Evergreen $1 $2 $3 30 2>&1)
   if ! echo "$out" | grep -q "^OK" || echo "$out" | grep "missed:" | grep -vq optional; then fails=$((fails+1)); echo "FAIL $1 $2 $3"; echo "$out" | tail -5; fi; }
@@ -50,7 +52,12 @@ for c in WARRIOR HUNTER ROGUE DRUID MAGE; do run Skyborne $c auto Alliance; done
 runs=$((runs+1)); if ! BUFFS=1 JOURNAL=1 $LJ test_harness.lua ../Evergreen Scourge PALADIN | grep -q "^OK journal"; then fails=$((fails+1)); echo "FAIL journal"; fi
 runs=$((runs+1)); if ! BUFFS=1 EVERPANEL=1 $LJ test_harness.lua ../Evergreen Scourge PALADIN | grep -q "^OK everpanel"; then fails=$((fails+1)); echo "FAIL everpanel"; fi
 runs=$((runs+1)); if ! TRACKER=1 $LJ test_harness.lua ../Evergreen Scourge PALADIN | grep -q "^OK tracker"; then fails=$((fails+1)); echo "FAIL tracker"; fi
+for a in "Human WARRIOR" "Orc HUNTER" "Scourge MAGE" "NightElf DRUID"; do runs=$((runs+1)); if ! BROWSER=1 $LJ test_harness.lua ../Evergreen $a auto 12 | grep -q "^OK browser"; then fails=$((fails+1)); echo "FAIL browser $a"; fi; done
 runs=$((runs+1)); if ! $LJ test_everror.lua | grep -q "0 failed"; then fails=$((fails+1)); echo "FAIL everror"; fi
+runs=$((runs+1)); if ! $LJ test_everblock.lua | grep -q "0 failed"; then fails=$((fails+1)); echo "FAIL everblock"; fi
+runs=$((runs+1)); if ! $LJ test_evertaxi.lua | grep -q "0 failed"; then fails=$((fails+1)); echo "FAIL evertaxi"; fi
+runs=$((runs+1)); if ! $LJ test_professions.lua | grep -q "0 failed"; then fails=$((fails+1)); echo "FAIL professions"; fi
+runs=$((runs+1)); if ! $LJ test_farming.lua | grep -q "0 failed"; then fails=$((fails+1)); echo "FAIL farming"; fi
 echo "test runs: $runs, failures: $fails"
 [ "$fails" = 0 ] || exit 1
 
@@ -65,4 +72,8 @@ if [ "$1" = "--deploy" ]; then
   echo "== deployed Evergreen and its modules to $ADDONS_DIR"
   mkdir -p "$ADDONS_DIR/!Everror" && cp ../'!Everror'/*.toc ../'!Everror'/*.lua "$ADDONS_DIR/!Everror/"
   echo "== deployed !Everror"
+  mkdir -p "$ADDONS_DIR/Everblock" && cp ../Everblock/*.toc ../Everblock/*.lua "$ADDONS_DIR/Everblock/"
+  echo "== deployed Everblock"
+  mkdir -p "$ADDONS_DIR/Evertaxi" && cp ../Evertaxi/*.toc ../Evertaxi/*.lua "$ADDONS_DIR/Evertaxi/"
+  echo "== deployed Evertaxi"
 fi

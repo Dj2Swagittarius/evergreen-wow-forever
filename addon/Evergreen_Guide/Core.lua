@@ -560,20 +560,11 @@ local function BuildMain()
   local rt = CreateFrame("Button", nil, f)
   rt:SetPoint("TOPLEFT", left, f.contentTop - 4); rt:SetPoint("TOPRIGHT", -12, f.contentTop - 4); rt:SetHeight(16)
   rt.text = MakeText(rt, FONT_BODY, 10, C.muted); rt.text:SetPoint("LEFT"); rt.text:SetPoint("RIGHT"); rt.text:SetWordWrap(false)
-  rt:SetScript("OnClick", function()
-    -- cycle routes
-    local idx = 1
-    for i, r in ipairs(ns.ROUTES) do if r == ROUTE then idx = i end end
-    local nextRoute = ns.ROUTES[(idx % #ns.ROUTES) + 1]
-    CDB.route = nextRoute.id; SelectRoute(CDB.route); CDB.bracket = nil; UI.Refresh()
-  end)
+  rt:SetScript("OnClick", function() UI.ToggleBrowser() end)
   rt:SetScript("OnEnter", function(s)
     GameTooltip:SetOwner(s, "ANCHOR_BOTTOM")
-    GameTooltip:AddLine("Route", 1, 0.82, 0)
-    for _, r in ipairs(ns.ROUTES) do
-      GameTooltip:AddLine((r == ROUTE and "> " or "   ") .. r.name .. "  (" .. r.faction .. ")", 1, 1, 1)
-    end
-    GameTooltip:AddLine("Click to cycle. /eg route <id> to pick, /eg route auto to reset.", 0.6, 0.6, 0.6)
+    GameTooltip:AddLine("Guides", 1, 0.82, 0)
+    GameTooltip:AddLine("Click to browse every guide: starting zones by race, then zone guides by level.", 1, 1, 1, true)
     GameTooltip:Show()
   end)
   rt:SetScript("OnLeave", function() GameTooltip:Hide() end)
@@ -783,6 +774,236 @@ function UI.Layout()
   UI.content:SetHeight(math.max(y, 1))
 end
 
+-- ------------------------------------------------------------------ guide browser
+-- Every guide the character's faction can follow, as one list: the themed race roads only for the
+-- starting zones (1-12), then the shared zone guides grouped by level, each with % complete.
+-- Clicking one switches to it (and to a route that contains it, if the current one doesn't).
+local RACE_LABEL = { Scourge = "Undead", NightElf = "Night Elf" }
+local function RouteRaces(r)
+  local t = {}
+  for race in pairs(r.races or {}) do t[#t + 1] = RACE_LABEL[race] or race end
+  table.sort(t)
+  return table.concat(t, ", ")
+end
+
+local SECTIONS = {
+  { id = "start", title = "Starting zones  1-12" },
+  { id = 12, title = "Azeroth  12-20" }, { id = 20, title = "Azeroth  20-30" },
+  { id = 30, title = "Azeroth  30-40" }, { id = 40, title = "Azeroth  40-50" },
+  { id = 50, title = "Azeroth  50-60" },
+}
+local function SectionOf(b, raceOnly)
+  if raceOnly and b.lv[2] <= 12 then return "start" end
+  local lo = b.lv[1]
+  if lo < 20 then return 12 end
+  return math.min(50, math.floor(lo / 10) * 10)
+end
+
+local filteredCache = {}
+local function RouteBrackets(r)
+  if r == ROUTE then return BRACKETS end
+  if not filteredCache[r.id] then filteredCache[r.id] = FilterBrackets(r.brackets) end
+  return filteredCache[r.id]
+end
+
+-- 0..1 of the required steps done, or nil when the bracket has none
+local function BracketProgress(b)
+  Recompute(b)
+  local total, done = 0, 0
+  for _, step in ipairs(b.steps) do
+    if not IsInformational(step) and not step.opt and not step.lv then
+      total = total + 1
+      if step.done then done = done + 1 end
+    end
+  end
+  if total == 0 then return nil end
+  return done / total
+end
+
+-- entries: { section, route, index, bracket, raceTag, group (route, starting zones only) }
+function UI.GuideIndex()
+  local faction = playerFaction or ROUTE.faction
+  local routes = { ROUTE }
+  for _, r in ipairs(ns.ROUTES) do
+    if r ~= ROUTE and r.faction == faction and not r.optimized then routes[#routes + 1] = r end
+  end
+  if ROUTE.faction ~= faction then routes = { ROUTE } end
+  local uses = {}
+  for _, r in ipairs(routes) do for _, b in ipairs(r.brackets) do uses[b.id] = (uses[b.id] or 0) + 1 end end
+  local out, seen = {}, {}
+  for _, r in ipairs(routes) do
+    for i, b in ipairs(r.brackets) do
+      if not seen[b.id] then
+        seen[b.id] = true
+        local raceOnly = i <= (r.raceOnly or 0) and uses[b.id] == 1
+        out[#out + 1] = { section = SectionOf(b, raceOnly), route = r, index = i, bracket = b,
+          raceTag = raceOnly and RouteRaces(r) or nil, group = raceOnly and b.lv[2] <= 12 and r or nil }
+      end
+    end
+  end
+  return out
+end
+
+local function OpenModule(slash)
+  local f = SlashCmdList and SlashCmdList[slash]
+  if f then f(""); return true end
+  return false
+end
+
+local BROWSER_ROW_H = 20
+function UI.BuildBrowser()
+  local Skin = ns.Skin
+  local HX = Skin.HEX
+  local f = Skin.Window("EvergreenGuideBrowser", 640, 440, "Evergreen Guides", nil)
+  f:SetFrameStrata("DIALOG")
+  f:Hide()
+  UI.browser = f
+  local fancy = "Fonts\\MORPHEUS.TTF"
+
+  -- left: categories
+  local cats = {
+    { label = "Suggested", icon = Skin.ART.emblem, tip = "Back to the guide picked for your race and level",
+      run = function() CDB.route = nil; SelectRoute(); CDB.bracket = nil; UI.Refresh(); UI.RefreshBrowser() end },
+    { label = "Leveling", icon = Skin.ICONS and Skin.ICONS.guide, tip = "All leveling guides (on the right)",
+      run = function() UI.RefreshBrowser() end },
+    { label = "Dungeons", icon = Skin.ICONS and Skin.ICONS.journal, slash = "EVERGREENJOURNAL", tip = "Dungeon journal (Evergreen - Journal)" },
+    { label = "Professions", icon = Skin.ICONS and Skin.ICONS.professions, slash = "EVERGREENPROF", tip = "Profession guides (Evergreen - Professions)" },
+    { label = "Farming", icon = Skin.ICONS and Skin.ICONS.farming, slash = "EVERGREENFARM", tip = "Farming routes (Evergreen - Farming)" },
+  }
+  local y = f.contentTop - 50
+  for _, c in ipairs(cats) do
+    if not c.slash or (SlashCmdList and SlashCmdList[c.slash]) then
+      local b = CreateFrame("Button", nil, f)
+      b:SetSize(176, 40); b:SetPoint("TOPLEFT", 14, y)
+      local ic = b:CreateTexture(nil, "ARTWORK"); ic:SetSize(36, 36); ic:SetPoint("LEFT")
+      ic:SetTexture(c.icon or "Interface\\Icons\\INV_Misc_QuestionMark")
+      local fs = b:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+      if not (fs.SetFont and pcall(fs.SetFont, fs, fancy, 20, "")) then fs:SetFontObject("GameFontNormalLarge") end
+      fs:SetPoint("LEFT", ic, "RIGHT", 8, 0); fs:SetText(c.label); fs:SetTextColor(0.96, 0.82, 0.45)
+      Skin.RowHighlight(b)
+      b:SetScript("OnClick", function() if c.slash then OpenModule(c.slash) else c.run() end end)
+      b:SetScript("OnEnter", function(s) GameTooltip:SetOwner(s, "ANCHOR_RIGHT"); GameTooltip:AddLine(c.tip, 1, 1, 1); GameTooltip:Show() end)
+      b:SetScript("OnLeave", function() GameTooltip:Hide() end)
+      y = y - 46
+    end
+  end
+
+  -- right: search + list
+  local head = f:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+  if not (head.SetFont and pcall(head.SetFont, head, fancy, 18, "")) then head:SetFontObject("GameFontNormalLarge") end
+  head:SetPoint("TOPLEFT", 206, f.contentTop - 10); head:SetText("Search guides"); head:SetTextColor(0.96, 0.82, 0.45)
+  local search = Skin.Search(f, 220, "zone or level")
+  search:SetPoint("LEFT", head, "RIGHT", 14, 0)
+  search:HookScript("OnTextChanged", function() UI.RefreshBrowser() end)
+  UI.browserSearch = search
+
+  local inset = Skin.Inset(f)
+  inset:SetPoint("TOPLEFT", 200, f.contentTop - 36); inset:SetPoint("BOTTOMRIGHT", -10, 10)
+  local scroll = CreateFrame("ScrollFrame", "EvergreenGuideBrowserScroll", inset, "UIPanelScrollFrameTemplate")
+  scroll:SetPoint("TOPLEFT", 6, -6); scroll:SetPoint("BOTTOMRIGHT", -28, 6)
+  local content = CreateFrame("Frame", nil, scroll); content:SetSize(380, 1)
+  scroll:SetScrollChild(content)
+  UI.browserContent = content
+  UI.browserRows = {}
+  f:SetScript("OnShow", function() UI.RefreshBrowser() end)
+end
+
+local function BrowserRow(i)
+  local rows = UI.browserRows
+  if rows[i] then return rows[i] end
+  local r = CreateFrame("Button", nil, UI.browserContent)
+  r:SetHeight(BROWSER_ROW_H)
+  r.toggle = r:CreateTexture(nil, "ARTWORK"); r.toggle:SetSize(14, 14); r.toggle:SetPoint("LEFT", 2, 0)
+  r.text = r:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+  r.text:SetPoint("LEFT", 20, 0); r.text:SetPoint("RIGHT", -52, 0); r.text:SetJustifyH("LEFT")
+  if r.text.SetWordWrap then r.text:SetWordWrap(false) end
+  r.pct = r:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
+  r.pct:SetPoint("RIGHT", -4, 0); r.pct:SetJustifyH("RIGHT")
+  ns.Skin.RowHighlight(r)
+  r:SetScript("OnClick", function(s) if s.onClick then s.onClick() end end)
+  rows[i] = r
+  return r
+end
+
+local function PctColor(p)
+  if p >= 1 then return "|cff40c040" elseif p >= 0.5 then return "|cffffd100" else return "|cffff9a3c" end
+end
+
+function UI.RefreshBrowser()
+  local HX = ns.Skin.HEX
+  local f = UI.browser
+  if not (f and f:IsShown()) then return end
+  ScanLog()
+  if not completed then RefreshCompleted() end
+  DB.browserOpen = DB.browserOpen or {}
+  local open = DB.browserOpen
+  local query = UI.browserSearch and UI.browserSearch:GetText() or ""
+  query = (type(query) == "string" and query or ""):lower()
+  local index = UI.GuideIndex()
+  local cur = BRACKETS[currentIndex]
+  local n = 0
+  local function add(text, pctText, togg, onClick, indent)
+    n = n + 1
+    local r = BrowserRow(n)
+    r:ClearAllPoints()
+    r:SetPoint("TOPLEFT", indent or 0, -(n - 1) * BROWSER_ROW_H)
+    r:SetPoint("RIGHT", UI.browserContent, "RIGHT", 0, 0)
+    r.text:SetText(text); r.pct:SetText(pctText or "")
+    if togg ~= nil then
+      r.toggle:SetTexture(togg and "Interface\\Buttons\\UI-MinusButton-Up" or "Interface\\Buttons\\UI-PlusButton-Up"); r.toggle:Show()
+    else r.toggle:Hide() end
+    r.onClick = onClick
+    r:Show()
+  end
+  local function entryLine(e, indent)
+    local b = e.bracket
+    local here = cur and cur.id == b.id
+    local label = (here and (HX.green .. "> ") or "") .. (here and HX.white or HX.body) .. b.name .. "|r " ..
+      HX.muted .. "(" .. b.lv[1] .. "-" .. b.lv[2] .. (e.raceTag and (" " .. e.raceTag) or "") .. ")|r"
+    local p = BracketProgress(RouteBrackets(e.route)[e.index])
+    local pct = p and p > 0 and (PctColor(p) .. math.floor(p * 100 + 0.5) .. "%|r") or ""
+    add(label, pct, nil, function()
+      if e.route ~= ROUTE then CDB.route = e.route.id; SelectRoute(CDB.route) end
+      CDB.bracket = e.index
+      UI.Refresh(); UI.RefreshBrowser()
+    end, indent)
+  end
+  for _, sec in ipairs(SECTIONS) do
+    local items = {}
+    for _, e in ipairs(index) do
+      if e.section == sec.id then
+        local hay = (e.bracket.name .. " " .. e.bracket.lv[1] .. "-" .. e.bracket.lv[2] .. " " .. (e.raceTag or "") .. " " ..
+          (e.group and e.group.name or "")):lower()
+        if query == "" or hay:find(query, 1, true) then items[#items + 1] = e end
+      end
+    end
+    if #items > 0 then
+      local key = tostring(sec.id)
+      local isOpen = query ~= "" or open[key] == true or (open[key] == nil and cur and SectionOf(cur, currentIndex <= (ROUTE.raceOnly or 0)) == sec.id)
+      add(HX.gold .. sec.title .. "|r", nil, isOpen, function() open[key] = not isOpen; UI.RefreshBrowser() end)
+      if isOpen then
+        local lastGroup
+        for _, e in ipairs(items) do
+          if e.group and e.group ~= lastGroup then
+            lastGroup = e.group
+            add(HX.pine .. e.group.name .. "|r " .. HX.muted .. "· " .. RouteRaces(e.group) .. "|r", nil, nil, nil, 14)
+          end
+          entryLine(e, e.group and 28 or 14)
+        end
+      end
+    end
+  end
+  for i = n + 1, #UI.browserRows do UI.browserRows[i]:Hide() end
+  UI.browserContent:SetHeight(math.max(1, n * BROWSER_ROW_H))
+  -- the shared brackets' steps were just recomputed for other routes; refresh the current one
+  Recompute(BRACKETS[currentIndex])
+end
+
+function UI.ToggleBrowser()
+  if not UI.browser then UI.BuildBrowser() end
+  if UI.browser:IsShown() then UI.browser:Hide() else UI.browser:Show() end
+end
+
 function UI.Refresh()
   if not UI.main then return end
   ScanLog()
@@ -796,8 +1017,12 @@ function UI.Refresh()
   UI.zoneText:SetText(b.name)
   if UI.routeText then
     local joined = (currentIndex < FirstBracketFor()) and HEX.red .. " (starting chapters are " .. (ROUTE.faction == "Horde" and "Undead" or "another race") .. "-only)|r" or ""
-    UI.routeText:SetText(HEX.muted .. ROUTE.name .. " · " .. ROUTE.faction .. "|r" .. joined)
+    -- the themed road names only matter in the starting zones; after that every race shares the guides
+    local inStart = currentIndex <= (ROUTE.raceOnly or 0) and b.lv[2] <= 12
+    local label = inStart and (ROUTE.name .. " · " .. ROUTE.faction) or (ROUTE.faction .. " leveling")
+    UI.routeText:SetText(HEX.muted .. label .. "  |r" .. HEX.gold .. "[Guides]|r" .. joined)
   end
+  if UI.RefreshBrowser then UI.RefreshBrowser() end
   UI.metaText:SetText(HEX.muted .. "Hearth: " .. HEX.ink .. (b.hearth or "-") .. HEX.muted .. "   FP: " .. HEX.ink .. (b.fp or "-") .. "|r")
   UI.autoBtn.text:SetText(CDB.bracket and "Auto" or HEX.gold .. "Auto|r")
 
@@ -1274,6 +1499,8 @@ ns.GuideSlash = function(msg)
   msg = (msg or ""):lower():gsub("^%s+", ""):gsub("%s+$", "")
   if msg == "" or msg == "show" or msg == "toggle" then
     if UI.main:IsShown() then UI.main:Hide() else UI.main:Show() end
+  elseif msg == "guides" or msg == "browse" then
+    UI.ToggleBrowser()
   elseif msg == "arrow" then
     DB.arrowShown = not DB.arrowShown; UI.UpdateArrow(true)
     print(HEX.green .. "Evergreen:|r arrow " .. (DB.arrowShown and "on" or "off"))
